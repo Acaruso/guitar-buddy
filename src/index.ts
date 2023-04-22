@@ -1,3 +1,3 @@
 document.body.onload = () => {
-    console.log("blah");
+    console.log("blah ts");
 };
