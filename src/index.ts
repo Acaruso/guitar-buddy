@@ -1,3 +1,5 @@
+import { App } from "./App"
+
 document.body.onload = () => {
-    console.log("blah ts");
+    const app = new App();
 };
