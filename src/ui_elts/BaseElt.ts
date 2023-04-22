@@ -1,26 +1,24 @@
 import { Rect } from "../Rect";
+import { Gfx } from "../Gfx";
 
-interface IBaseElt {
-    rect: Rect;
-    children: Array<any>;
-    parent: any;
-
-    onDraw: () => void;
-    onLeftMBDown: (x: number, y: number) => void;
-};
-
-class BaseElt implements IBaseElt {
+class BaseElt {
+    gfx: Gfx;
     public rect: Rect = new Rect();
-    public children: Array<any> = [];
+    public children: Array<BaseElt> = [];
     public parent: any = null;
 
-    constructor() {}
+    constructor(gfx: Gfx, rect: Rect) {
+        this.gfx = gfx;
+        this.rect = rect;
+    }
 
     onDraw() {}
 
-    onLeftMBDown(x: number, y: number) {
+    onLeftMBDown(x: number, y: number) {}
 
+    pushChild(child: any) {
+        this.children.push(child);
     }
 }
 
-export { IBaseElt, BaseElt };
+export { BaseElt };

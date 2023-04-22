@@ -1,13 +1,19 @@
-import { IBaseElt, BaseElt } from "./ui_elts/BaseElt";
+import { BaseElt } from "./ui_elts/BaseElt";
 import { isInsideRect } from "./util";
+import { Gfx } from "./Gfx";
+import { RectElt } from "./ui_elts/RectElt";
+import { constants } from "./constants";
 
 class Ui {
-    private rootElt: IBaseElt = new BaseElt();
+    gfx: Gfx;
+    private rootElt: BaseElt;
     private mouseX: number = 0;
     private mouseY: number = 0;
     private curLeftClickedElts: Array<any> = [];
 
-    constructor() {
+    constructor(gfx: Gfx) {
+        this.gfx = gfx;
+
         this.addEventListener("mousemove", (e: any) => {
             this.mouseX = e.offsetX;
             this.mouseY = e.offsetY;
@@ -15,6 +21,18 @@ class Ui {
 
         this.addEventListener("mousedown", (e: any) => this.onLeftMBDown(e));
         this.addEventListener("mouseup", (e: any) => this.onLeftMBUp(e));
+
+        this.rootElt = new BaseElt(
+            this.gfx,
+            { x: 0, y: 0, w: constants.canvasWidth, h: constants.canvasHeight }
+        );
+
+        const rect1 = new RectElt(
+            this.gfx,
+            { x: 10, y: 10, w: 20, h: 20 }
+        );
+
+        this.rootElt.pushChild(rect1);
     }
 
     onLeftMBDown(event: any) {
