@@ -1,4 +1,5 @@
 import { Gfx } from "../Gfx";
+import { State } from "../State";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
@@ -63,6 +64,7 @@ class FretboardModel {
 }
 
 class FretboardElt extends BaseElt {
+    state: State;
     numRows: number;
     numCols: number;
     cellW: number = 36;
@@ -73,6 +75,7 @@ class FretboardElt extends BaseElt {
     constructor(
         gfx: Gfx,
         rect: Rect,
+        state: State,
         numRows: number,
         numCols: number,
     ) {
@@ -84,6 +87,8 @@ class FretboardElt extends BaseElt {
             w: this.cellW * numCols,
             h: this.cellH * numRows
         }
+
+        this.state = state;
 
         this.numRows = numRows;
         this.numCols = numCols;
@@ -107,6 +112,7 @@ class FretboardElt extends BaseElt {
                         h: this.cellH,
                         color: constants.blue,
                     },
+                    this.state,
                     this.fretboardModel,
                     row,
                     col,

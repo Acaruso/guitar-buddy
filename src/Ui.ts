@@ -1,4 +1,5 @@
 import { Gfx } from "./Gfx";
+import { State } from "./State";
 import { BaseElt } from "./ui_elts/BaseElt";
 import { FretboardElt } from "./ui_elts/FretboardElt";
 import { constants } from "./constants";
@@ -6,18 +7,37 @@ import { isInsideRect, addHandler } from "./util";
 
 class Ui {
     gfx: Gfx;
+    state: State;
     private rootElt: BaseElt;
     private mouseX: number = 0;
     private mouseY: number = 0;
 
-    constructor(gfx: Gfx) {
+    constructor(gfx: Gfx, state: State) {
         this.gfx = gfx;
+        this.state = state;
 
         addHandler("mousedown", (e: any) => this.onLeftMBDown(e));
         addHandler("mouseup",   (e: any) => this.onLeftMBUp(e));
+
         addHandler("mousemove", (e: any) => {
             this.mouseX = e.offsetX;
             this.mouseY = e.offsetY;
+        });
+
+        addHandler("keydown", (e: any) => {
+            let key = e.key.toLowerCase();
+            if (key === " ") {
+                key = "space";
+            }
+            this.state.keyboard[key] = true;
+        });
+
+        addHandler("keyup", (e: any) => {
+            let key = e.key.toLowerCase();
+            if (key === " ") {
+                key = "space";
+            }
+            this.state.keyboard[key] = false;
         });
 
         this.rootElt = new BaseElt(
@@ -29,6 +49,7 @@ class Ui {
             new FretboardElt(
                 this.gfx,
                 { x: 10, y: 10, w: 20, h: 20 },
+                this.state,
                 6,
                 24
             )

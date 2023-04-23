@@ -1,4 +1,5 @@
 import { Gfx } from "../Gfx";
+import { State } from "../State";
 import { BaseElt } from "./BaseElt";
 import { FretboardModel } from "./FretboardElt";
 import { constants } from "../constants";
@@ -7,6 +8,7 @@ import { Rect } from "../Rect";
 type OnClick = (x: number, y: number) => void;
 
 class CellElt extends BaseElt {
+    state: State;
     fretboardModel: FretboardModel;
     row: number;
     col: number;
@@ -19,6 +21,7 @@ class CellElt extends BaseElt {
     constructor(
         gfx: Gfx,
         rect: Rect,
+        state: State,
         fretboardModel: FretboardModel,
         row: number,
         col: number,
@@ -26,6 +29,7 @@ class CellElt extends BaseElt {
         outlineVisible: boolean = true
     ) {
         super(gfx, rect);
+        this.state = state;
         this.fretboardModel = fretboardModel;
         this.row = row;
         this.col = col;
@@ -62,7 +66,9 @@ class CellElt extends BaseElt {
     }
 
     onLeftMBDown(x: number, y: number) {
-        this.fretboardModel.toggle(this.row, this.col);
+        if (!this.state.keyboard.shift) {
+            this.fretboardModel.toggle(this.row, this.col);
+        }
         this.fretboardModel.setSelected(this.row, this.col);
     }
 }
