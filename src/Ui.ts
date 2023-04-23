@@ -2,7 +2,7 @@ import { Gfx } from "./Gfx";
 import { BaseElt } from "./ui_elts/BaseElt";
 import { FretboardElt } from "./ui_elts/FretboardElt";
 import { constants } from "./constants";
-import { isInsideRect } from "./util";
+import { isInsideRect, addHandler } from "./util";
 
 class Ui {
     gfx: Gfx;
@@ -13,9 +13,9 @@ class Ui {
     constructor(gfx: Gfx) {
         this.gfx = gfx;
 
-        this.addEventListener("mousedown", (e: any) => this.onLeftMBDown(e));
-        this.addEventListener("mouseup",   (e: any) => this.onLeftMBUp(e));
-        this.addEventListener("mousemove", (e: any) => {
+        addHandler("mousedown", (e: any) => this.onLeftMBDown(e));
+        addHandler("mouseup",   (e: any) => this.onLeftMBUp(e));
+        addHandler("mousemove", (e: any) => {
             this.mouseX = e.offsetX;
             this.mouseY = e.offsetY;
         });
@@ -69,10 +69,6 @@ class Ui {
         this.rootElt.onDraw();
 
         this.gfx.draw();
-    }
-
-    private addEventListener(type: any, callback: any, options={}) {
-        document.addEventListener(type, callback, options);
     }
 }
 

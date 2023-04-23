@@ -1,6 +1,7 @@
 import { textConstants } from "./textConstants";
 import { Rect } from "./Rect";
 import { Coord } from "./Coord";
+import { constants } from "./constants";
 
 class Gfx {
     canvas: any;
@@ -150,7 +151,7 @@ class Gfx {
     ) {
         const command = (ctx: any) => {
             ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 4;
             ctx.beginPath();
             ctx.arc(
                 coord.x,
@@ -196,7 +197,17 @@ class Gfx {
     }
 
     clearScreen() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawRect(
+            {
+                x: 0,
+                y: 0,
+                w: this.canvas.width,
+                h: this.canvas.height,
+                color: constants.white
+            },
+            -100
+        );
     }
 }
 

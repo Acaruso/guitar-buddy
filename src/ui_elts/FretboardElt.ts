@@ -46,6 +46,20 @@ class FretboardModel {
     isToggled(row: number, col: number) {
         return this.cells[row][col].toggled;
     }
+
+    setSelected(row: number, col: number) {
+        this.selected = true;
+        this.selectedRow = row;
+        this.selectedCol = col;
+    }
+
+    isSelected(row: number, col: number) {
+        return (
+            this.selected
+            && this.selectedRow === row
+            && this.selectedCol === col
+        );
+    }
 }
 
 class FretboardElt extends BaseElt {

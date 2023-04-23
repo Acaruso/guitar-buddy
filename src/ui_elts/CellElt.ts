@@ -41,7 +41,19 @@ class CellElt extends BaseElt {
                     y: this.rect.y + (this.rect.h / 2)
                 },
                 (this.rect.h / 2) - 2
-            )
+            );
+        }
+
+        if (this.fretboardModel.isSelected(this.row, this.col)) {
+            this.gfx.drawOutlinedCircle(
+                {
+                    x: this.rect.x + (this.rect.w / 2),
+                    y: this.rect.y + (this.rect.h / 2)
+                },
+                (this.rect.h / 2) - 2,
+                1,
+                constants.darkBlue
+            );
         }
 
         if (this.outlineVisible) {
@@ -51,6 +63,7 @@ class CellElt extends BaseElt {
 
     onLeftMBDown(x: number, y: number) {
         this.fretboardModel.toggle(this.row, this.col);
+        this.fretboardModel.setSelected(this.row, this.col);
     }
 }
 
