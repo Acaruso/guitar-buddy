@@ -1,6 +1,6 @@
 import { Gfx } from "../Gfx";
 import { State } from "../State";
-import { FretboardModel } from "./FretboardModel";
+import { FretboardModel, Dir } from "./FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
@@ -107,6 +107,79 @@ class FretboardElt extends BaseElt {
         }
     }
 
+    // onKeyDown(key: string) {
+    //     if (key === "space") {
+    //         if (this.fretboardModel.selected) {
+    //             this.fretboardModel.toggle(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             );
+    //         }
+    //     }
+
+    //     // handle arrow movement
+
+    //     const shift = this.state.keyboard.shift;
+
+    //     if (key === "arrowup") {
+    //         if (
+    //             shift
+    //             && this.fretboardModel.isToggled(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             )
+    //         ) {
+    //             this.fretboardModel.moveToggleUp(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             );
+    //         }
+    //         this.fretboardModel.moveSelectedUp();
+    //     } else if (key === "arrowdown") {
+    //         if (
+    //             shift
+    //             && this.fretboardModel.isToggled(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             )
+    //         ) {
+    //             this.fretboardModel.moveToggleDown(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             );
+    //         }
+    //         this.fretboardModel.moveSelectedDown();
+    //     } else if (key === "arrowleft") {
+    //         if (
+    //             shift
+    //             && this.fretboardModel.isToggled(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             )
+    //         ) {
+    //             this.fretboardModel.moveToggleLeft(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             );
+    //         }
+    //         this.fretboardModel.moveSelectedLeft();
+    //     } else if (key === "arrowright") {
+    //         if (
+    //             shift
+    //             && this.fretboardModel.isToggled(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             )
+    //         ) {
+    //             this.fretboardModel.moveToggleRight(
+    //                 this.fretboardModel.selectedRow,
+    //                 this.fretboardModel.selectedCol
+    //             );
+    //         }
+    //         this.fretboardModel.moveSelectedRight();
+    //     }
+    // }
+
     onKeyDown(key: string) {
         if (key === "space") {
             if (this.fretboardModel.selected) {
@@ -120,63 +193,37 @@ class FretboardElt extends BaseElt {
         // handle arrow movement
 
         const shift = this.state.keyboard.shift;
+        const dir = this.keyToDir(key);
 
-        if (key === "arrowup") {
-            if (
-                shift
-                && this.fretboardModel.isToggled(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                )
-            ) {
-                this.fretboardModel.moveToggleUp(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                );
-            }
-            this.fretboardModel.moveSelectedUp();
-        } else if (key === "arrowdown") {
-            if (
-                shift
-                && this.fretboardModel.isToggled(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                )
-            ) {
-                this.fretboardModel.moveToggleDown(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                );
-            }
-            this.fretboardModel.moveSelectedDown();
-        } else if (key === "arrowleft") {
-            if (
-                shift
-                && this.fretboardModel.isToggled(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                )
-            ) {
-                this.fretboardModel.moveToggleLeft(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                );
-            }
-            this.fretboardModel.moveSelectedLeft();
-        } else if (key === "arrowright") {
-            if (
-                shift
-                && this.fretboardModel.isToggled(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                )
-            ) {
-                this.fretboardModel.moveToggleRight(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                );
-            }
-            this.fretboardModel.moveSelectedRight();
+        if (
+            shift
+            && this.fretboardModel.isToggled(
+                this.fretboardModel.selectedRow,
+                this.fretboardModel.selectedCol
+            )
+        ) {
+            this.fretboardModel.moveToggle(
+                dir,
+                this.fretboardModel.selectedRow,
+                this.fretboardModel.selectedCol
+            );
+        }
+
+        this.fretboardModel.moveSelected(dir);
+    }
+
+    keyToDir(key: string) {
+        switch (key) {
+            case "arrowup":
+                return Dir.Up;
+            case "arrowdown":
+                return Dir.Down;
+            case "arrowleft":
+                return Dir.Left;
+            case "arrowright":
+                return Dir.Right;
+            default:
+                return Dir.Up;
         }
     }
 }

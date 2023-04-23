@@ -1,5 +1,12 @@
 import { clamp, inRange } from "../util";
 
+enum Dir {
+    Up = 1,
+    Down,
+    Left,
+    Right,
+}
+
 class Cell {
     toggled: boolean = false;
 }
@@ -52,6 +59,60 @@ class FretboardModel {
         );
     }
 
+    moveSelected(dir: Dir) {
+        switch (dir) {
+            case Dir.Up:
+                this.selectedRow = clamp(this.selectedRow - 1, 0, this.numRows);
+                break;
+            case Dir.Down:
+                this.selectedRow = clamp(this.selectedRow + 1, 0, this.numRows);
+                break;
+            case Dir.Left:
+                this.selectedCol = clamp(this.selectedCol - 1, 0, this.numCols);
+                break;
+            case Dir.Right:
+                this.selectedCol = clamp(this.selectedCol + 1, 0, this.numCols);
+                break;
+        }
+    }
+
+    moveToggle(dir: Dir, row: number, col: number) {
+        switch (dir) {
+            case Dir.Up: {
+                const newRow = row - 1;
+                if (inRange(newRow, 0, this.numRows)) {
+                    this.toggle(row, col);
+                    this.toggle(newRow, col);
+                }
+                break;
+            }
+            case Dir.Down: {
+                const newRow = row + 1;
+                if (inRange(newRow, 0, this.numRows)) {
+                    this.toggle(row, col);
+                    this.toggle(newRow, col);
+                }
+                break;
+            }
+            case Dir.Left: {
+                const newCol = col - 1;
+                if (inRange(newCol, 0, this.numCols)) {
+                    this.toggle(row, col);
+                    this.toggle(row, newCol);
+                }
+                break;
+            }
+            case Dir.Right: {
+                const newCol = col + 1;
+                if (inRange(newCol, 0, this.numCols)) {
+                    this.toggle(row, col);
+                    this.toggle(row, newCol);
+                }
+                break;
+            }
+        }
+    }
+
     moveSelectedUp() {
         this.selectedRow = clamp(this.selectedRow - 1, 0, this.numRows);
     }
@@ -102,4 +163,4 @@ class FretboardModel {
 
 }
 
-export { Cell, FretboardModel };
+export { Cell, FretboardModel, Dir };
