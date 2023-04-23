@@ -1,10 +1,9 @@
+import { Gfx } from "../Gfx";
 import { BaseElt } from "./BaseElt";
 import { ToggleRectElt } from "./ToggleRectElt";
 import { LineElt } from "./LineElt";
-import { Gfx } from "../Gfx";
-import { Rect } from "../Rect";
-import { Coord } from "../Coord";
 import { constants } from "../constants";
+import { Rect } from "../Rect";
 
 class GridElt extends BaseElt{
     numRows: number;

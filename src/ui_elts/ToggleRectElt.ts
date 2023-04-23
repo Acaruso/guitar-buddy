@@ -1,7 +1,7 @@
-import { BaseElt } from "./BaseElt";
 import { Gfx } from "../Gfx";
-import { Rect } from "../Rect";
+import { BaseElt } from "./BaseElt";
 import { constants } from "../constants";
+import { Rect } from "../Rect";
 
 type OnClick = (x: number, y: number) => void;
 

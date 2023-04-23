@@ -1,5 +1,5 @@
-import { BaseElt } from "./BaseElt";
 import { Gfx } from "../Gfx";
+import { BaseElt } from "./BaseElt";
 import { Rect } from "../Rect";
 
 type OnClick = (x: number, y: number) => void;

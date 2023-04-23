@@ -1,16 +1,14 @@
-import { BaseElt } from "./ui_elts/BaseElt";
-import { isInsideRect } from "./util";
 import { Gfx } from "./Gfx";
-import { RectElt } from "./ui_elts/RectElt";
+import { BaseElt } from "./ui_elts/BaseElt";
 import { GridElt } from "./ui_elts/GridElt";
 import { constants } from "./constants";
+import { isInsideRect } from "./util";
 
 class Ui {
     gfx: Gfx;
     private rootElt: BaseElt;
     private mouseX: number = 0;
     private mouseY: number = 0;
-    private curLeftClickedElts: Array<any> = [];
 
     constructor(gfx: Gfx) {
         this.gfx = gfx;
@@ -38,10 +36,7 @@ class Ui {
     }
 
     onLeftMBDown(event: any) {
-        let q = [];
-
-        q.push(this.rootElt);
-
+        let q = [this.rootElt];
         let cur = null;
         let toLeftClick = [];
 
@@ -54,7 +49,6 @@ class Ui {
             }
 
             toLeftClick.push(cur);
-            this.curLeftClickedElts.push(cur);
 
             for (const child of cur.children) {
                 q.push(child);
@@ -66,11 +60,9 @@ class Ui {
         }
     }
 
-    onLeftMBUp(event: any) {
-        this.curLeftClickedElts = [];
-    }
+    onLeftMBUp(event: any) {}
 
-    draw() {
+    tick() {
         this.gfx.clearScreen();
 
         // recursively draw all children, grandchildren, etc.

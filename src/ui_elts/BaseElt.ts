@@ -1,5 +1,5 @@
-import { Rect } from "../Rect";
 import { Gfx } from "../Gfx";
+import { Rect } from "../Rect";
 
 class BaseElt {
     gfx: Gfx;

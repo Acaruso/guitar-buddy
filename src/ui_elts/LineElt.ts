@@ -1,5 +1,5 @@
-import { BaseElt } from "./BaseElt";
 import { Gfx } from "../Gfx";
+import { BaseElt } from "./BaseElt";
 import { Coord } from "../Coord";
 
 class LineElt extends BaseElt{

@@ -1,5 +1,5 @@
-import { Ui } from "./Ui";
 import { Gfx } from "./Gfx";
+import { Ui } from "./Ui";
 import { constants } from "./constants";
 
 class App {
@@ -19,7 +19,7 @@ class App {
     }
 
     tick() {
-        this.ui.draw();
+        this.ui.tick();
     }
 }
 
