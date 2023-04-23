@@ -50,28 +50,7 @@ class Gfx {
         this.drawLine(lowerLeft, upperLeft, z, color);
     }
 
-    drawLine(
-        beginCoord: Coord,
-        endCoord: Coord,
-        z: number = 0,
-        color: string = "#000000"
-    ) {
-        const command = (ctx: any) => {
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(beginCoord.x, beginCoord.y);
-            ctx.lineTo(endCoord.x, endCoord.y);
-            ctx.stroke();
-        };
-
-        this.push(command, z);
-    }
-
-    strokeRectHeavy(
-        rect: Rect,
-        z: number = 0
-    ) {
+    strokeRectHeavy(rect: Rect, z: number = 0) {
         const color = rect.color ? rect.color : "#000000";
 
         this.drawLineHeavy(
@@ -101,6 +80,24 @@ class Gfx {
             z,
             color
         );
+    }
+
+    drawLine(
+        beginCoord: Coord,
+        endCoord: Coord,
+        z: number = 0,
+        color: string = "#000000"
+    ) {
+        const command = (ctx: any) => {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(beginCoord.x, beginCoord.y);
+            ctx.lineTo(endCoord.x, endCoord.y);
+            ctx.stroke();
+        };
+
+        this.push(command, z);
     }
 
     drawLineHeavy(
@@ -140,6 +137,29 @@ class Gfx {
                 2 * Math.PI
             );
             ctx.fill();
+        };
+
+        this.push(command, z);
+    }
+
+    drawOutlinedCircle(
+        coord: Coord,
+        radius: number,
+        z: number = 0,
+        color: string = "#000000"
+    ) {
+        const command = (ctx: any) => {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(
+                coord.x,
+                coord.y,
+                radius,
+                0,
+                2 * Math.PI
+            );
+            ctx.stroke();
         };
 
         this.push(command, z);

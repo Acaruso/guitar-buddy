@@ -5,6 +5,9 @@ import { constants } from "../constants";
 
 type OnClick = (x: number, y: number) => void;
 
+// this actually displays a circle when toggled
+// should probably rename it
+
 class ToggleRectElt extends BaseElt{
     public onClick: OnClick;
     toggled: boolean = false;
