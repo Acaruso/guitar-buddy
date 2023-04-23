@@ -76,21 +76,6 @@ class FretboardModel {
         "D#3",  // 47
     ];
 
-    noteToStringFull(note: number) {
-        return this.notes[note];
-    }
-
-    noteToString(note: number) {
-        return this.noteToStringFull(note).replace(/[0-9]/g, "");
-    }
-
-    // "strang" === guitar string
-    // not to be confused with "string" which is a data type
-
-    strangFretToNote(strang: number, fret: number) {
-
-    }
-
     strangTuning: Array<number> = [
         24,     // high E
         19,
@@ -115,6 +100,21 @@ class FretboardModel {
                 this.cells[row].push(new Cell());
             }
         }
+    }
+
+    noteToStringFull(note: number) {
+        return this.notes[note];
+    }
+
+    noteToString(note: number) {
+        return this.noteToStringFull(note).replace(/[0-9]/g, "");
+    }
+
+    // "strang" === guitar string
+    // not to be confused with "string" which is a data type
+
+    strangFretToNote(strang: number, fret: number) {
+        return this.strangTuning[strang] + (fret + 1);
     }
 
     toggle(row: number, col: number) {
@@ -211,9 +211,34 @@ class FretboardModel {
         this.moveSelected(dir);
     }
 
-    moveNote(dir: Dir) {
-        let newRow = this.selectedRow;
-        let newCol = this.selectedCol;
+    moveNoteByOctave(dir: Dir, row: number, col: number) {
+        let newRow = row;
+        let newCol = col;
+
+        switch (dir) {
+            case Dir.Up: {
+                newCol += 12;
+                break;
+            }
+            case Dir.Down: {
+                newCol -= 12;
+                break;
+            }
+        }
+
+        if (
+            !inRange(newRow, 0, this.numRows)
+            || !inRange(newCol, 0, this.numCols)
+        ) {
+            return { row, col };
+        }
+
+        return { row: newRow, col: newCol };
+    }
+
+    moveNoteByString(dir: Dir, row: number, col: number) {
+        let newRow = row;
+        let newCol = col;
 
         switch (dir) {
             case Dir.Up: {
@@ -224,20 +249,13 @@ class FretboardModel {
                 newRow++;
                 break;
             }
-            case Dir.Left: {
-                newCol -= 12;
-                break;
-            }
-            case Dir.Right: {
-                newCol += 12;
-            }
         }
 
         if (
             !inRange(newRow, 0, this.numRows)
             || !inRange(newCol, 0, this.numCols)
         ) {
-            return;
+            return { row, col };
         }
     }
 }
