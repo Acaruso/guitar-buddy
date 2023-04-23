@@ -1,32 +1,36 @@
 import { BaseElt } from "./BaseElt";
-import { RectElt } from "./RectElt";
+import { ToggleRectElt } from "./ToggleRectElt";
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
 
 class GridElt extends BaseElt{
-    rows: number;
-    cols: number;
+    numRows: number;
+    numCols: number;
     cellW: number = 30;
     cellH: number = 30;
-    cells: Array<Array<BaseElt>>;
 
     constructor(
         gfx: Gfx,
         rect: Rect,
-        rows: number,
-        cols: number,
+        numRows: number,
+        numCols: number,
     ) {
         super(gfx, rect);
-        this.rows = rows;
-        this.cols = cols;
-        this.cells = [];
 
-        for (let row = 0; row < rows; row++) {
-            this.cells.push([]);
+        this.rect = {
+            x: rect.x,
+            y: rect.y,
+            w: this.cellW * numCols,
+            h: this.cellH * numRows
+        }
 
-            for (let col = 0; col < cols; col++) {
-                this.cells[row].push(
-                    new RectElt(
+        this.numRows = numRows;
+        this.numCols = numCols;
+
+        for (let row = 0; row < numRows; row++) {
+            for (let col = 0; col < numCols; col++) {
+                this.children.push(
+                    new ToggleRectElt(
                         this.gfx,
                         {
                             x: this.rect.x + (this.cellW * col),
@@ -36,14 +40,6 @@ class GridElt extends BaseElt{
                         }
                     )
                 )
-            }
-        }
-    }
-
-    onDraw() {
-        for (const row of this.cells) {
-            for (const cell of row) {
-                cell.onDraw();
             }
         }
     }
