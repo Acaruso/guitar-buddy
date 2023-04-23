@@ -128,21 +128,15 @@ class FretboardElt extends BaseElt {
         if (this.isArrowKey(key)) {
             const dir = this.keyToDir(key);
 
-            if (
-                this.state.keyboard.shift
-                && this.fretboardModel.isToggled(
-                    this.fretboardModel.selectedRow,
-                    this.fretboardModel.selectedCol
-                )
-            ) {
+            if (this.state.keyboard.shift) {
                 this.fretboardModel.moveToggle(
                     dir,
                     this.fretboardModel.selectedRow,
                     this.fretboardModel.selectedCol
                 );
+            } else {
+                this.fretboardModel.moveSelected(dir);
             }
-
-            this.fretboardModel.moveSelected(dir);
         }
     }
 

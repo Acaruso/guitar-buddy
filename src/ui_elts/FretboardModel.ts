@@ -20,6 +20,86 @@ class FretboardModel {
     selectedRow: number = 0;
     selectedCol: number = 0;
 
+    // low E is note 0
+
+    notes: Array<string> = [
+        "E0",   // 0
+        "F0",   // 1
+        "F#0",  // 2
+        "G0",   // 3
+        "G#0",  // 4
+        "A0",   // 5
+        "A#0",  // 6
+        "B0",   // 7
+        "C0",   // 8
+        "C#0",  // 9
+        "D0",   // 10
+        "D#0",  // 11
+
+        "E1",   // 12
+        "F1",   // 13
+        "F#1",  // 14
+        "G1",   // 15
+        "G#1",  // 16
+        "A1",   // 17
+        "A#1",  // 18
+        "B1",   // 19
+        "C1",   // 20
+        "C#1",  // 21
+        "D1",   // 22
+        "D#1",  // 23
+
+        "E2",   // 24
+        "F2",   // 25
+        "F#2",  // 26
+        "G2",   // 27
+        "G#2",  // 28
+        "A2",   // 29
+        "A#2",  // 30
+        "B2",   // 31
+        "C2",   // 32
+        "C#2",  // 33
+        "D2",   // 34
+        "D#2",  // 35
+
+        "E3",   // 36
+        "F3",   // 37
+        "F#3",  // 38
+        "G3",   // 39
+        "G#3",  // 40
+        "A3",   // 41
+        "A#3",  // 42
+        "B3",   // 43
+        "C3",   // 44
+        "C#3",  // 45
+        "D3",   // 46
+        "D#3",  // 47
+    ];
+
+    noteToStringFull(note: number) {
+        return this.notes[note];
+    }
+
+    noteToString(note: number) {
+        return this.noteToStringFull(note).replace(/[0-9]/g, "");
+    }
+
+    // "strang" === guitar string
+    // not to be confused with "string" which is a data type
+
+    strangFretToNote(strang: number, fret: number) {
+
+    }
+
+    strangTuning: Array<number> = [
+        24,     // high E
+        19,
+        15,
+        10,
+        5,
+        0       // low E
+    ];
+
     constructor(
         numRows: number,
         numCols: number
@@ -89,6 +169,10 @@ class FretboardModel {
     }
 
     moveToggle(dir: Dir, row: number, col: number) {
+        if (!this.isToggled(this.selectedRow, this.selectedCol)) {
+            return;
+        }
+
         switch (dir) {
             case Dir.Up: {
                 const newRow = row - 1;
@@ -122,6 +206,38 @@ class FretboardModel {
                 }
                 break;
             }
+        }
+
+        this.moveSelected(dir);
+    }
+
+    moveNote(dir: Dir) {
+        let newRow = this.selectedRow;
+        let newCol = this.selectedCol;
+
+        switch (dir) {
+            case Dir.Up: {
+                newRow--;
+                break;
+            }
+            case Dir.Down: {
+                newRow++;
+                break;
+            }
+            case Dir.Left: {
+                newCol -= 12;
+                break;
+            }
+            case Dir.Right: {
+                newCol += 12;
+            }
+        }
+
+        if (
+            !inRange(newRow, 0, this.numRows)
+            || !inRange(newCol, 0, this.numCols)
+        ) {
+            return;
         }
     }
 }
