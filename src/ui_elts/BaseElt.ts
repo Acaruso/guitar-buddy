@@ -12,7 +12,11 @@ class BaseElt {
         this.rect = rect;
     }
 
-    onDraw() {}
+    onDraw() {
+        for (const child of this.children) {
+            child.onDraw();
+        }
+    }
 
     onLeftMBDown(x: number, y: number) {}
 

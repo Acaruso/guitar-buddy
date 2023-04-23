@@ -2,9 +2,18 @@ import { BaseElt } from "./BaseElt";
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
 
+type OnClick = (x: number, y: number) => void;
+
 class RectElt extends BaseElt{
-    constructor(gfx: Gfx, rect: Rect) {
+    public onClick: OnClick;
+
+    constructor(
+        gfx: Gfx,
+        rect: Rect,
+        onClick: OnClick = (x: number, y: number) => {}
+    ) {
         super(gfx, rect);
+        this.onClick = onClick;
     }
 
     onDraw() {
@@ -12,8 +21,7 @@ class RectElt extends BaseElt{
     }
 
     onLeftMBDown(x: number, y: number) {
-        console.log("clicked rect");
-        console.log(this.rect);
+        this.onClick(x, y);
     }
 }
 

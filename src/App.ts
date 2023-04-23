@@ -14,6 +14,12 @@ class App {
 
         this.gfx = new Gfx();
         this.ui = new Ui(this.gfx);
+
+        setInterval(() => this.tick(), 1000 / 30);
+    }
+
+    tick() {
+        this.ui.draw();
     }
 }
 

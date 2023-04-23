@@ -29,16 +29,21 @@ class Ui {
 
         const rect1 = new RectElt(
             this.gfx,
-            { x: 10, y: 10, w: 20, h: 20 }
+            { x: 10, y: 10, w: 20, h: 20 },
+            () => { console.log("asdfsdf"); }
+        );
+
+        const rect2 = new RectElt(
+            this.gfx,
+            { x: 40, y: 40, w: 20, h: 20 },
+            () => { console.log("qqq"); }
         );
 
         this.rootElt.pushChild(rect1);
+        this.rootElt.pushChild(rect2);
     }
 
     onLeftMBDown(event: any) {
-        console.log("mouse coord:");
-        console.log(this.mouseX + " " + this.mouseY);
-
         let q = [];
 
         q.push(this.rootElt);
@@ -69,6 +74,15 @@ class Ui {
 
     onLeftMBUp(event: any) {
         this.curLeftClickedElts = [];
+    }
+
+    draw() {
+        this.gfx.clearScreen();
+
+        // recursively draws all children elts, grandchildren elts, etc.
+        this.rootElt.onDraw();
+
+        this.gfx.draw();
     }
 
     private addEventListener(type: any, callback: any, options={}) {
