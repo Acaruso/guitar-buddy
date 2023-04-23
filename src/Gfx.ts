@@ -36,7 +36,9 @@ class Gfx {
         this.push(command, z);
     }
 
-    strokeRect(rect: Rect, z: number = 0, color="#000000") {
+    strokeRect(rect: Rect, z: number = 0) {
+        const color = rect.color ? rect.color : "#000000";
+
         const upperLeft = { x: rect.x, y: rect.y };
         const upperRight = { x: rect.x + rect.w, y: rect.y };
         const lowerRight = { x: rect.x + rect.w, y: rect.y + rect.h };
@@ -68,9 +70,10 @@ class Gfx {
 
     strokeRectHeavy(
         rect: Rect,
-        z: number = 0,
-        color: string = "#000000"
+        z: number = 0
     ) {
+        const color = rect.color ? rect.color : "#000000";
+
         this.drawLineHeavy(
             { x: rect.x, y: rect.y },
             { x: rect.x + rect.w + 1, y: rect.y },

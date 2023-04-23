@@ -1,7 +1,9 @@
 import { BaseElt } from "./BaseElt";
 import { ToggleRectElt } from "./ToggleRectElt";
+import { LineElt } from "./LineElt";
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
+import { Coord } from "../Coord";
 import { constants } from "../constants";
 
 class GridElt extends BaseElt{
@@ -39,10 +41,48 @@ class GridElt extends BaseElt{
                             w: this.cellW,
                             h: this.cellH,
                             color: constants.blue,
-                        }
+                        },
+                        () => {},
+                        false
                     )
                 )
             }
+        }
+
+        // create strings
+
+        for (let i = 0; i < numRows; i++) {
+            this.children.push(
+                new LineElt(
+                    this.gfx,
+                    {
+                        x: this.rect.x,
+                        y: this.rect.y + (this.cellH * i) + (0.5 * this.cellH)
+                    },
+                    {
+                        x: this.rect.x + (this.cellW * this.numCols),
+                        y: this.rect.y + (this.cellH * i) + (0.5 * this.cellH)
+                    }
+                )
+            );
+        }
+
+        // create frets
+
+        for (let i = 0; i < numCols + 1; i++) {
+            this.children.push(
+                new LineElt(
+                    this.gfx,
+                    {
+                        x: this.rect.x + (this.cellW * i),
+                        y: this.rect.y + (0.5 * this.cellH)
+                    },
+                    {
+                        x: this.rect.x + (this.cellW * i),
+                        y: this.rect.y + (this.cellH * this.numRows) - (0.5 * this.cellH)
+                    }
+                )
+            );
         }
     }
 }
