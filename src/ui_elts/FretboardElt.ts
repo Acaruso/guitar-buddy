@@ -1,67 +1,11 @@
 import { Gfx } from "../Gfx";
 import { State } from "../State";
+import { FretboardModel } from "./FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
 import { constants } from "../constants";
 import { Rect } from "../Rect";
-
-class Cell {
-    toggled: boolean = false;
-
-    constructor() {
-
-    }
-}
-
-class FretboardModel {
-    cells: Array<Array<Cell>>;
-    numRows: number;
-    numCols: number;
-
-    selected: boolean = false;
-    selectedRow: number = 0;
-    selectedCol: number = 0;
-
-    constructor(
-        numRows: number,
-        numCols: number
-    ) {
-        this.numRows = numRows;
-        this.numCols = numCols;
-
-        this.cells = [];
-
-        for (let row = 0; row < numRows; row++) {
-            this.cells.push([]);
-            for (let col = 0; col < numCols; col++) {
-                this.cells[row].push(new Cell());
-            }
-        }
-    }
-
-    toggle(row: number, col: number) {
-        this.cells[row][col].toggled = !this.cells[row][col].toggled;
-    }
-
-    isToggled(row: number, col: number) {
-        return this.cells[row][col].toggled;
-    }
-
-    setSelected(row: number, col: number) {
-        this.selected = true;
-        this.selectedRow = row;
-        this.selectedCol = col;
-    }
-
-    isSelected(row: number, col: number) {
-        return (
-            this.selected
-            && this.selectedRow === row
-            && this.selectedCol === col
-        );
-    }
-}
 
 class FretboardElt extends BaseElt {
     state: State;
@@ -160,6 +104,18 @@ class FretboardElt extends BaseElt {
                     }
                 )
             );
+        }
+    }
+
+    onKeyDown(key: string) {
+        if (key === "arrowup") {
+            this.fretboardModel.moveSelectedUp();
+        } else if (key === "arrowdown") {
+            this.fretboardModel.moveSelectedDown();
+        } else if (key === "arrowleft") {
+            this.fretboardModel.moveSelectedLeft();
+        } else if (key === "arrowright") {
+            this.fretboardModel.moveSelectedRight();
         }
     }
 }

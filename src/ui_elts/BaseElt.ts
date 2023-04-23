@@ -20,6 +20,12 @@ class BaseElt {
 
     onLeftMBDown(x: number, y: number) {}
 
+    onKeyDown(key: string) {
+        for (const child of this.children) {
+            child.onKeyDown(key);
+        }
+    }
+
     pushChild(child: any) {
         this.children.push(child);
     }

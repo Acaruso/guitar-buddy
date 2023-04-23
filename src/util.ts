@@ -13,4 +13,15 @@ function addHandler(type: any, callback: any, options={}) {
     document.addEventListener(type, callback, options);
 }
 
-export { isInsideRect, addHandler };
+// clamp val between low inclusive and high exclusive
+function clamp(val: number, low: number, high: number) {
+    if (val < low) {
+        return low;
+    } else if (val >= high) {
+        return high - 1;
+    } else {
+        return val;
+    }
+}
+
+export { isInsideRect, addHandler, clamp };

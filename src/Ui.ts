@@ -26,10 +26,19 @@ class Ui {
 
         addHandler("keydown", (e: any) => {
             let key = e.key.toLowerCase();
+            if (
+                key === "arrowdown"
+                || key === "arrowup"
+                || key === "arrowleft"
+                || key === "arrowright"
+            ) {
+                e.preventDefault();
+            }
             if (key === " ") {
                 key = "space";
             }
             this.state.keyboard[key] = true;
+            this.onKeyDown(key);
         });
 
         addHandler("keyup", (e: any) => {
@@ -82,6 +91,10 @@ class Ui {
     }
 
     onLeftMBUp(event: any) {}
+
+    onKeyDown(key: string) {
+        this.rootElt.onKeyDown(key);
+    }
 
     tick() {
         this.gfx.clearScreen();
