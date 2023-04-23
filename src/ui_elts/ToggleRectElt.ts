@@ -30,7 +30,7 @@ class ToggleRectElt extends BaseElt{
                     x: this.rect.x + (this.rect.w / 2),
                     y: this.rect.y + (this.rect.h / 2)
                 },
-                (this.rect.w / 2) - 4
+                (this.rect.h / 2) - 2
             )
         }
 

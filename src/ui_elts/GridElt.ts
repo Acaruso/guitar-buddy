@@ -9,7 +9,7 @@ import { constants } from "../constants";
 class GridElt extends BaseElt{
     numRows: number;
     numCols: number;
-    cellW: number = 30;
+    cellW: number = 36;
     cellH: number = 30;
 
     constructor(
