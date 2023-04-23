@@ -6,7 +6,7 @@ import { constants } from "../constants";
 import { Rect } from "../Rect";
 
 class Cell {
-    on: boolean = false;
+    toggled: boolean = false;
 
     constructor() {
 
@@ -37,6 +37,14 @@ class FretboardModel {
                 this.cells[row].push(new Cell());
             }
         }
+    }
+
+    toggle(row: number, col: number) {
+        this.cells[row][col].toggled = !this.cells[row][col].toggled;
+    }
+
+    isToggled(row: number, col: number) {
+        return this.cells[row][col].toggled;
     }
 }
 
@@ -86,6 +94,8 @@ class FretboardElt extends BaseElt {
                         color: constants.blue,
                     },
                     this.fretboardModel,
+                    row,
+                    col,
                     () => {},
                     false
                 );
