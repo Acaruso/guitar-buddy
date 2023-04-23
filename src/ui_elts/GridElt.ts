@@ -2,6 +2,7 @@ import { BaseElt } from "./BaseElt";
 import { ToggleRectElt } from "./ToggleRectElt";
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
+import { constants } from "../constants";
 
 class GridElt extends BaseElt{
     numRows: number;
@@ -36,7 +37,8 @@ class GridElt extends BaseElt{
                             x: this.rect.x + (this.cellW * col),
                             y: this.rect.y + (this.cellH * row),
                             w: this.cellW,
-                            h: this.cellH
+                            h: this.cellH,
+                            color: constants.blue,
                         }
                     )
                 )

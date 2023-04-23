@@ -22,9 +22,14 @@ class ToggleRectElt extends BaseElt{
 
     onDraw() {
         if (this.toggled) {
-            let coloredRect = { ...this.rect };
-            coloredRect.color = this.activeColor;
-            this.gfx.drawRect(coloredRect, -1);
+            const r = (this.rect.w / 2);
+            this.gfx.drawFilledCircle(
+                {
+                    x: this.rect.x + r,
+                    y: this.rect.y + r
+                },
+                r
+            )
         }
 
         this.gfx.strokeRectHeavy(this.rect);
