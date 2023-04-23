@@ -1,4 +1,4 @@
-import { clamp } from "../util";
+import { clamp, inRange } from "../util";
 
 class Cell {
     toggled: boolean = false;
@@ -53,12 +53,10 @@ class FretboardModel {
     }
 
     moveSelectedUp() {
-        console.log("moveSelectedUp");
         this.selectedRow = clamp(this.selectedRow - 1, 0, this.numRows);
     }
 
     moveSelectedDown() {
-        console.log("moveSelectedDown");
         this.selectedRow = clamp(this.selectedRow + 1, 0, this.numRows);
     }
 
@@ -69,6 +67,39 @@ class FretboardModel {
     moveSelectedRight() {
         this.selectedCol = clamp(this.selectedCol + 1, 0, this.numCols);
     }
+
+    moveToggleUp(row: number, col: number) {
+        const newRow = row - 1;
+        if (inRange(newRow, 0, this.numRows)) {
+            this.toggle(row, col);      // turn off old
+            this.toggle(newRow, col);   // turn on new
+        }
+    }
+
+    moveToggleDown(row: number, col: number) {
+        const newRow = row + 1;
+        if (inRange(newRow, 0, this.numRows)) {
+            this.toggle(row, col);      // turn off old
+            this.toggle(newRow, col);   // turn on new
+        }
+    }
+
+    moveToggleLeft(row: number, col: number) {
+        const newCol = col - 1;
+        if (inRange(newCol, 0, this.numCols)) {
+            this.toggle(row, col);      // turn off old
+            this.toggle(row, newCol);   // turn on new
+        }
+    }
+
+    moveToggleRight(row: number, col: number) {
+        const newCol = col + 1;
+        if (inRange(newCol, 0, this.numCols)) {
+            this.toggle(row, col);      // turn off old
+            this.toggle(row, newCol);   // turn on new
+        }
+    }
+
 }
 
 export { Cell, FretboardModel };

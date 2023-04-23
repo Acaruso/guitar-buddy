@@ -108,13 +108,74 @@ class FretboardElt extends BaseElt {
     }
 
     onKeyDown(key: string) {
+        if (key === "space") {
+            if (this.fretboardModel.selected) {
+                this.fretboardModel.toggle(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
+        }
+
+        // handle arrow movement
+
+        const shift = this.state.keyboard.shift;
+
         if (key === "arrowup") {
+            if (
+                shift
+                && this.fretboardModel.isToggled(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                )
+            ) {
+                this.fretboardModel.moveToggleUp(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
             this.fretboardModel.moveSelectedUp();
         } else if (key === "arrowdown") {
+            if (
+                shift
+                && this.fretboardModel.isToggled(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                )
+            ) {
+                this.fretboardModel.moveToggleDown(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
             this.fretboardModel.moveSelectedDown();
         } else if (key === "arrowleft") {
+            if (
+                shift
+                && this.fretboardModel.isToggled(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                )
+            ) {
+                this.fretboardModel.moveToggleLeft(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
             this.fretboardModel.moveSelectedLeft();
         } else if (key === "arrowright") {
+            if (
+                shift
+                && this.fretboardModel.isToggled(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                )
+            ) {
+                this.fretboardModel.moveToggleRight(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
             this.fretboardModel.moveSelectedRight();
         }
     }

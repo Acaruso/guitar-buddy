@@ -24,4 +24,14 @@ function clamp(val: number, low: number, high: number) {
     }
 }
 
-export { isInsideRect, addHandler, clamp };
+function inRange(val: number, low: number, high: number) {
+    if (val < low) {
+        return false;
+    } else if (val >= high) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+export { isInsideRect, addHandler, clamp, inRange };
