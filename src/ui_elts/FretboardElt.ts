@@ -107,79 +107,6 @@ class FretboardElt extends BaseElt {
         }
     }
 
-    // onKeyDown(key: string) {
-    //     if (key === "space") {
-    //         if (this.fretboardModel.selected) {
-    //             this.fretboardModel.toggle(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             );
-    //         }
-    //     }
-
-    //     // handle arrow movement
-
-    //     const shift = this.state.keyboard.shift;
-
-    //     if (key === "arrowup") {
-    //         if (
-    //             shift
-    //             && this.fretboardModel.isToggled(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             )
-    //         ) {
-    //             this.fretboardModel.moveToggleUp(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             );
-    //         }
-    //         this.fretboardModel.moveSelectedUp();
-    //     } else if (key === "arrowdown") {
-    //         if (
-    //             shift
-    //             && this.fretboardModel.isToggled(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             )
-    //         ) {
-    //             this.fretboardModel.moveToggleDown(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             );
-    //         }
-    //         this.fretboardModel.moveSelectedDown();
-    //     } else if (key === "arrowleft") {
-    //         if (
-    //             shift
-    //             && this.fretboardModel.isToggled(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             )
-    //         ) {
-    //             this.fretboardModel.moveToggleLeft(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             );
-    //         }
-    //         this.fretboardModel.moveSelectedLeft();
-    //     } else if (key === "arrowright") {
-    //         if (
-    //             shift
-    //             && this.fretboardModel.isToggled(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             )
-    //         ) {
-    //             this.fretboardModel.moveToggleRight(
-    //                 this.fretboardModel.selectedRow,
-    //                 this.fretboardModel.selectedCol
-    //             );
-    //         }
-    //         this.fretboardModel.moveSelectedRight();
-    //     }
-    // }
-
     onKeyDown(key: string) {
         if (key === "space") {
             if (this.fretboardModel.selected) {
@@ -190,26 +117,42 @@ class FretboardElt extends BaseElt {
             }
         }
 
-        // handle arrow movement
-
-        const shift = this.state.keyboard.shift;
-        const dir = this.keyToDir(key);
-
-        if (
-            shift
-            && this.fretboardModel.isToggled(
-                this.fretboardModel.selectedRow,
-                this.fretboardModel.selectedCol
-            )
-        ) {
-            this.fretboardModel.moveToggle(
-                dir,
-                this.fretboardModel.selectedRow,
-                this.fretboardModel.selectedCol
-            );
+        if (key === "escape") {
+            this.fretboardModel.unselect();
         }
 
-        this.fretboardModel.moveSelected(dir);
+        if (key === "q" && this.state.keyboard.control) {
+            this.fretboardModel.untoggleAll();
+        }
+
+        if (this.isArrowKey(key)) {
+            const dir = this.keyToDir(key);
+
+            if (
+                this.state.keyboard.shift
+                && this.fretboardModel.isToggled(
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                )
+            ) {
+                this.fretboardModel.moveToggle(
+                    dir,
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
+
+            this.fretboardModel.moveSelected(dir);
+        }
+    }
+
+    isArrowKey(key: string) {
+        return (
+            key === "arrowup"
+            || key === "arrowdown"
+            || key === "arrowleft"
+            || key === "arrowright"
+        );
     }
 
     keyToDir(key: string) {
