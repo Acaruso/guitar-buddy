@@ -2,6 +2,7 @@ import { BaseElt } from "./ui_elts/BaseElt";
 import { isInsideRect } from "./util";
 import { Gfx } from "./Gfx";
 import { RectElt } from "./ui_elts/RectElt";
+import { GridElt } from "./ui_elts/GridElt";
 import { constants } from "./constants";
 
 class Ui {
@@ -14,33 +15,26 @@ class Ui {
     constructor(gfx: Gfx) {
         this.gfx = gfx;
 
+        this.addEventListener("mousedown", (e: any) => this.onLeftMBDown(e));
+        this.addEventListener("mouseup",   (e: any) => this.onLeftMBUp(e));
         this.addEventListener("mousemove", (e: any) => {
             this.mouseX = e.offsetX;
             this.mouseY = e.offsetY;
         });
-
-        this.addEventListener("mousedown", (e: any) => this.onLeftMBDown(e));
-        this.addEventListener("mouseup", (e: any) => this.onLeftMBUp(e));
 
         this.rootElt = new BaseElt(
             this.gfx,
             { x: 0, y: 0, w: constants.canvasWidth, h: constants.canvasHeight }
         );
 
-        const rect1 = new RectElt(
-            this.gfx,
-            { x: 10, y: 10, w: 20, h: 20 },
-            () => { console.log("asdfsdf"); }
-        );
-
-        const rect2 = new RectElt(
-            this.gfx,
-            { x: 40, y: 40, w: 20, h: 20 },
-            () => { console.log("qqq"); }
-        );
-
-        this.rootElt.pushChild(rect1);
-        this.rootElt.pushChild(rect2);
+        this.rootElt.pushChild(
+            new GridElt(
+                this.gfx,
+                { x: 10, y: 10, w: 20, h: 20 },
+                6,
+                24
+            )
+        )
     }
 
     onLeftMBDown(event: any) {
@@ -79,7 +73,7 @@ class Ui {
     draw() {
         this.gfx.clearScreen();
 
-        // recursively draws all children elts, grandchildren elts, etc.
+        // recursively draw all children, grandchildren, etc.
         this.rootElt.onDraw();
 
         this.gfx.draw();
