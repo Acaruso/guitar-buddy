@@ -1,6 +1,6 @@
 import { Gfx } from "./Gfx";
 import { BaseElt } from "./ui_elts/BaseElt";
-import { GridElt } from "./ui_elts/GridElt";
+import { FretboardElt } from "./ui_elts/FretboardElt";
 import { constants } from "./constants";
 import { isInsideRect } from "./util";
 
@@ -26,7 +26,7 @@ class Ui {
         );
 
         this.rootElt.pushChild(
-            new GridElt(
+            new FretboardElt(
                 this.gfx,
                 { x: 10, y: 10, w: 20, h: 20 },
                 6,

@@ -1,14 +1,13 @@
 import { Gfx } from "../Gfx";
 import { BaseElt } from "./BaseElt";
+import { FretboardModel } from "./FretboardElt";
 import { constants } from "../constants";
 import { Rect } from "../Rect";
 
 type OnClick = (x: number, y: number) => void;
 
-// this actually displays a circle when toggled
-// should probably rename it
-
-class ToggleRectElt extends BaseElt{
+class CellElt extends BaseElt {
+    fretboardModel: FretboardModel;
     public onClick: OnClick;
     toggled: boolean = false;
     passiveColor: string = constants.white;
@@ -18,10 +17,12 @@ class ToggleRectElt extends BaseElt{
     constructor(
         gfx: Gfx,
         rect: Rect,
+        fretboardModel: FretboardModel,
         onClick: OnClick = (x: number, y: number) => {},
         outlineVisible: boolean = true
     ) {
         super(gfx, rect);
+        this.fretboardModel = fretboardModel;
         this.onClick = onClick;
         this.outlineVisible = outlineVisible;
     }
@@ -48,4 +49,4 @@ class ToggleRectElt extends BaseElt{
     }
 }
 
-export { ToggleRectElt };
+export { CellElt };
