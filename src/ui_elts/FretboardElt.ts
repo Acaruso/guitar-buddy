@@ -125,15 +125,23 @@ class FretboardElt extends BaseElt {
             this.fretboardModel.untoggleAll();
         }
 
-        if (this.isArrowKey(key)) {
-            const dir = this.keyToDir(key);
+        if (isArrowKey(key)) {
+            const dir = arrowKeyToDir(key);
             if (this.state.keyboard.shift) {
-                if (key === "arrowleft") {
-
-                } else if (key === "arrowright") {
-
-                } else {
-                    this.fretboardModel.moveToggle(
+                this.fretboardModel.moveToggle(
+                    dir,
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            } else if (this.state.keyboard.control) {
+                if (dir === Dir.Right || dir === Dir.Left) {
+                    this.fretboardModel.moveToggleByOctave(
+                        dir,
+                        this.fretboardModel.selectedRow,
+                        this.fretboardModel.selectedCol
+                    );
+                } else if (dir === Dir.Up || dir === Dir.Down) {
+                    this.fretboardModel.moveToggleByString(
                         dir,
                         this.fretboardModel.selectedRow,
                         this.fretboardModel.selectedCol
@@ -144,29 +152,29 @@ class FretboardElt extends BaseElt {
             }
         }
     }
+}
 
-    isArrowKey(key: string) {
-        return (
-            key === "arrowup"
-            || key === "arrowdown"
-            || key === "arrowleft"
-            || key === "arrowright"
-        );
-    }
+function isArrowKey(key: string) {
+    return (
+        key === "arrowup"
+        || key === "arrowdown"
+        || key === "arrowleft"
+        || key === "arrowright"
+    );
+}
 
-    keyToDir(key: string) {
-        switch (key) {
-            case "arrowup":
-                return Dir.Up;
-            case "arrowdown":
-                return Dir.Down;
-            case "arrowleft":
-                return Dir.Left;
-            case "arrowright":
-                return Dir.Right;
-            default:
-                return Dir.Up;
-        }
+function arrowKeyToDir(key: string) {
+    switch (key) {
+        case "arrowup":
+            return Dir.Up;
+        case "arrowdown":
+            return Dir.Down;
+        case "arrowleft":
+            return Dir.Left;
+        case "arrowright":
+            return Dir.Right;
+        default:
+            return Dir.Up;
     }
 }
 

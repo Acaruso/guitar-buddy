@@ -182,20 +182,15 @@ class FretboardModel {
     }
 
     moveSelected(dir: Dir) {
-        switch (dir) {
-            case Dir.Up:
-                this.selectedRow = clamp(this.selectedRow - 1, 0, this.numRows);
-                break;
-            case Dir.Down:
-                this.selectedRow = clamp(this.selectedRow + 1, 0, this.numRows);
-                break;
-            case Dir.Left:
-                this.selectedCol = clamp(this.selectedCol - 1, 0, this.numCols);
-                break;
-            case Dir.Right:
-                this.selectedCol = clamp(this.selectedCol + 1, 0, this.numCols);
-                break;
-        }
+        const { newRow, newCol } = move(
+            dir,
+            this.selectedRow,
+            this.selectedCol,
+            this.numRows,
+            this.numCols
+        );
+
+        this.setSelected(newRow, newCol);
     }
 
     moveToggle(dir: Dir, row: number, col: number) {
@@ -203,91 +198,136 @@ class FretboardModel {
             return;
         }
 
-        switch (dir) {
-            case Dir.Up: {
-                const newRow = row - 1;
-                if (inRange(newRow, 0, this.numRows)) {
-                    this.toggle(row, col);
-                    this.toggle(newRow, col);
-                }
-                break;
-            }
-            case Dir.Down: {
-                const newRow = row + 1;
-                if (inRange(newRow, 0, this.numRows)) {
-                    this.toggle(row, col);
-                    this.toggle(newRow, col);
-                }
-                break;
-            }
-            case Dir.Left: {
-                const newCol = col - 1;
-                if (inRange(newCol, 0, this.numCols)) {
-                    this.toggle(row, col);
-                    this.toggle(row, newCol);
-                }
-                break;
-            }
-            case Dir.Right: {
-                const newCol = col + 1;
-                if (inRange(newCol, 0, this.numCols)) {
-                    this.toggle(row, col);
-                    this.toggle(row, newCol);
-                }
-                break;
-            }
+        const { newRow, newCol } = move(
+            dir,
+            row,
+            col,
+            this.numRows,
+            this.numCols
+        );
+
+        if (this.getCell(newRow, newCol).toggled) {
+            return;
         }
 
-        this.moveSelected(dir);
+        this.toggle(row, col);
+        this.toggle(newRow, newCol);
+
+        this.setSelected(newRow, newCol);
     }
 
-    moveNoteByOctave(dir: Dir, row: number, col: number) {
-        let newRow = row;
-        let newCol = col;
-
-        switch (dir) {
-            case Dir.Up: {
-                newCol += 12;
-                break;
-            }
-            case Dir.Down: {
-                newCol -= 12;
-                break;
-            }
-        }
-
+    moveToggleByOctave(dir: Dir, row: number, col: number) {
         if (
-            !inRange(newRow, 0, this.numRows)
-            || !inRange(newCol, 0, this.numCols)
+            !this.isToggled(this.selectedRow, this.selectedCol)
+            || (dir !== Dir.Left && dir !== Dir.Right)
         ) {
-            return { row, col };
+            return;
         }
 
-        return { row: newRow, col: newCol };
+        const { newRow, newCol } = move(
+            dir,
+            row,
+            col,
+            this.numRows,
+            this.numCols,
+            12
+        );
+
+        if (this.getCell(newRow, newCol).toggled) {
+            return;
+        }
+
+        this.toggle(row, col);
+        this.toggle(newRow, newCol);
+
+        this.setSelected(newRow, newCol);
     }
 
-    moveNoteByString(dir: Dir, row: number, col: number) {
-        let newRow = row;
-        let newCol = col;
-
-        switch (dir) {
-            case Dir.Up: {
-                newRow--;
-                break;
-            }
-            case Dir.Down: {
-                newRow++;
-                break;
-            }
-        }
-
+    moveToggleByString(dir: Dir, row: number, col: number) {
         if (
-            !inRange(newRow, 0, this.numRows)
-            || !inRange(newCol, 0, this.numCols)
+            !this.isToggled(this.selectedRow, this.selectedCol)
+            || (dir !== Dir.Up && dir !== Dir.Down)
         ) {
-            return { row, col };
+            return;
         }
+
+        const { newRow, newCol } = move(
+            dir,
+            row,
+            col,
+            this.numRows,
+            this.numCols
+        );
+
+        console.log(row);
+        console.log(col);
+        console.log(newRow);
+        console.log(newCol);
+
+        if (newRow === row && newCol === col) {
+            return;
+        }
+
+        let curNote = this.getCell(row, col).note;
+
+        const notePositions = this.findNotePositions(curNote, newRow);
+
+        console.log(notePositions);
+
+        const newNewCol = notePositions[0];
+
+        this.toggle(row, col);
+        this.toggle(newRow, newNewCol);
+
+        this.setSelected(newRow, newNewCol);
     }
+
+    findNotePositions(note: number, strang: number) {
+        const base = note % 12;
+        let strangNote = this.strangTuning[strang];
+        let res = [];
+
+        for (let i = 0; i < this.numCols; i++, strangNote++) {
+            if (strangNote % 12 === base) {
+                res.push(i - 1);
+            }
+        }
+
+        return res;
+    }
+}
+
+function move(
+    dir: Dir,
+    row: number,
+    col: number,
+    numRows: number,
+    numCols: number,
+    inc: number = 1
+) {
+    let newRow = row;
+    let newCol = col;
+
+    switch (dir) {
+        case Dir.Up:
+            newRow -= inc;
+            break;
+        case Dir.Down:
+            newRow += inc;
+            break;
+        case Dir.Left:
+            newCol -= inc;
+            break;
+        case Dir.Right:
+            newCol += inc;
+            break;
+    }
+
+    if (!inRange(newRow, 0, numRows) || !inRange(newCol, 0, numCols)) {
+        return { newRow: row, newCol: col };
+    }
+
+    return { newRow, newCol };
 }
 
 export { Cell, FretboardModel, Dir };
