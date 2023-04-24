@@ -130,7 +130,7 @@ class FretboardModel {
     }
 
     noteToStringFull(note: number) {
-        if (note < 0 || note >= this.notes.length) {
+        if (!inRange(note, 0, this.notes.length)) {
             console.log(`ERROR: noteToStringFull(${note}) note out of range`);
         }
         return this.notes[note];
