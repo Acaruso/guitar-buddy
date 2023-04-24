@@ -259,11 +259,6 @@ class FretboardModel {
             this.numCols
         );
 
-        console.log(row);
-        console.log(col);
-        console.log(newRow);
-        console.log(newCol);
-
         if (newRow === row && newCol === col) {
             return;
         }
@@ -271,8 +266,6 @@ class FretboardModel {
         let curNote = this.getCell(row, col).note;
 
         const notePositions = this.findNotePositions(curNote, newRow);
-
-        console.log(notePositions);
 
         const newNewCol = notePositions[0];
 
@@ -289,7 +282,7 @@ class FretboardModel {
 
         for (let i = 0; i < this.numCols; i++, strangNote++) {
             if (strangNote % 12 === base) {
-                if (i - i > 0) {
+                if ((i - 1) >= 0) {
                     res.push(i - 1);
                 }
             }
