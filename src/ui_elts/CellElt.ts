@@ -1,6 +1,7 @@
 import { Gfx } from "../Gfx";
 import { State } from "../State";
 import { BaseElt } from "./BaseElt";
+import { TextElt } from "./TextElt";
 import { FretboardModel } from "./FretboardElt";
 import { constants } from "../constants";
 import { Rect } from "../Rect";
@@ -17,6 +18,7 @@ class CellElt extends BaseElt {
     passiveColor: string = constants.white;
     activeColor: string = constants.darkBlue;
     outlineVisible: boolean;
+    textElt: TextElt;
 
     constructor(
         gfx: Gfx,
@@ -35,6 +37,23 @@ class CellElt extends BaseElt {
         this.col = col;
         this.onClick = onClick;
         this.outlineVisible = outlineVisible;
+
+        const noteString = this.fretboardModel.getCell(this.row, this.col).noteString;
+        const xOffset = (noteString.length === 1) ? 14 : 10;
+        const yOffset = 5;
+
+        this.textElt = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x + xOffset,
+                y: this.rect.y + yOffset,
+                w: 1,
+                h: 1
+            },
+            noteString,
+            constants.white,
+            3
+        );
     }
 
     onDraw() {
@@ -46,6 +65,7 @@ class CellElt extends BaseElt {
                 },
                 (this.rect.h / 2) - 2
             );
+            this.textElt.onDraw();
         }
 
         if (this.fretboardModel.isSelected(this.row, this.col)) {

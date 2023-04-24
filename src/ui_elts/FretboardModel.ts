@@ -10,9 +10,11 @@ enum Dir {
 class Cell {
     toggled: boolean = false;
     note: number;
+    noteString: string;
 
-    constructor(note: number) {
+    constructor(note: number, noteString: string) {
         this.note = note;
+        this.noteString = noteString;
     }
 }
 
@@ -79,6 +81,19 @@ class FretboardModel {
         "C#3",  // 45
         "D3",   // 46
         "D#3",  // 47
+
+        "E4",   // 48
+        "F4",   // 49
+        "F#4",  // 50
+        "G4",   // 51
+        "G#4",  // 52
+        "A4",   // 53
+        "A#4",  // 54
+        "B4",   // 55
+        "C4",   // 56
+        "C#4",  // 57
+        "D4",   // 58
+        "D#4",  // 59
     ];
 
     strangTuning: Array<number> = [
@@ -104,13 +119,20 @@ class FretboardModel {
             for (let col = 0; col < numCols; col++) {
                 const note = this.strangTuning[row] + col + 1
                 this.cells[row].push(
-                    new Cell(note)
+                    new Cell(note, this.noteToString(note))
                 );
             }
         }
     }
 
+    getCell(row: number, col: number) {
+        return this.cells[row][col];
+    }
+
     noteToStringFull(note: number) {
+        if (note < 0 || note >= this.notes.length) {
+            console.log(`ERROR: noteToStringFull(${note}) note out of range`);
+        }
         return this.notes[note];
     }
 
