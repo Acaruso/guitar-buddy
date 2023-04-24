@@ -20,7 +20,7 @@ class Gfx {
 
     drawRect(rect: Rect, z: number = 0) {
         const command = (ctx: any) => {
-            const color = rect.color ? rect.color : "#000000";
+            const color = rect.color ? rect.color : constants.black;
 
             // 0.0 == transparent, 1.0 == solid
             const alpha = rect.alpha ? rect.alpha : 1.0;
@@ -38,7 +38,7 @@ class Gfx {
     }
 
     strokeRect(rect: Rect, z: number = 0) {
-        const color = rect.color ? rect.color : "#000000";
+        const color = rect.color ? rect.color : constants.black;
 
         const upperLeft = { x: rect.x, y: rect.y };
         const upperRight = { x: rect.x + rect.w, y: rect.y };
@@ -52,7 +52,7 @@ class Gfx {
     }
 
     strokeRectHeavy(rect: Rect, z: number = 0) {
-        const color = rect.color ? rect.color : "#000000";
+        const color = rect.color ? rect.color : constants.black;
 
         this.drawLineHeavy(
             { x: rect.x, y: rect.y },
@@ -87,7 +87,7 @@ class Gfx {
         beginCoord: Coord,
         endCoord: Coord,
         z: number = 0,
-        color: string = "#000000"
+        color: string = constants.black
     ) {
         const command = (ctx: any) => {
             ctx.strokeStyle = color;
@@ -105,7 +105,7 @@ class Gfx {
         beginCoord: Coord,
         endCoord: Coord,
         z: number = 0,
-        color: string = "#000000"
+        color: string = constants.black
     ) {
         const command = (ctx: any) => {
             ctx.strokeStyle = color;
@@ -123,7 +123,7 @@ class Gfx {
         coord: Coord,
         radius: number,
         z: number = 0,
-        color: string = "#000000"
+        color: string = constants.black
     ) {
         const command = (ctx: any) => {
             ctx.strokeStyle = color;
@@ -147,7 +147,7 @@ class Gfx {
         coord: Coord,
         radius: number,
         z: number = 0,
-        color: string = "#000000"
+        color: string = constants.black
     ) {
         const command = (ctx: any) => {
             ctx.strokeStyle = color;
@@ -166,10 +166,16 @@ class Gfx {
         this.push(command, z);
     }
 
-    drawText(text: string, size: number, coord: Coord, z: number = 0) {
+    drawText(
+        text: string,
+        size: number,
+        coord: Coord,
+        color: string = constants.black,
+        z: number = 0
+    ) {
         const command = (ctx: any) => {
             ctx.font = `${size}px ${textConstants.textStyle}`;
-            ctx.fillStyle = "#000000";
+            ctx.fillStyle = color;
 
             // coord for fillText(text, coord) is *bottom* left side of text
             // however, our coord is for *top* left side of text

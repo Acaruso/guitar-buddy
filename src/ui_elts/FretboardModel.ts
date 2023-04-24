@@ -9,6 +9,11 @@ enum Dir {
 
 class Cell {
     toggled: boolean = false;
+    note: number;
+
+    constructor(note: number) {
+        this.note = note;
+    }
 }
 
 class FretboardModel {
@@ -97,7 +102,10 @@ class FretboardModel {
         for (let row = 0; row < numRows; row++) {
             this.cells.push([]);
             for (let col = 0; col < numCols; col++) {
-                this.cells[row].push(new Cell());
+                const note = this.strangTuning[row] + col + 1
+                this.cells[row].push(
+                    new Cell(note)
+                );
             }
         }
     }

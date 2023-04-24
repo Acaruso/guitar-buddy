@@ -3,6 +3,7 @@ const constants = {
     canvasHeight: 1000,
 
     white: "#FFFFFF",
+    black: "#000000",
     yellow: "#FFE6CC",
     blue: "#DAE8FC",
     darkBlue: "#BDCDFF",
