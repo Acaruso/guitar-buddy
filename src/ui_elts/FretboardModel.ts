@@ -289,7 +289,9 @@ class FretboardModel {
 
         for (let i = 0; i < this.numCols; i++, strangNote++) {
             if (strangNote % 12 === base) {
-                res.push(i - 1);
+                if (i - i > 0) {
+                    res.push(i - 1);
+                }
             }
         }
 
