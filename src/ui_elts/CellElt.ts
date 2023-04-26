@@ -63,7 +63,9 @@ class CellElt extends BaseElt {
                     x: this.rect.x + (this.rect.w / 2),
                     y: this.rect.y + (this.rect.h / 2)
                 },
-                (this.rect.h / 2) - 2
+                (this.rect.h / 2) - 2,
+                0,
+                this.fretboardModel.getColor(this.row, this.col)
             );
             this.textElt.onDraw();
         }

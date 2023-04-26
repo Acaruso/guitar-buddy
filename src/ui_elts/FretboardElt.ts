@@ -130,9 +130,44 @@ class FretboardElt extends BaseElt {
         }
 
         if (key === "g") {
-            console.log("set mode global");
             this.fretboardModel.setMode(Mode.Global);
         }
+
+        // colors ///////////////////////////////////////////////////
+
+        if (key === "1") {
+            this.fretboardModel.setColor(
+                constants.black,
+                this.fretboardModel.selectedRow,
+                this.fretboardModel.selectedCol
+            );
+        }
+
+        if (key === "2") {
+            this.fretboardModel.setColor(
+                constants.blue,
+                this.fretboardModel.selectedRow,
+                this.fretboardModel.selectedCol
+            );
+        }
+
+        if (key === "3") {
+            this.fretboardModel.setColor(
+                constants.green,
+                this.fretboardModel.selectedRow,
+                this.fretboardModel.selectedCol
+            );
+        }
+
+        if (key === "4") {
+            this.fretboardModel.setColor(
+                constants.red,
+                this.fretboardModel.selectedRow,
+                this.fretboardModel.selectedCol
+            );
+        }
+
+        /////////////////////////////////////////////////////////////
 
         if (isArrowKey(key)) {
             const dir = arrowKeyToDir(key);

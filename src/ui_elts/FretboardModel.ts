@@ -164,15 +164,12 @@ class FretboardModel {
         if (this.mode === Mode.Local) {
             this.cells[row][col].toggled = !this.cells[row][col].toggled;
         } else if (this.mode === Mode.Global) {
-            const old = this.cells[row][col];
-            const oldCopy = { ...old };
-            const base = old.note % 12;
+            const base = this.cells[row][col].note % 12;
 
-            for (let row_ = 0; row_ < this.numRows; row_++) {
-                for (let col_ = 0; col_ < this.numCols; col_++) {
-                    let cur = this.cells[row_][col_];
-                    if (cur.note % 12 === base) {
-                        cur.toggled = !cur.toggled;
+            for (const row of this.cells) {
+                for (let cell of row) {
+                    if (cell.note % 12 === base) {
+                        cell.toggled = !cell.toggled;
                     }
                 }
             }
@@ -207,6 +204,26 @@ class FretboardModel {
                 cell.toggled = false;
             }
         }
+    }
+
+    setColor(color: string, row: number, col: number) {
+        if (this.mode === Mode.Local) {
+            this.cells[row][col].color = color;
+        } else if (this.mode === Mode.Global) {
+            const base = this.cells[row][col].note % 12;
+
+            for (const row of this.cells) {
+                for (let cell of row) {
+                    if (cell.note % 12 === base) {
+                        cell.color = color;
+                    }
+                }
+            }
+        }
+    }
+
+    getColor(row: number, col: number) {
+        return this.cells[row][col].color;
     }
 
     moveSelected(dir: Dir) {
