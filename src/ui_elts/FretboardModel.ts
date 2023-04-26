@@ -163,6 +163,9 @@ class FretboardModel {
     setToggle(row: number, col: number) {
         if (this.mode === Mode.Local) {
             this.setToggleLocal(row, col);
+            if (!this.isToggled(row, col)) {
+                this.setColorLocal(constants.black, row, col);
+            }
         } else if (this.mode === Mode.Global) {
             this.setToggleGlobal(row, col);
             if (!this.isToggled(row, col)) {

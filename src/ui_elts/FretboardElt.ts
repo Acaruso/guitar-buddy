@@ -174,7 +174,6 @@ class FretboardElt extends BaseElt {
         // local and global mode ////////////////////////////////////
 
         if (key === "l") {
-            console.log("set mode local");
             this.fretboardModel.setMode(Mode.Local);
         }
 
@@ -186,7 +185,7 @@ class FretboardElt extends BaseElt {
 
         if (key === "1") {
             this.fretboardModel.setColor(
-                constants.black,
+                constants.red,
                 this.fretboardModel.selectedRow,
                 this.fretboardModel.selectedCol
             );
@@ -194,7 +193,7 @@ class FretboardElt extends BaseElt {
 
         if (key === "2") {
             this.fretboardModel.setColor(
-                constants.blue,
+                constants.green,
                 this.fretboardModel.selectedRow,
                 this.fretboardModel.selectedCol
             );
@@ -202,15 +201,15 @@ class FretboardElt extends BaseElt {
 
         if (key === "3") {
             this.fretboardModel.setColor(
-                constants.green,
+                constants.blue,
                 this.fretboardModel.selectedRow,
                 this.fretboardModel.selectedCol
             );
         }
 
-        if (key === "4") {
+        if (key === "0") {
             this.fretboardModel.setColor(
-                constants.red,
+                constants.black,
                 this.fretboardModel.selectedRow,
                 this.fretboardModel.selectedCol
             );
