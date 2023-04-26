@@ -105,7 +105,10 @@ class FretboardModel {
         "D#4",  // 59
     ];
 
-    strangTuning: Array<number> = [
+    // "strang" === guitar string
+    // not to be confused with "string" which is a data type
+
+    strangs: Array<number> = [
         24,     // high E
         19,
         15,
@@ -126,7 +129,7 @@ class FretboardModel {
         for (let row = 0; row < numRows; row++) {
             this.cells.push([]);
             for (let col = 0; col < numCols; col++) {
-                const note = this.strangTuning[row] + col + 1
+                const note = this.strangs[row] + col + 1
                 this.cells[row].push(
                     new Cell(note, this.noteToString(note))
                 );
@@ -153,11 +156,8 @@ class FretboardModel {
         return this.noteToStringFull(note).replace(/[0-9]/g, "");
     }
 
-    // "strang" === guitar string
-    // not to be confused with "string" which is a data type
-
     strangFretToNote(strang: number, fret: number) {
-        return this.strangTuning[strang] + (fret + 1);
+        return this.strangs[strang] + (fret + 1);
     }
 
     setToggle(row: number, col: number) {
@@ -183,36 +183,6 @@ class FretboardModel {
                 if (cell.note % 12 === base) {
                     cell.toggled = !cell.toggled;
                 }
-            }
-        }
-    }
-
-    isToggled(row: number, col: number) {
-        return this.cells[row][col].toggled;
-    }
-
-    setSelected(row: number, col: number) {
-        this.selected = true;
-        this.selectedRow = row;
-        this.selectedCol = col;
-    }
-
-    isSelected(row: number, col: number) {
-        return (
-            this.selected
-            && this.selectedRow === row
-            && this.selectedCol === col
-        );
-    }
-
-    unselect() {
-        this.selected = false;
-    }
-
-    untoggleAll() {
-        for (const row of this.cells) {
-            for (const cell of row) {
-                cell.toggled = false;
             }
         }
     }
@@ -243,6 +213,36 @@ class FretboardModel {
 
     getColor(row: number, col: number) {
         return this.cells[row][col].color;
+    }
+
+    isToggled(row: number, col: number) {
+        return this.cells[row][col].toggled;
+    }
+
+    untoggleAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.toggled = false;
+            }
+        }
+    }
+
+    setSelected(row: number, col: number) {
+        this.selected = true;
+        this.selectedRow = row;
+        this.selectedCol = col;
+    }
+
+    isSelected(row: number, col: number) {
+        return (
+            this.selected
+            && this.selectedRow === row
+            && this.selectedCol === col
+        );
+    }
+
+    unselect() {
+        this.selected = false;
     }
 
     moveSelected(dir: Dir) {
@@ -341,7 +341,7 @@ class FretboardModel {
 
     findNotePositions(note: number, strang: number) {
         const base = note % 12;
-        let strangNote = this.strangTuning[strang];
+        let strangNote = this.strangs[strang];
         let res = [];
 
         for (let i = 0; i < this.numCols; i++, strangNote++) {

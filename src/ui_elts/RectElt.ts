@@ -4,7 +4,7 @@ import { Rect } from "../Rect";
 
 type OnClick = (x: number, y: number) => void;
 
-class RectElt extends BaseElt{
+class RectElt extends BaseElt {
     public onClick: OnClick;
 
     constructor(

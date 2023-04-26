@@ -4,7 +4,7 @@ import { Rect } from "../Rect";
 import { constants } from "../constants";
 import { textConstants } from "../textConstants";
 
-class TextElt extends BaseElt{
+class TextElt extends BaseElt {
     text: string;
     color: string;
     z: number;

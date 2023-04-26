@@ -57,7 +57,7 @@ class Ui {
         this.rootElt.pushChild(
             new FretboardElt(
                 this.gfx,
-                { x: 10, y: 10, w: 20, h: 20 },
+                { x: 20, y: 30, w: 20, h: 20 },
                 this.state,
                 6,
                 24

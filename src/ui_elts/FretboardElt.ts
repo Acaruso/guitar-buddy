@@ -4,15 +4,18 @@ import { FretboardModel, Dir, Mode } from "./FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
+import { SingleDotElt } from "./SingleDotElt";
 import { constants } from "../constants";
 import { Rect } from "../Rect";
 
 class FretboardElt extends BaseElt {
     state: State;
+    topPadding: number = 20;
+    fretboardX: number;
+    fretboardY: number;
     numRows: number;
     numCols: number;
     cellW: number = 36;
-    // cellW: number = 40;
     cellH: number = 30;
     cells: Array<Array<BaseElt>>;
     fretboardModel: FretboardModel;
@@ -30,8 +33,11 @@ class FretboardElt extends BaseElt {
             x: rect.x,
             y: rect.y,
             w: this.cellW * numCols,
-            h: this.cellH * numRows
-        }
+            h: this.cellH * numRows + this.topPadding,
+        };
+
+        this.fretboardX = this.rect.x;
+        this.fretboardY = this.rect.y + this.topPadding;
 
         this.state = state;
 
@@ -51,10 +57,11 @@ class FretboardElt extends BaseElt {
                 const newCell = new CellElt(
                     this.gfx,
                     {
-                        x: this.rect.x + (this.cellW * col),
-                        y: this.rect.y + (this.cellH * row),
+                        x: this.fretboardX + (this.cellW * col),
+                        y: this.fretboardY + (this.cellH * row),
                         w: this.cellW,
                         h: this.cellH,
+                        color: constants.darkBlue,
                     },
                     this.state,
                     this.fretboardModel,
@@ -77,12 +84,12 @@ class FretboardElt extends BaseElt {
                 new LineElt(
                     this.gfx,
                     {
-                        x: this.rect.x,
-                        y: this.rect.y + (this.cellH * i) + (0.5 * this.cellH)
+                        x: this.fretboardX,
+                        y: this.fretboardY + (this.cellH * i) + (0.5 * this.cellH)
                     },
                     {
-                        x: this.rect.x + (this.cellW * this.numCols),
-                        y: this.rect.y + (this.cellH * i) + (0.5 * this.cellH)
+                        x: this.fretboardX + (this.cellW * this.numCols),
+                        y: this.fretboardY + (this.cellH * i) + (0.5 * this.cellH)
                     }
                 )
             );
@@ -95,15 +102,39 @@ class FretboardElt extends BaseElt {
                 new LineElt(
                     this.gfx,
                     {
-                        x: this.rect.x + (this.cellW * i),
-                        y: this.rect.y + (0.5 * this.cellH)
+                        x: this.fretboardX + (this.cellW * i),
+                        y: this.fretboardY + (0.5 * this.cellH)
                     },
                     {
-                        x: this.rect.x + (this.cellW * i),
-                        y: this.rect.y + (this.cellH * this.numRows) - (0.5 * this.cellH)
+                        x: this.fretboardX + (this.cellW * i),
+                        y: this.fretboardY + (this.cellH * this.numRows) - (0.5 * this.cellH)
                     }
                 )
             );
+        }
+
+        // create fretboard dots
+
+        // todo: replace 12 w/ double dot
+        const singleDotPositions = [2, 4, 6, 8, 11, 14, 16, 18, 20];
+
+        const dotRectW = this.cellW;
+        const dotRectH = this.fretboardY - this.rect.y;
+
+        for (let col = 0; col < numCols; col++) {
+            if (singleDotPositions.includes(col)) {
+                this.children.push(
+                    new SingleDotElt(
+                        this.gfx,
+                        {
+                            x: this.rect.x + (dotRectW * col),
+                            y: this.rect.y,
+                            w: dotRectW,
+                            h: dotRectH
+                        }
+                    )
+                );
+            }
         }
     }
 
@@ -124,6 +155,8 @@ class FretboardElt extends BaseElt {
         if (key === "q" && this.state.keyboard.control) {
             this.fretboardModel.untoggleAll();
         }
+
+        // local and global mode ////////////////////////////////////
 
         if (key === "l") {
             console.log("set mode local");
