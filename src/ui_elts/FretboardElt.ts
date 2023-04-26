@@ -5,6 +5,7 @@ import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
 import { SingleDotElt } from "./SingleDotElt";
+import { DoubleDotElt } from "./DoubleDotElt";
 import { constants } from "../constants";
 import { Rect } from "../Rect";
 
@@ -115,8 +116,8 @@ class FretboardElt extends BaseElt {
 
         // create fretboard dots
 
-        // todo: replace 12 w/ double dot
-        const singleDotPositions = [2, 4, 6, 8, 11, 14, 16, 18, 20];
+        const singleDotPositions = [2, 4, 6, 8, 14, 16, 18, 20];
+        const doubleDotPosition = 11;
 
         const dotRectW = this.cellW;
         const dotRectH = this.fretboardY - this.rect.y;
@@ -125,6 +126,20 @@ class FretboardElt extends BaseElt {
             if (singleDotPositions.includes(col)) {
                 this.children.push(
                     new SingleDotElt(
+                        this.gfx,
+                        {
+                            x: this.rect.x + (dotRectW * col),
+                            y: this.rect.y,
+                            w: dotRectW,
+                            h: dotRectH
+                        }
+                    )
+                );
+            }
+
+            if (col === doubleDotPosition) {
+                this.children.push(
+                    new DoubleDotElt(
                         this.gfx,
                         {
                             x: this.rect.x + (dotRectW * col),
