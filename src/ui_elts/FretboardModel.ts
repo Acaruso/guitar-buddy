@@ -160,17 +160,28 @@ class FretboardModel {
         return this.strangTuning[strang] + (fret + 1);
     }
 
-    toggle(row: number, col: number) {
+    setToggle(row: number, col: number) {
         if (this.mode === Mode.Local) {
-            this.cells[row][col].toggled = !this.cells[row][col].toggled;
+            this.setToggleLocal(row, col);
         } else if (this.mode === Mode.Global) {
-            const base = this.cells[row][col].note % 12;
+            this.setToggleGlobal(row, col);
+            if (!this.isToggled(row, col)) {
+                this.setColorGlobal(constants.black, row, col);
+            }
+        }
+    }
 
-            for (const row of this.cells) {
-                for (let cell of row) {
-                    if (cell.note % 12 === base) {
-                        cell.toggled = !cell.toggled;
-                    }
+    setToggleLocal(row: number, col: number) {
+        this.cells[row][col].toggled = !this.cells[row][col].toggled;
+    }
+
+    setToggleGlobal(row: number, col: number) {
+        const base = this.cells[row][col].note % 12;
+
+        for (const row of this.cells) {
+            for (let cell of row) {
+                if (cell.note % 12 === base) {
+                    cell.toggled = !cell.toggled;
                 }
             }
         }
@@ -208,15 +219,23 @@ class FretboardModel {
 
     setColor(color: string, row: number, col: number) {
         if (this.mode === Mode.Local) {
-            this.cells[row][col].color = color;
+            this.setColorLocal(color, row, col);
         } else if (this.mode === Mode.Global) {
-            const base = this.cells[row][col].note % 12;
+            this.setColorGlobal(color, row, col);
+        }
+    }
 
-            for (const row of this.cells) {
-                for (let cell of row) {
-                    if (cell.note % 12 === base) {
-                        cell.color = color;
-                    }
+    setColorLocal(color: string, row: number, col: number) {
+        this.cells[row][col].color = color;
+    }
+
+    setColorGlobal(color: string, row: number, col: number) {
+        const base = this.cells[row][col].note % 12;
+
+        for (const row of this.cells) {
+            for (let cell of row) {
+                if (cell.note % 12 === base) {
+                    cell.color = color;
                 }
             }
         }
@@ -255,8 +274,8 @@ class FretboardModel {
             return;
         }
 
-        this.toggle(row, col);
-        this.toggle(newRow, newCol);
+        this.setToggle(row, col);
+        this.setToggle(newRow, newCol);
 
         this.setSelected(newRow, newCol);
     }
@@ -282,8 +301,8 @@ class FretboardModel {
             return;
         }
 
-        this.toggle(row, col);
-        this.toggle(newRow, newCol);
+        this.setToggle(row, col);
+        this.setToggle(newRow, newCol);
 
         this.setSelected(newRow, newCol);
     }
@@ -314,8 +333,8 @@ class FretboardModel {
 
         const newNewCol = notePositions[0];
 
-        this.toggle(row, col);
-        this.toggle(newRow, newNewCol);
+        this.setToggle(row, col);
+        this.setToggle(newRow, newNewCol);
 
         this.setSelected(newRow, newNewCol);
     }

@@ -89,7 +89,7 @@ class CellElt extends BaseElt {
 
     onLeftMBDown(x: number, y: number) {
         if (!this.state.keyboard.shift) {
-            this.fretboardModel.toggle(this.row, this.col);
+            this.fretboardModel.setToggle(this.row, this.col);
         }
         this.fretboardModel.setSelected(this.row, this.col);
     }

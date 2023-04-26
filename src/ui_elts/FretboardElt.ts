@@ -12,6 +12,7 @@ class FretboardElt extends BaseElt {
     numRows: number;
     numCols: number;
     cellW: number = 36;
+    // cellW: number = 40;
     cellH: number = 30;
     cells: Array<Array<BaseElt>>;
     fretboardModel: FretboardModel;
@@ -109,7 +110,7 @@ class FretboardElt extends BaseElt {
     onKeyDown(key: string) {
         if (key === "space") {
             if (this.fretboardModel.selected) {
-                this.fretboardModel.toggle(
+                this.fretboardModel.setToggle(
                     this.fretboardModel.selectedRow,
                     this.fretboardModel.selectedCol
                 );
