@@ -1,4 +1,5 @@
 import { clamp, inRange } from "../util";
+import { constants } from "../constants";
 
 enum Dir {
     Up = 1,
@@ -7,10 +8,16 @@ enum Dir {
     Right,
 }
 
+enum Mode {
+    Local = 1,
+    Global,
+}
+
 class Cell {
     toggled: boolean = false;
     note: number;
     noteString: string;
+    color: string = constants.black;
 
     constructor(note: number, noteString: string) {
         this.note = note;
@@ -26,6 +33,8 @@ class FretboardModel {
     selected: boolean = false;
     selectedRow: number = 0;
     selectedCol: number = 0;
+
+    mode: Mode = Mode.Local;
 
     // low E is note 0
 
@@ -125,6 +134,10 @@ class FretboardModel {
         }
     }
 
+    setMode(newMode: Mode) {
+        this.mode = newMode;
+    }
+
     getCell(row: number, col: number) {
         return this.cells[row][col];
     }
@@ -148,7 +161,22 @@ class FretboardModel {
     }
 
     toggle(row: number, col: number) {
-        this.cells[row][col].toggled = !this.cells[row][col].toggled;
+        if (this.mode === Mode.Local) {
+            this.cells[row][col].toggled = !this.cells[row][col].toggled;
+        } else if (this.mode === Mode.Global) {
+            const old = this.cells[row][col];
+            const oldCopy = { ...old };
+            const base = old.note % 12;
+
+            for (let row_ = 0; row_ < this.numRows; row_++) {
+                for (let col_ = 0; col_ < this.numCols; col_++) {
+                    let cur = this.cells[row_][col_];
+                    if (cur.note % 12 === base) {
+                        cur.toggled = !cur.toggled;
+                    }
+                }
+            }
+        }
     }
 
     isToggled(row: number, col: number) {
@@ -325,4 +353,4 @@ function move(
     return { newRow, newCol };
 }
 
-export { Cell, FretboardModel, Dir };
+export { Cell, FretboardModel, Dir, Mode };

@@ -1,6 +1,6 @@
 import { Gfx } from "../Gfx";
 import { State } from "../State";
-import { FretboardModel, Dir } from "./FretboardModel";
+import { FretboardModel, Dir, Mode } from "./FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
@@ -54,7 +54,6 @@ class FretboardElt extends BaseElt {
                         y: this.rect.y + (this.cellH * row),
                         w: this.cellW,
                         h: this.cellH,
-                        color: constants.blue,
                     },
                     this.state,
                     this.fretboardModel,
@@ -123,6 +122,16 @@ class FretboardElt extends BaseElt {
 
         if (key === "q" && this.state.keyboard.control) {
             this.fretboardModel.untoggleAll();
+        }
+
+        if (key === "l") {
+            console.log("set mode local");
+            this.fretboardModel.setMode(Mode.Local);
+        }
+
+        if (key === "g") {
+            console.log("set mode global");
+            this.fretboardModel.setMode(Mode.Global);
         }
 
         if (isArrowKey(key)) {

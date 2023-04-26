@@ -4,12 +4,10 @@ const constants = {
 
     white: "#FFFFFF",
     black: "#000000",
-    yellow: "#FFE6CC",
-    blue: "#DAE8FC",
-    darkBlue: "#BDCDFF",
-    green: "#D5E8D4",
-    red: "#F8CECC",
-    gray: "#F5F5F5",
+    darkBlue: "#BDCDFF",    // this is used to highlight the currently selected note
+    red: "#FF0000",
+    green: "#008000",
+    blue: "#0000FF",
 };
 
 export { constants };
