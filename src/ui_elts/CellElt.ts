@@ -57,7 +57,9 @@ class CellElt extends BaseElt {
     }
 
     onDraw() {
-        if (this.fretboardModel.isToggled(this.row, this.col)) {
+        const cell = this.fretboardModel.getCell(this.row, this.col);
+
+        if (cell.toggled) {
             this.gfx.drawFilledCircle(
                 {
                     x: this.rect.x + (this.rect.w / 2),
@@ -65,9 +67,23 @@ class CellElt extends BaseElt {
                 },
                 (this.rect.h / 2) - 2,
                 0,
-                this.fretboardModel.getColor(this.row, this.col)
+                cell.color
             );
+
             this.textElt.onDraw();
+
+            if (cell.ring) {
+                this.gfx.drawOutlinedCircle(
+                    {
+                        x: this.rect.x + (this.rect.w / 2),
+                        y: this.rect.y + (this.rect.h / 2)
+                    },
+                    (this.rect.h / 2) - 5,                      // radius
+                    2,                                          // line width
+                    3,                                          // z
+                    constants.white                             // color
+                );
+            }
         }
 
         if (this.fretboardModel.isSelected(this.row, this.col)) {
@@ -76,12 +92,14 @@ class CellElt extends BaseElt {
                     x: this.rect.x + (this.rect.w / 2),
                     y: this.rect.y + (this.rect.h / 2)
                 },
-                (this.rect.h / 2) - 2,
-                1,
-                constants.darkBlue
+                (this.rect.h / 2) - 2,                          // radius
+                4,                                              // line width
+                1,                                              // z
+                constants.darkBlue                              // color
             );
         }
 
+        // this is only for debugging:
         if (this.outlineVisible) {
             this.gfx.strokeRectHeavy(this.rect);
         }

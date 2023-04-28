@@ -18,6 +18,7 @@ class Cell {
     note: number;
     noteString: string;
     color: string = constants.black;
+    ring: boolean = false;
 
     constructor(note: number, noteString: string) {
         this.note = note;
@@ -190,6 +191,18 @@ class FretboardModel {
         }
     }
 
+    isToggled(row: number, col: number) {
+        return this.cells[row][col].toggled;
+    }
+
+    untoggleAll() {
+        for (const row of this.cells) {
+            for (const cell of row) {
+                cell.toggled = false;
+            }
+        }
+    }
+
     setColor(color: string, row: number, col: number) {
         if (this.mode === Mode.Local) {
             this.setColorLocal(color, row, col);
@@ -218,14 +231,29 @@ class FretboardModel {
         return this.cells[row][col].color;
     }
 
-    isToggled(row: number, col: number) {
-        return this.cells[row][col].toggled;
+    setRing(row: number, col: number) {
+        if (this.mode === Mode.Local) {
+            this.setRingLocal(row, col);
+        } else if (this.mode === Mode.Global) {
+            this.setRingGlobal(row, col);
+        }
     }
 
-    untoggleAll() {
+    setRingLocal(row: number, col: number) {
+        const curCell = this.cells[row][col];
+        curCell.ring = !curCell.ring;
+    }
+
+    setRingGlobal(row: number, col: number) {
+        const curCell = this.cells[row][col];
+        const baseNote = curCell.note % 12;
+        const newRing = !curCell.ring;
+
         for (const row of this.cells) {
-            for (const cell of row) {
-                cell.toggled = false;
+            for (let cell of row) {
+                if (cell.note % 12 === baseNote) {
+                    cell.ring = newRing;
+                }
             }
         }
     }

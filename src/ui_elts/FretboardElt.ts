@@ -217,6 +217,13 @@ class FretboardElt extends BaseElt {
 
         /////////////////////////////////////////////////////////////
 
+        if (key === "r") {
+            this.fretboardModel.setRing(
+                this.fretboardModel.selectedRow,
+                this.fretboardModel.selectedCol
+            );
+        }
+
         if (isArrowKey(key)) {
             const dir = arrowKeyToDir(key);
             if (this.state.keyboard.shift) {

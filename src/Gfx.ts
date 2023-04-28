@@ -146,12 +146,13 @@ class Gfx {
     drawOutlinedCircle(
         coord: Coord,
         radius: number,
+        lineWidth: number,
         z: number = 0,
         color: string = constants.black
     ) {
         const command = (ctx: any) => {
             ctx.strokeStyle = color;
-            ctx.lineWidth = 4;
+            ctx.lineWidth = lineWidth;
             ctx.beginPath();
             ctx.arc(
                 coord.x,
