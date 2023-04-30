@@ -16,7 +16,7 @@ class CellElt extends BaseElt {
     public onClick: OnClick;
     toggled: boolean = false;
     passiveColor: string = constants.white;
-    activeColor: string = constants.darkBlue;
+    activeColor: string = constants.lightBlue;
     outlineVisible: boolean;
     textElt: TextElt;
 
@@ -86,6 +86,19 @@ class CellElt extends BaseElt {
             }
         }
 
+        if (this.fretboardModel.isSecondaryCursor(this.row, this.col)) {
+            this.gfx.drawOutlinedCircle(
+                {
+                    x: this.rect.x + (this.rect.w / 2),
+                    y: this.rect.y + (this.rect.h / 2)
+                },
+                (this.rect.h / 2) - 2,                          // radius
+                4,                                              // line width
+                1,                                              // z
+                constants.lightGreen                            // color
+            );
+        }
+
         if (this.fretboardModel.isSelected(this.row, this.col)) {
             this.gfx.drawOutlinedCircle(
                 {
@@ -95,7 +108,7 @@ class CellElt extends BaseElt {
                 (this.rect.h / 2) - 2,                          // radius
                 4,                                              // line width
                 1,                                              // z
-                constants.darkBlue                              // color
+                constants.lightBlue                              // color
             );
         }
 
@@ -106,10 +119,14 @@ class CellElt extends BaseElt {
     }
 
     onLeftMBDown(x: number, y: number) {
-        if (!this.state.keyboard.shift) {
-            this.fretboardModel.setToggle(this.row, this.col);
+        if (this.state.keyboard.control) {
+            this.fretboardModel.setSecondaryCursor(this.row, this.col);
+        } else {
+            if (!this.state.keyboard.shift) {
+                this.fretboardModel.setToggle(this.row, this.col);
+            }
+            this.fretboardModel.setSelected(this.row, this.col);
         }
-        this.fretboardModel.setSelected(this.row, this.col);
     }
 }
 

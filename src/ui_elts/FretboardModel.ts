@@ -35,6 +35,11 @@ class FretboardModel {
     selectedRow: number = 0;
     selectedCol: number = 0;
 
+    secondaryCursor: boolean = false;
+    secondaryCursorRow: number = 0;
+    secondaryCursorCol: number = 0;
+    secondaryToPrimaryInterval: number = 0;
+
     mode: Mode = Mode.Local;
 
     // low E is note 0
@@ -138,8 +143,8 @@ class FretboardModel {
         }
     }
 
-    setMode(newMode: Mode) {
-        this.mode = newMode;
+    setMode(mode: Mode) {
+        this.mode = mode;
     }
 
     getCell(row: number, col: number) {
@@ -166,6 +171,13 @@ class FretboardModel {
             this.setToggleLocal(row, col);
             if (!this.isToggled(row, col)) {
                 this.setColorLocal(constants.black, row, col);
+            }
+
+            if (this.secondaryCursor) {
+                this.setToggleLocal(this.secondaryCursorRow, this.secondaryCursorCol);
+                if (!this.isToggled(this.secondaryCursorRow, this.secondaryCursorCol)) {
+                    this.setColorLocal(constants.black, this.secondaryCursorRow, this.secondaryCursorCol);
+                }
             }
         } else if (this.mode === Mode.Global) {
             this.setToggleGlobal(row, col);
@@ -202,6 +214,7 @@ class FretboardModel {
                 cell.color = constants.black;
             }
         }
+        this.unselect();
     }
 
     setColor(color: string, row: number, col: number) {
@@ -228,6 +241,7 @@ class FretboardModel {
         }
     }
 
+    // set the color of all currently toggled notes
     setColorAllToggled(color: string) {
         for (const row of this.cells) {
             for (let cell of row) {
@@ -271,6 +285,38 @@ class FretboardModel {
 
     setSelected(row: number, col: number) {
         this.selected = true;
+
+        if (this.secondaryCursor) {
+            const rowDelta = row - this.selectedRow;
+            const colDelta = col - this.selectedCol;
+
+            const oldSecondaryNote = this.strangFretToNote(
+                this.secondaryCursorRow,
+                this.secondaryCursorCol
+            );
+
+            const oldPrimaryNote = this.strangFretToNote(
+                this.selectedRow,
+                this.selectedCol
+            );
+
+            const newPrimaryNote = this.strangFretToNote(
+                row,
+                col
+            );
+
+            const targetNote = newPrimaryNote + this.secondaryToPrimaryInterval;
+
+            this.secondaryCursorRow += rowDelta;
+
+            for (let i = 0; i < this.numCols; i++) {
+                if (this.strangFretToNote(this.secondaryCursorRow, i) === targetNote) {
+                    this.secondaryCursorCol = i;
+                    break;
+                }
+            }
+        }
+
         this.selectedRow = row;
         this.selectedCol = col;
     }
@@ -285,6 +331,7 @@ class FretboardModel {
 
     unselect() {
         this.selected = false;
+        this.secondaryCursor = false;
     }
 
     moveSelected(dir: Dir) {
@@ -297,6 +344,32 @@ class FretboardModel {
         );
 
         this.setSelected(newRow, newCol);
+    }
+
+    setSecondaryCursor(row: number, col: number) {
+        if (
+            this.selected
+            && !(
+                row === this.selectedRow
+                && col === this.selectedCol
+            )
+        ) {
+            this.secondaryCursor = true;
+            this.secondaryCursorRow = row;
+            this.secondaryCursorCol = col;
+
+            const primaryNote   = this.strangFretToNote(this.selectedRow, this.selectedCol);
+            const secondaryNote = this.strangFretToNote(this.secondaryCursorRow, this.secondaryCursorCol);
+            this.secondaryToPrimaryInterval = secondaryNote - primaryNote;
+        }
+    }
+
+    isSecondaryCursor(row: number, col: number) {
+        return (
+            this.secondaryCursor
+            && this.secondaryCursorRow === row
+            && this.secondaryCursorCol === col
+        );
     }
 
     moveToggle(dir: Dir, row: number, col: number) {

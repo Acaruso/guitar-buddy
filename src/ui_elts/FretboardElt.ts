@@ -62,7 +62,7 @@ class FretboardElt extends BaseElt {
                         y: this.fretboardY + (this.cellH * row),
                         w: this.cellW,
                         h: this.cellH,
-                        color: constants.darkBlue,
+                        color: constants.lightBlue,
                     },
                     this.state,
                     this.fretboardModel,
