@@ -199,6 +199,7 @@ class FretboardModel {
         for (const row of this.cells) {
             for (const cell of row) {
                 cell.toggled = false;
+                cell.color = constants.black;
             }
         }
     }
@@ -221,6 +222,16 @@ class FretboardModel {
         for (const row of this.cells) {
             for (let cell of row) {
                 if (cell.note % 12 === base) {
+                    cell.color = color;
+                }
+            }
+        }
+    }
+
+    setColorAllToggled(color: string) {
+        for (const row of this.cells) {
+            for (let cell of row) {
+                if (cell.toggled) {
                     cell.color = color;
                 }
             }
