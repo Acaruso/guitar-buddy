@@ -1,5 +1,6 @@
 import { clamp, inRange } from "../util";
 import { constants } from "../constants";
+import { notesDict } from "../notesDict"
 
 enum Dir {
     Up = 1,
@@ -49,85 +50,18 @@ class FretboardModel {
 
     absoluteRelativeMode: AbsoluteRelativeMode = AbsoluteRelativeMode.Absolute;
 
-    // low E is note 0
-
-    notes: Array<string> = [
-        "E0",   // 0
-        "F0",   // 1
-        "F#0",  // 2
-        "G0",   // 3
-        "G#0",  // 4
-        "A0",   // 5
-        "A#0",  // 6
-        "B0",   // 7
-        "C0",   // 8
-        "C#0",  // 9
-        "D0",   // 10
-        "D#0",  // 11
-
-        "E1",   // 12
-        "F1",   // 13
-        "F#1",  // 14
-        "G1",   // 15
-        "G#1",  // 16
-        "A1",   // 17
-        "A#1",  // 18
-        "B1",   // 19
-        "C1",   // 20
-        "C#1",  // 21
-        "D1",   // 22
-        "D#1",  // 23
-
-        "E2",   // 24
-        "F2",   // 25
-        "F#2",  // 26
-        "G2",   // 27
-        "G#2",  // 28
-        "A2",   // 29
-        "A#2",  // 30
-        "B2",   // 31
-        "C2",   // 32
-        "C#2",  // 33
-        "D2",   // 34
-        "D#2",  // 35
-
-        "E3",   // 36
-        "F3",   // 37
-        "F#3",  // 38
-        "G3",   // 39
-        "G#3",  // 40
-        "A3",   // 41
-        "A#3",  // 42
-        "B3",   // 43
-        "C3",   // 44
-        "C#3",  // 45
-        "D3",   // 46
-        "D#3",  // 47
-
-        "E4",   // 48
-        "F4",   // 49
-        "F#4",  // 50
-        "G4",   // 51
-        "G#4",  // 52
-        "A4",   // 53
-        "A#4",  // 54
-        "B4",   // 55
-        "C4",   // 56
-        "C#4",  // 57
-        "D4",   // 58
-        "D#4",  // 59
-    ];
+    notes: { [key: string]: string } = notesDict;
 
     // "strang" === guitar string
     // not to be confused with "string" which is a data type
 
     strangs: Array<number> = [
-        24,     // high E
-        19,
-        15,
-        10,
-        5,
-        0       // low E
+        31,     // high E
+        26,
+        22,
+        17,
+        12,
+        7       // low E
     ];
 
     constructor(
@@ -162,11 +96,11 @@ class FretboardModel {
         return this.cells[row][col];
     }
 
-    noteToStringFull(note: number) {
-        if (!inRange(note, 0, this.notes.length)) {
+    noteToStringFull(note: number): string {
+        if (!this.notes.hasOwnProperty(String(note))) {
             console.log(`ERROR: noteToStringFull(${note}) note out of range`);
         }
-        return this.notes[note];
+        return this.notes[String(note)];
     }
 
     noteToString(note: number) {
