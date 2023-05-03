@@ -1,6 +1,6 @@
 import { Gfx } from "../Gfx";
 import { State } from "../State";
-import { FretboardModel, Dir, Mode } from "./FretboardModel";
+import { FretboardModel, Dir, GlobalLocalMode } from "./FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
@@ -171,14 +171,10 @@ class FretboardElt extends BaseElt {
             this.fretboardModel.untoggleAll();
         }
 
-        // local and global mode ////////////////////////////////////
-
-        if (key === "l") {
-            this.fretboardModel.setMode(Mode.Local);
-        }
+        // global/local mode ////////////////////////////////////
 
         if (key === "g") {
-            this.fretboardModel.setMode(Mode.Global);
+            this.fretboardModel.toggleGlobalLocalMode();
         }
 
         // colors ///////////////////////////////////////////////////

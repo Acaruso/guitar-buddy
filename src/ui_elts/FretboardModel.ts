@@ -8,9 +8,14 @@ enum Dir {
     Right,
 }
 
-enum Mode {
+enum GlobalLocalMode {
     Local = 1,
     Global,
+}
+
+enum AbsoluteRelativeMode {
+    Absolute = 1,
+    Relative,
 }
 
 class Cell {
@@ -40,7 +45,9 @@ class FretboardModel {
     secondaryCursorCol: number = 0;
     secondaryToPrimaryInterval: number = 0;
 
-    mode: Mode = Mode.Local;
+    globalLocalMode: GlobalLocalMode = GlobalLocalMode.Local;
+
+    absoluteRelativeMode: AbsoluteRelativeMode = AbsoluteRelativeMode.Absolute;
 
     // low E is note 0
 
@@ -143,8 +150,12 @@ class FretboardModel {
         }
     }
 
-    setMode(mode: Mode) {
-        this.mode = mode;
+    toggleGlobalLocalMode() {
+        if (this.globalLocalMode === GlobalLocalMode.Local) {
+            this.globalLocalMode = GlobalLocalMode.Global;
+        } else {
+            this.globalLocalMode = GlobalLocalMode.Local;
+        }
     }
 
     getCell(row: number, col: number) {
@@ -167,7 +178,7 @@ class FretboardModel {
     }
 
     setToggle(row: number, col: number) {
-        if (this.mode === Mode.Local) {
+        if (this.globalLocalMode === GlobalLocalMode.Local) {
             this.setToggleLocal(row, col);
             if (!this.isToggled(row, col)) {
                 this.setColorLocal(constants.black, row, col);
@@ -179,7 +190,7 @@ class FretboardModel {
                     this.setColorLocal(constants.black, this.secondaryCursorRow, this.secondaryCursorCol);
                 }
             }
-        } else if (this.mode === Mode.Global) {
+        } else if (this.globalLocalMode === GlobalLocalMode.Global) {
             this.setToggleGlobal(row, col);
             if (!this.isToggled(row, col)) {
                 this.setColorGlobal(constants.black, row, col);
@@ -192,12 +203,14 @@ class FretboardModel {
     }
 
     setToggleGlobal(row: number, col: number) {
+        const newToggleValue = !this.cells[row][col].toggled;
+
         const base = this.cells[row][col].note % 12;
 
         for (const row of this.cells) {
             for (let cell of row) {
                 if (cell.note % 12 === base) {
-                    cell.toggled = !cell.toggled;
+                    cell.toggled = newToggleValue;
                 }
             }
         }
@@ -218,9 +231,9 @@ class FretboardModel {
     }
 
     setColor(color: string, row: number, col: number) {
-        if (this.mode === Mode.Local) {
+        if (this.globalLocalMode === GlobalLocalMode.Local) {
             this.setColorLocal(color, row, col);
-        } else if (this.mode === Mode.Global) {
+        } else if (this.globalLocalMode === GlobalLocalMode.Global) {
             this.setColorGlobal(color, row, col);
         }
     }
@@ -257,9 +270,9 @@ class FretboardModel {
     }
 
     setRing(row: number, col: number) {
-        if (this.mode === Mode.Local) {
+        if (this.globalLocalMode === GlobalLocalMode.Local) {
             this.setRingLocal(row, col);
-        } else if (this.mode === Mode.Global) {
+        } else if (this.globalLocalMode === GlobalLocalMode.Global) {
             this.setRingGlobal(row, col);
         }
     }
@@ -504,4 +517,4 @@ function move(
     return { newRow, newCol };
 }
 
-export { Cell, FretboardModel, Dir, Mode };
+export { Cell, FretboardModel, Dir, GlobalLocalMode };
