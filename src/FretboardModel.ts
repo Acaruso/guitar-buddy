@@ -1,6 +1,6 @@
-import { clamp, inRange } from "../util";
-import { constants } from "../constants";
-import { notesDict } from "../notesDict"
+import { clamp, inRange } from "./util";
+import { constants } from "./constants";
+import { notesDict } from "./notesDict"
 
 enum Dir {
     Up = 1,
@@ -92,7 +92,19 @@ class FretboardModel {
         }
     }
 
-    getCell(row: number, col: number) {
+    toggleAbsoluteRelativeMode() {
+        if (this.absoluteRelativeMode === AbsoluteRelativeMode.Absolute) {
+            this.absoluteRelativeMode = AbsoluteRelativeMode.Relative;
+        } else {
+            this.absoluteRelativeMode = AbsoluteRelativeMode.Absolute;
+        }
+    }
+
+    getAbsoluteRelativeMode(): AbsoluteRelativeMode {
+        return this.absoluteRelativeMode;
+    }
+
+    getCell(row: number, col: number): Cell {
         return this.cells[row][col];
     }
 
@@ -103,15 +115,15 @@ class FretboardModel {
         return this.notes[String(note)];
     }
 
-    noteToString(note: number) {
+    noteToString(note: number): string {
         return this.noteToStringFull(note).replace(/[0-9]/g, "");
     }
 
-    strangFretToNote(strang: number, fret: number) {
+    strangFretToNote(strang: number, fret: number): number {
         return this.strangs[strang] + (fret + 1);
     }
 
-    setToggle(row: number, col: number) {
+    setToggle(row: number, col: number): void {
         if (this.globalLocalMode === GlobalLocalMode.Local) {
             this.setToggleLocal(row, col);
             if (!this.isToggled(row, col)) {
@@ -132,11 +144,11 @@ class FretboardModel {
         }
     }
 
-    setToggleLocal(row: number, col: number) {
+    setToggleLocal(row: number, col: number): void {
         this.cells[row][col].toggled = !this.cells[row][col].toggled;
     }
 
-    setToggleGlobal(row: number, col: number) {
+    setToggleGlobal(row: number, col: number): void {
         const newToggleValue = !this.cells[row][col].toggled;
 
         const base = this.cells[row][col].note % 12;
@@ -150,11 +162,11 @@ class FretboardModel {
         }
     }
 
-    isToggled(row: number, col: number) {
+    isToggled(row: number, col: number): boolean {
         return this.cells[row][col].toggled;
     }
 
-    untoggleAll() {
+    untoggleAll(): void {
         for (const row of this.cells) {
             for (const cell of row) {
                 cell.toggled = false;
@@ -164,7 +176,7 @@ class FretboardModel {
         this.unselect();
     }
 
-    setColor(color: string, row: number, col: number) {
+    setColor(color: string, row: number, col: number): void {
         if (this.globalLocalMode === GlobalLocalMode.Local) {
             this.setColorLocal(color, row, col);
         } else if (this.globalLocalMode === GlobalLocalMode.Global) {
@@ -172,11 +184,11 @@ class FretboardModel {
         }
     }
 
-    setColorLocal(color: string, row: number, col: number) {
+    setColorLocal(color: string, row: number, col: number): void {
         this.cells[row][col].color = color;
     }
 
-    setColorGlobal(color: string, row: number, col: number) {
+    setColorGlobal(color: string, row: number, col: number): void {
         const base = this.cells[row][col].note % 12;
 
         for (const row of this.cells) {
@@ -189,7 +201,7 @@ class FretboardModel {
     }
 
     // set the color of all currently toggled notes
-    setColorAllToggled(color: string) {
+    setColorAllToggled(color: string): void {
         for (const row of this.cells) {
             for (let cell of row) {
                 if (cell.toggled) {
@@ -199,11 +211,11 @@ class FretboardModel {
         }
     }
 
-    getColor(row: number, col: number) {
+    getColor(row: number, col: number): string {
         return this.cells[row][col].color;
     }
 
-    setRing(row: number, col: number) {
+    setRing(row: number, col: number): void {
         if (this.globalLocalMode === GlobalLocalMode.Local) {
             this.setRingLocal(row, col);
         } else if (this.globalLocalMode === GlobalLocalMode.Global) {
@@ -211,12 +223,12 @@ class FretboardModel {
         }
     }
 
-    setRingLocal(row: number, col: number) {
+    setRingLocal(row: number, col: number): void {
         const curCell = this.cells[row][col];
         curCell.ring = !curCell.ring;
     }
 
-    setRingGlobal(row: number, col: number) {
+    setRingGlobal(row: number, col: number): void {
         const curCell = this.cells[row][col];
         const baseNote = curCell.note % 12;
         const newRing = !curCell.ring;
@@ -230,22 +242,11 @@ class FretboardModel {
         }
     }
 
-    setSelected(row: number, col: number) {
+    setSelected(row: number, col: number): void {
         this.selected = true;
 
         if (this.secondaryCursor) {
             const rowDelta = row - this.selectedRow;
-            const colDelta = col - this.selectedCol;
-
-            const oldSecondaryNote = this.strangFretToNote(
-                this.secondaryCursorRow,
-                this.secondaryCursorCol
-            );
-
-            const oldPrimaryNote = this.strangFretToNote(
-                this.selectedRow,
-                this.selectedCol
-            );
 
             const newPrimaryNote = this.strangFretToNote(
                 row,
@@ -276,12 +277,12 @@ class FretboardModel {
         );
     }
 
-    unselect() {
+    unselect(): void {
         this.selected = false;
         this.secondaryCursor = false;
     }
 
-    moveSelected(dir: Dir) {
+    moveSelected(dir: Dir): void {
         const { newRow, newCol } = move(
             dir,
             this.selectedRow,
@@ -293,7 +294,7 @@ class FretboardModel {
         this.setSelected(newRow, newCol);
     }
 
-    setSecondaryCursor(row: number, col: number) {
+    setSecondaryCursor(row: number, col: number): void {
         if (
             this.selected
             && !(
@@ -319,7 +320,7 @@ class FretboardModel {
         );
     }
 
-    moveToggle(dir: Dir, row: number, col: number) {
+    moveToggle(dir: Dir, row: number, col: number): void {
         if (!this.isToggled(this.selectedRow, this.selectedCol)) {
             return;
         }
@@ -342,7 +343,7 @@ class FretboardModel {
         this.setSelected(newRow, newCol);
     }
 
-    moveToggleByOctave(dir: Dir, row: number, col: number) {
+    moveToggleByOctave(dir: Dir, row: number, col: number): void {
         if (
             !this.isToggled(this.selectedRow, this.selectedCol)
             || (dir !== Dir.Left && dir !== Dir.Right)
@@ -369,7 +370,7 @@ class FretboardModel {
         this.setSelected(newRow, newCol);
     }
 
-    moveToggleByString(dir: Dir, row: number, col: number) {
+    moveToggleByString(dir: Dir, row: number, col: number): void {
         if (
             !this.isToggled(this.selectedRow, this.selectedCol)
             || (dir !== Dir.Up && dir !== Dir.Down)
@@ -451,4 +452,4 @@ function move(
     return { newRow, newCol };
 }
 
-export { Cell, FretboardModel, Dir, GlobalLocalMode };
+export { Cell, FretboardModel, Dir, GlobalLocalMode, AbsoluteRelativeMode };

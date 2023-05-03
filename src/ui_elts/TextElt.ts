@@ -22,6 +22,14 @@ class TextElt extends BaseElt {
         this.z = z;
     }
 
+    setText(text: string) {
+        this.text = text;
+    }
+
+    setRect(rect: Rect) {
+        this.rect = rect;
+    }
+
     onDraw() {
         this.gfx.drawText(
             this.text,

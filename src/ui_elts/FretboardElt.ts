@@ -1,6 +1,6 @@
 import { Gfx } from "../Gfx";
 import { State } from "../State";
-import { FretboardModel, Dir, GlobalLocalMode } from "./FretboardModel";
+import { FretboardModel, Dir, AbsoluteRelativeMode } from "../FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
@@ -18,7 +18,7 @@ class FretboardElt extends BaseElt {
     numCols: number;
     cellW: number = 36;
     cellH: number = 30;
-    cells: Array<Array<BaseElt>>;
+    cells: Array<Array<CellElt>>;
     fretboardModel: FretboardModel;
 
     constructor(
@@ -68,6 +68,7 @@ class FretboardElt extends BaseElt {
                     this.fretboardModel,
                     row,
                     col,
+                    this.cells,
                     () => {},
                     false
                 );
@@ -177,6 +178,24 @@ class FretboardElt extends BaseElt {
             this.fretboardModel.toggleGlobalLocalMode();
         }
 
+        if (key === "a") {
+            this.fretboardModel.toggleAbsoluteRelativeMode();
+
+            if (this.fretboardModel.getAbsoluteRelativeMode() === AbsoluteRelativeMode.Relative) {
+                for (const row of this.cells) {
+                    for (const cell of row) {
+                        cell.setRelativeModeText();
+                    }
+                }
+            } else if (this.fretboardModel.getAbsoluteRelativeMode() === AbsoluteRelativeMode.Absolute) {
+                for (const row of this.cells) {
+                    for (const cell of row) {
+                        cell.setAbsoluteModeText();
+                    }
+                }
+            }
+        }
+
         // colors ///////////////////////////////////////////////////
 
         if (key === "1") {
@@ -264,6 +283,14 @@ class FretboardElt extends BaseElt {
                 }
             } else {
                 this.fretboardModel.moveSelected(dir);
+
+                if (this.fretboardModel.getAbsoluteRelativeMode() === AbsoluteRelativeMode.Relative) {
+                    for (const row of this.cells) {
+                        for (const cell of row) {
+                            cell.setRelativeModeText();
+                        }
+                    }
+                }
             }
         }
     }
@@ -293,4 +320,4 @@ function arrowKeyToDir(key: string) {
     }
 }
 
-export { FretboardElt, FretboardModel };
+export { FretboardElt };

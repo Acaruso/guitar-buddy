@@ -2,7 +2,7 @@ import { Gfx } from "../Gfx";
 import { State } from "../State";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
-import { FretboardModel } from "./FretboardElt";
+import { FretboardModel, AbsoluteRelativeMode } from "../FretboardModel";
 import { constants } from "../constants";
 import { Rect } from "../Rect";
 
@@ -13,6 +13,7 @@ class CellElt extends BaseElt {
     fretboardModel: FretboardModel;
     row: number;
     col: number;
+    cells: Array<Array<CellElt>>;
     public onClick: OnClick;
     toggled: boolean = false;
     passiveColor: string = constants.white;
@@ -27,6 +28,7 @@ class CellElt extends BaseElt {
         fretboardModel: FretboardModel,
         row: number,
         col: number,
+        cells: Array<Array<CellElt>>,
         onClick: OnClick = (x: number, y: number) => {},
         outlineVisible: boolean = true
     ) {
@@ -35,6 +37,7 @@ class CellElt extends BaseElt {
         this.fretboardModel = fretboardModel;
         this.row = row;
         this.col = col;
+        this.cells = cells;
         this.onClick = onClick;
         this.outlineVisible = outlineVisible;
 
@@ -53,6 +56,47 @@ class CellElt extends BaseElt {
             noteString,
             constants.white,
             3
+        );
+    }
+
+    setRelativeModeText() {
+        const curNote = this.fretboardModel.strangFretToNote(this.row, this.col);
+        const selectedNote = this.fretboardModel.strangFretToNote(
+            this.fretboardModel.selectedRow,
+            this.fretboardModel.selectedCol
+        );
+        let diff = (curNote - selectedNote) % 12;
+        if (diff < 0) {
+            diff = 12 + diff;
+        }
+        const str = String(diff);
+        this.textElt.setText(str);
+
+        const xOffset = (str.length === 1) ? 14 : 10;
+        const yOffset = 5;
+        this.textElt.setRect(
+            {
+                x: this.rect.x + xOffset,
+                y: this.rect.y + yOffset,
+                w: 1,
+                h: 1
+            }
+        );
+    }
+
+    setAbsoluteModeText() {
+        const noteString = this.fretboardModel.getCell(this.row, this.col).noteString;
+        this.textElt.setText(noteString);
+
+        const xOffset = (noteString.length === 1) ? 14 : 10;
+        const yOffset = 5;
+        this.textElt.setRect(
+            {
+                x: this.rect.x + xOffset,
+                y: this.rect.y + yOffset,
+                w: 1,
+                h: 1
+            }
         );
     }
 
@@ -126,6 +170,14 @@ class CellElt extends BaseElt {
                 this.fretboardModel.setToggle(this.row, this.col);
             }
             this.fretboardModel.setSelected(this.row, this.col);
+
+            if (this.fretboardModel.getAbsoluteRelativeMode() === AbsoluteRelativeMode.Relative) {
+                for (const row of this.cells) {
+                    for (const cell of row) {
+                        cell.setRelativeModeText();
+                    }
+                }
+            }
         }
     }
 }
