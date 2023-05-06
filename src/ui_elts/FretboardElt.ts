@@ -196,6 +196,10 @@ class FretboardElt extends BaseElt {
             }
         }
 
+        if (key === "n") {
+            this.fretboardModel.toggleNoteDisplayMode();
+        }
+
         // colors ///////////////////////////////////////////////////
 
         if (key === "1") {
@@ -237,7 +241,20 @@ class FretboardElt extends BaseElt {
             }
         }
 
-        if (key === "0") {
+        if (key === "4") {
+            const color = constants.gray;
+            if (this.state.keyboard.control) {
+                this.fretboardModel.setColorAllToggled(color);
+            } else {
+                this.fretboardModel.setColor(
+                    color,
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
+        }
+
+        if (key === "0" || key === "`") {
             const color = constants.black;
             if (this.state.keyboard.control) {
                 this.fretboardModel.setColorAllToggled(color);
@@ -261,6 +278,11 @@ class FretboardElt extends BaseElt {
 
         if (isArrowKey(key)) {
             const dir = arrowKeyToDir(key);
+
+            // TODO: get rid of moveToggle(), moveToggleByOctave(), and moveToggleByString()?
+            // currently they don't work with relative mode
+            // not sure if they're useful enough to keep
+
             if (this.state.keyboard.shift) {
                 this.fretboardModel.moveToggle(
                     dir,

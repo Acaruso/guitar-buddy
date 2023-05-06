@@ -65,30 +65,27 @@ class CellElt extends BaseElt {
             this.fretboardModel.selectedRow,
             this.fretboardModel.selectedCol
         );
-        let diff = (curNote - selectedNote) % 12;
-        if (diff < 0) {
-            diff = 12 + diff;
+        let delta = (curNote - selectedNote) % 12;
+        if (delta < 0) {
+            delta = 12 + delta;
         }
-        const str = String(diff);
-        this.textElt.setText(str);
 
-        const xOffset = (str.length === 1) ? 14 : 10;
-        const yOffset = 5;
-        this.textElt.setRect(
-            {
-                x: this.rect.x + xOffset,
-                y: this.rect.y + yOffset,
-                w: 1,
-                h: 1
-            }
-        );
+        this.textElt.setText(String(delta));
+
+        this.updateRect();
     }
 
     setAbsoluteModeText() {
-        const noteString = this.fretboardModel.getCell(this.row, this.col).noteString;
-        this.textElt.setText(noteString);
+        this.textElt.setText(
+            this.fretboardModel.getCell(this.row, this.col).noteString
+        );
 
-        const xOffset = (noteString.length === 1) ? 14 : 10;
+        this.updateRect();
+    }
+
+    private updateRect() {
+        const newText = this.textElt.text;
+        const xOffset = (newText.length === 1) ? 14 : 10;
         const yOffset = 5;
         this.textElt.setRect(
             {

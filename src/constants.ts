@@ -9,6 +9,7 @@ const constants = {
     red: "#d72521",
     green: "#429d00",
     blue: "#2180ed",
+    gray: "#cccccc",
 };
 
 export { constants };
