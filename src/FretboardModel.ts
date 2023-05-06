@@ -21,8 +21,12 @@ enum AbsoluteRelativeMode {
 
 enum NoteDisplayMode {
     String = 1,
-    Number,
+    AbsoluteNumber,
+    RelativeNumber,
 }
+
+// use this functionto get next NoteDisplayMode:
+// function getNextNoteDisplayMode(m: NoteDisplayMode)
 
 class Cell {
     toggled: boolean = false;
@@ -52,8 +56,8 @@ class FretboardModel {
     secondaryToPrimaryInterval: number = 0;
 
     globalLocalMode: GlobalLocalMode = GlobalLocalMode.Local;
+
     absoluteRelativeMode: AbsoluteRelativeMode = AbsoluteRelativeMode.Absolute;
-    noteDisplayMode: NoteDisplayMode = NoteDisplayMode.String;
 
     notes: { [key: string]: string } = notesDict;
 
@@ -102,14 +106,6 @@ class FretboardModel {
             this.absoluteRelativeMode = AbsoluteRelativeMode.Relative;
         } else {
             this.absoluteRelativeMode = AbsoluteRelativeMode.Absolute;
-        }
-    }
-
-    toggleNoteDisplayMode() {
-        if (this.noteDisplayMode === NoteDisplayMode.String) {
-            this.noteDisplayMode = NoteDisplayMode.Number;
-        } else {
-            this.noteDisplayMode = NoteDisplayMode.String;
         }
     }
 
@@ -463,6 +459,17 @@ function move(
     }
 
     return { newRow, newCol };
+}
+
+function getNextNoteDisplayMode(m: NoteDisplayMode) {
+    switch (m) {
+        case NoteDisplayMode.String:
+            return NoteDisplayMode.AbsoluteNumber;
+        case NoteDisplayMode.AbsoluteNumber:
+            return NoteDisplayMode.RelativeNumber;
+        case NoteDisplayMode.RelativeNumber:
+            return NoteDisplayMode.String;
+    }
 }
 
 export { Cell, FretboardModel, Dir, GlobalLocalMode, AbsoluteRelativeMode };

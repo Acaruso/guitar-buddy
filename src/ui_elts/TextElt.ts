@@ -7,17 +7,20 @@ import { textConstants } from "../textConstants";
 class TextElt extends BaseElt {
     text: string;
     color: string;
+    size: number;
     z: number;
 
     constructor(
         gfx: Gfx,
         rect: Rect,
         text: string,
+        size: number = textConstants.charHeight,
         color: string = constants.black,
         z: number = 0
     ) {
         super(gfx, rect);
         this.text = text;
+        this.size = size;
         this.color = color;
         this.z = z;
     }
@@ -33,7 +36,7 @@ class TextElt extends BaseElt {
     onDraw() {
         this.gfx.drawText(
             this.text,
-            textConstants.charHeight,
+            this.size,
             {
                 x: this.rect.x,
                 y: this.rect.y

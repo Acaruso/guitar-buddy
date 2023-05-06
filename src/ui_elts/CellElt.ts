@@ -4,6 +4,7 @@ import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
 import { FretboardModel, AbsoluteRelativeMode } from "../FretboardModel";
 import { constants } from "../constants";
+import { textConstants } from "../textConstants";
 import { Rect } from "../Rect";
 
 type OnClick = (x: number, y: number) => void;
@@ -54,6 +55,7 @@ class CellElt extends BaseElt {
                 h: 1
             },
             noteString,
+            textConstants.charHeight,
             constants.white,
             3
         );

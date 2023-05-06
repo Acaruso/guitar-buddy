@@ -2,6 +2,7 @@ import { Gfx } from "./Gfx";
 import { State } from "./State";
 import { BaseElt } from "./ui_elts/BaseElt";
 import { FretboardElt } from "./ui_elts/FretboardElt";
+import { NoteStringGameElt } from "./ui_elts/NoteStringGameElt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler } from "./util";
 
@@ -15,6 +16,8 @@ class Ui {
     constructor(gfx: Gfx, state: State) {
         this.gfx = gfx;
         this.state = state;
+
+        // set up event handlers
 
         addHandler("mousedown", (e: any) => this.onLeftMBDown(e));
         addHandler("mouseup",   (e: any) => this.onLeftMBUp(e));
@@ -49,20 +52,29 @@ class Ui {
             this.state.keyboard[key] = false;
         });
 
+        // set up UI elements
+
         this.rootElt = new BaseElt(
             this.gfx,
             { x: 0, y: 0, w: constants.canvasWidth, h: constants.canvasHeight }
         );
 
+        // this.rootElt.pushChild(
+        //     new FretboardElt(
+        //         this.gfx,
+        //         { x: 20, y: 30, w: 20, h: 20 },
+        //         this.state,
+        //         6,
+        //         24
+        //     )
+        // );
+
         this.rootElt.pushChild(
-            new FretboardElt(
+            new NoteStringGameElt(
                 this.gfx,
                 { x: 20, y: 30, w: 20, h: 20 },
-                this.state,
-                6,
-                24
             )
-        )
+        );
     }
 
     onLeftMBDown(event: any) {

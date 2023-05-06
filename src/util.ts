@@ -34,4 +34,8 @@ function inRange(val: number, low: number, high: number) {
     }
 }
 
-export { isInsideRect, addHandler, clamp, inRange };
+function getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
+}
+
+export { isInsideRect, addHandler, clamp, inRange, getRandomInt };

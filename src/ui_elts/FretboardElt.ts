@@ -1,4 +1,5 @@
 import { Gfx } from "../Gfx";
+import { Rect } from "../Rect";
 import { State } from "../State";
 import { FretboardModel, Dir, AbsoluteRelativeMode } from "../FretboardModel";
 import { BaseElt } from "./BaseElt";
@@ -7,7 +8,6 @@ import { LineElt } from "./LineElt";
 import { SingleDotElt } from "./SingleDotElt";
 import { DoubleDotElt } from "./DoubleDotElt";
 import { constants } from "../constants";
-import { Rect } from "../Rect";
 
 class FretboardElt extends BaseElt {
     state: State;
@@ -194,10 +194,6 @@ class FretboardElt extends BaseElt {
                     }
                 }
             }
-        }
-
-        if (key === "n") {
-            this.fretboardModel.toggleNoteDisplayMode();
         }
 
         // colors ///////////////////////////////////////////////////

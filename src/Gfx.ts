@@ -181,7 +181,8 @@ class Gfx {
             // coord for fillText(text, coord) is *bottom* left side of text
             // however, our coord is for *top* left side of text
             // thus, we need to do coord.y + textConstants.charHeight
-            ctx.fillText(text, coord.x, coord.y + textConstants.charHeight);
+            // ctx.fillText(text, coord.x, coord.y + textConstants.charHeight);
+            ctx.fillText(text, coord.x, coord.y + size);
         };
 
         this.push(command, z);
