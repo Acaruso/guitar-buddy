@@ -12,7 +12,7 @@ class NoteStringGameElt extends BaseElt {
     stringElt: TextElt;
     noteElt: TextElt;
     interval: any = null;
-    intervalTime: number = 2000; // 2 seconds
+    intervalTime: number = 2300;    // milliseconds
     timerOn: boolean = false;
 
     strangs: Array<string> = [
@@ -23,6 +23,11 @@ class NoteStringGameElt extends BaseElt {
         "B",
         "high E",
     ];
+
+    // strangs: Array<string> = [
+    //     "D",
+    //     "G",
+    // ];
 
     notes: Array<string> = [
         "A",
