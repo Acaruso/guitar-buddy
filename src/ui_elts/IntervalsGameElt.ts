@@ -33,31 +33,31 @@ class IntervalsGameElt extends BaseElt {
     ];
 
     octavesUp: Array<Interval> = [
-        { strang: "low E", interval: "octave", direction: "up", numStrangs: "one" },
+        // { strang: "low E", interval: "octave", direction: "up", numStrangs: "one" },
         { strang: "low E", interval: "octave", direction: "up", numStrangs: "two" },
         { strang: "low E", interval: "octave", direction: "up", numStrangs: "three" },
-        { strang: "A",     interval: "octave", direction: "up", numStrangs: "one" },
+        // { strang: "A",     interval: "octave", direction: "up", numStrangs: "one" },
         { strang: "A",     interval: "octave", direction: "up", numStrangs: "two" },
         { strang: "A",     interval: "octave", direction: "up", numStrangs: "three" },
-        { strang: "D",     interval: "octave", direction: "up", numStrangs: "one" },
+        // { strang: "D",     interval: "octave", direction: "up", numStrangs: "one" },
         { strang: "D",     interval: "octave", direction: "up", numStrangs: "two" },
         { strang: "D",     interval: "octave", direction: "up", numStrangs: "three" },
-        { strang: "G",     interval: "octave", direction: "up", numStrangs: "one" },
+        // { strang: "G",     interval: "octave", direction: "up", numStrangs: "one" },
         { strang: "G",     interval: "octave", direction: "up", numStrangs: "two" },
-        { strang: "B",     interval: "octave", direction: "up", numStrangs: "one" },
+        // { strang: "B",     interval: "octave", direction: "up", numStrangs: "one" },
     ];
 
     octavesDown: Array<Interval> = [
-        { strang: "A",      interval: "octave", direction: "down", numStrangs: "one" },
-        { strang: "D",      interval: "octave", direction: "down", numStrangs: "one" },
+        // { strang: "A",      interval: "octave", direction: "down", numStrangs: "one" },
+        // { strang: "D",      interval: "octave", direction: "down", numStrangs: "one" },
         { strang: "D",      interval: "octave", direction: "down", numStrangs: "two" },
-        { strang: "G",      interval: "octave", direction: "down", numStrangs: "one" },
+        // { strang: "G",      interval: "octave", direction: "down", numStrangs: "one" },
         { strang: "G",      interval: "octave", direction: "down", numStrangs: "two" },
         { strang: "G",      interval: "octave", direction: "down", numStrangs: "three" },
-        { strang: "B",      interval: "octave", direction: "down", numStrangs: "one" },
+        // { strang: "B",      interval: "octave", direction: "down", numStrangs: "one" },
         { strang: "B",      interval: "octave", direction: "down", numStrangs: "two" },
         { strang: "B",      interval: "octave", direction: "down", numStrangs: "three" },
-        { strang: "high E", interval: "octave", direction: "down", numStrangs: "one" },
+        // { strang: "high E", interval: "octave", direction: "down", numStrangs: "one" },
         { strang: "high E", interval: "octave", direction: "down", numStrangs: "two" },
         { strang: "high E", interval: "octave", direction: "down", numStrangs: "three" },
     ];
