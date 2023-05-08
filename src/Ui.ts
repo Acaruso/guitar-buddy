@@ -70,19 +70,19 @@ class Ui {
         //     )
         // );
 
-        // this.rootElt.pushChild(
-        //     new NoteStringGameElt(
-        //         this.gfx,
-        //         { x: 20, y: 30, w: 20, h: 20 },
-        //     )
-        // );
-
         this.rootElt.pushChild(
-            new IntervalsGameElt(
+            new NoteStringGameElt(
                 this.gfx,
                 { x: 20, y: 30, w: 20, h: 20 },
             )
         );
+
+        // this.rootElt.pushChild(
+        //     new IntervalsGameElt(
+        //         this.gfx,
+        //         { x: 20, y: 30, w: 20, h: 20 },
+        //     )
+        // );
     }
 
     onLeftMBDown(event: any) {

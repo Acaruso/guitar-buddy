@@ -11,8 +11,8 @@ class NoteStringGameElt extends BaseElt {
     note: string = "";
     stringElt: TextElt;
     noteElt: TextElt;
-    interval: any = null;
-    intervalTime: number = 2300;    // milliseconds
+    tickRef: any = null;
+    tickTime: number = 2300;    // milliseconds
     timerOn: boolean = false;
 
     strangs: Array<string> = [
@@ -45,9 +45,6 @@ class NoteStringGameElt extends BaseElt {
     ) {
         super(gfx, rect);
 
-        const r1 = getRandomInt(this.strangs.length);
-        const r2 = getRandomInt(this.notes.length);
-
         this.stringElt = new TextElt(
             this.gfx,
             {
@@ -56,7 +53,7 @@ class NoteStringGameElt extends BaseElt {
                 w: this.rect.w,
                 h: this.rect.h
             },
-            `string: ${this.strangs[r1]}`,
+            "",
             this.textSize
         );
 
@@ -68,33 +65,39 @@ class NoteStringGameElt extends BaseElt {
                 w: this.rect.w,
                 h: this.rect.h
             },
-            `note:   ${this.notes[r2]}`,
+            "",
             this.textSize
         );
 
         this.pushChild(this.stringElt);
         this.pushChild(this.noteElt);
+
+        this.update();
     }
 
     onKeyDown(key: string) {
         if (key === "space") {
-            const r1 = getRandomInt(this.strangs.length);
-            const r2 = getRandomInt(this.notes.length);
-            this.stringElt.setText(`string: ${this.strangs[r1]}`);
-            this.noteElt.setText(`note:   ${this.notes[r2]}`);
+            this.timerOn = true;
+            clearInterval(this.tickRef);
+            this.tickRef = setInterval(() => this.tick(), this.tickTime);
+            this.update();
         }
 
         if (key === "t") {
             if (!this.timerOn) {
-                this.interval = setInterval(() => this.tick(), this.intervalTime);
+                this.tickRef = setInterval(() => this.tick(), this.tickTime);
             } else {
-                clearInterval(this.interval);
+                clearInterval(this.tickRef);
             }
             this.timerOn = !this.timerOn;
         }
     }
 
     tick() {
+        this.update();
+    }
+
+    update() {
         const r1 = getRandomInt(this.strangs.length);
         const r2 = getRandomInt(this.notes.length);
         this.stringElt.setText(`string: ${this.strangs[r1]}`);

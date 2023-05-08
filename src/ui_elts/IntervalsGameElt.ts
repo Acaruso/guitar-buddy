@@ -19,7 +19,7 @@ class IntervalsGameElt extends BaseElt {
     line3: TextElt;
     line4: TextElt;
     tickRef: any = null;
-    tickTime: number = 2300;    // milliseconds
+    tickTime: number = 3000;    // milliseconds
     timerOn: boolean = false;
 
     notes: Array<string> = [
@@ -128,7 +128,10 @@ class IntervalsGameElt extends BaseElt {
 
     onKeyDown(key: string) {
         if (key === "space") {
+            clearInterval(this.tickRef);
+            this.tickRef = setInterval(() => this.tick(), this.tickTime);
             this.update();
+            this.timerOn = true;
         }
 
         if (key === "t") {
@@ -160,9 +163,9 @@ class IntervalsGameElt extends BaseElt {
     makeStrings(obj: Interval, note: string) {
         const s = obj.numStrangs === "one" ? "" : "s";
         return {
-            line1: `interval:  ${obj.interval}`,
-            line2: `string:    ${obj.strang}`,
-            line3: `note:      ${note}`,
+            line1: `string:    ${obj.strang}`,
+            line2: `note:      ${note}`,
+            line3: `interval:  ${obj.interval}`,
             line4: `direction: ${obj.numStrangs} string${s} ${obj.direction}`,
         };
     }
