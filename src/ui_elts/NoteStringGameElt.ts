@@ -12,8 +12,10 @@ class NoteStringGameElt extends BaseElt {
     stringElt: TextElt;
     noteElt: TextElt;
     tickRef: any = null;
-    tickTime: number = 2300;    // milliseconds
+    tickTime: number = 2400;    // milliseconds
     timerOn: boolean = false;
+    prevR1: number = 0;
+    prevR2: number = 0;
 
     strangs: Array<string> = [
         "low E",
@@ -98,8 +100,18 @@ class NoteStringGameElt extends BaseElt {
     }
 
     update() {
-        const r1 = getRandomInt(this.strangs.length);
-        const r2 = getRandomInt(this.notes.length);
+        let r1 = getRandomInt(this.strangs.length);
+        let r2 = getRandomInt(this.notes.length);
+
+        // don't repeat same r1 and r2 twice in a row:
+        while (r1 === this.prevR1 && r2 === this.prevR2) {
+            r1 = getRandomInt(this.strangs.length);
+            r2 = getRandomInt(this.notes.length);
+        }
+
+        this.prevR1 = r1;
+        this.prevR2 = r2;
+
         this.stringElt.setText(`string: ${this.strangs[r1]}`);
         this.noteElt.setText(`note:   ${this.notes[r2]}`);
     }

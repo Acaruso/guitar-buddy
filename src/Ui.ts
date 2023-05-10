@@ -30,11 +30,14 @@ class Ui {
 
         addHandler("keydown", (e: any) => {
             let key = e.key.toLowerCase();
+            console.log(key);
+
             if (
                 key === "arrowdown"
                 || key === "arrowup"
                 || key === "arrowleft"
                 || key === "arrowright"
+                || this.state.keyboard["control"]
             ) {
                 e.preventDefault();
             }
@@ -70,19 +73,19 @@ class Ui {
         //     )
         // );
 
-        this.rootElt.pushChild(
-            new NoteStringGameElt(
-                this.gfx,
-                { x: 20, y: 30, w: 20, h: 20 },
-            )
-        );
-
         // this.rootElt.pushChild(
-        //     new IntervalsGameElt(
+        //     new NoteStringGameElt(
         //         this.gfx,
         //         { x: 20, y: 30, w: 20, h: 20 },
         //     )
         // );
+
+        this.rootElt.pushChild(
+            new IntervalsGameElt(
+                this.gfx,
+                { x: 20, y: 30, w: 20, h: 20 },
+            )
+        );
     }
 
     onLeftMBDown(event: any) {
