@@ -12,7 +12,7 @@ class NoteStringGameElt extends BaseElt {
     stringElt: TextElt;
     noteElt: TextElt;
     tickRef: any = null;
-    tickTime: number = 2400;    // milliseconds
+    tickTime: number = 2300;    // milliseconds
     timerOn: boolean = false;
     prevR1: number = 0;
     prevR2: number = 0;
@@ -26,10 +26,19 @@ class NoteStringGameElt extends BaseElt {
         "high E",
     ];
 
-    // strangs: Array<string> = [
-    //     "D",
-    //     "G",
-    // ];
+    // higher number == more probability that this string will be chosen
+    strangWeights: Array<number> = [
+        1,
+        1,
+        5,
+        5,
+        3,
+        1
+    ];
+
+    strangWeightRanges: Array<number> = [];
+
+    strangWeightsTotal: number = 0;
 
     notes: Array<string> = [
         "A",
@@ -46,6 +55,15 @@ class NoteStringGameElt extends BaseElt {
         rect: Rect
     ) {
         super(gfx, rect);
+
+        for (const w of this.strangWeights) {
+            this.strangWeightsTotal += w;
+            this.strangWeightRanges.push(this.strangWeightsTotal);
+        }
+
+        console.log("asdf");
+        console.log(this.strangWeightsTotal);
+        console.log(this.strangWeightRanges);
 
         this.stringElt = new TextElt(
             this.gfx,
@@ -99,14 +117,35 @@ class NoteStringGameElt extends BaseElt {
         this.update();
     }
 
+    // update() {
+    //     let r1 = getRandomInt(this.strangs.length);
+    //     let r2 = getRandomInt(this.notes.length);
+
+    //     // don't repeat same r1 and r2 twice in a row:
+    //     while (r1 === this.prevR1 && r2 === this.prevR2) {
+    //         r1 = getRandomInt(this.strangs.length);
+    //         r2 = getRandomInt(this.notes.length);
+    //     }
+
+    //     this.prevR1 = r1;
+    //     this.prevR2 = r2;
+
+    //     this.stringElt.setText(`string: ${this.strangs[r1]}`);
+    //     this.noteElt.setText(`note:   ${this.notes[r2]}`);
+    // }
+
     update() {
-        let r1 = getRandomInt(this.strangs.length);
+        let r1 = this.randomNumberToStrangIdx(
+            getRandomInt(this.strangWeightsTotal)
+        );
         let r2 = getRandomInt(this.notes.length);
 
         // don't repeat same r1 and r2 twice in a row:
         while (r1 === this.prevR1 && r2 === this.prevR2) {
-            r1 = getRandomInt(this.strangs.length);
-            r2 = getRandomInt(this.notes.length);
+                r1 = this.randomNumberToStrangIdx(
+                    getRandomInt(this.strangWeightsTotal)
+                );
+                r2 = getRandomInt(this.notes.length);
         }
 
         this.prevR1 = r1;
@@ -114,6 +153,15 @@ class NoteStringGameElt extends BaseElt {
 
         this.stringElt.setText(`string: ${this.strangs[r1]}`);
         this.noteElt.setText(`note:   ${this.notes[r2]}`);
+    }
+
+    randomNumberToStrangIdx(r: number) {
+        for (let i = 0; i < this.strangWeightRanges.length; i++) {
+            if (r < this.strangWeightRanges[i]) {
+                return i;
+            }
+        }
+        return 0;
     }
 }
 
