@@ -97,9 +97,6 @@ class NoteStringGameElt extends BaseElt {
 
     onKeyDown(key: string) {
         if (key === "space") {
-            this.timerOn = true;
-            clearInterval(this.tickRef);
-            this.tickRef = setInterval(() => this.tick(), this.tickTime);
             this.update();
         }
 
@@ -117,34 +114,13 @@ class NoteStringGameElt extends BaseElt {
         this.update();
     }
 
-    // update() {
-    //     let r1 = getRandomInt(this.strangs.length);
-    //     let r2 = getRandomInt(this.notes.length);
-
-    //     // don't repeat same r1 and r2 twice in a row:
-    //     while (r1 === this.prevR1 && r2 === this.prevR2) {
-    //         r1 = getRandomInt(this.strangs.length);
-    //         r2 = getRandomInt(this.notes.length);
-    //     }
-
-    //     this.prevR1 = r1;
-    //     this.prevR2 = r2;
-
-    //     this.stringElt.setText(`string: ${this.strangs[r1]}`);
-    //     this.noteElt.setText(`note:   ${this.notes[r2]}`);
-    // }
-
     update() {
-        let r1 = this.randomNumberToStrangIdx(
-            getRandomInt(this.strangWeightsTotal)
-        );
+        let r1 = this.getStrangIdx();
         let r2 = getRandomInt(this.notes.length);
 
         // don't repeat same r1 and r2 twice in a row:
         while (r1 === this.prevR1 && r2 === this.prevR2) {
-                r1 = this.randomNumberToStrangIdx(
-                    getRandomInt(this.strangWeightsTotal)
-                );
+                r1 = this.getStrangIdx();
                 r2 = getRandomInt(this.notes.length);
         }
 
@@ -155,12 +131,15 @@ class NoteStringGameElt extends BaseElt {
         this.noteElt.setText(`note:   ${this.notes[r2]}`);
     }
 
-    randomNumberToStrangIdx(r: number) {
+    getStrangIdx() {
+        const r = getRandomInt(this.strangWeightsTotal);
+
         for (let i = 0; i < this.strangWeightRanges.length; i++) {
             if (r < this.strangWeightRanges[i]) {
                 return i;
             }
         }
+
         return 0;
     }
 }

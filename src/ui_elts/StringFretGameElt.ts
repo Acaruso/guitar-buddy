@@ -66,9 +66,9 @@ class StringFretGameElt extends BaseElt {
 
     onKeyDown(key: string) {
         if (key === "space") {
-            this.timerOn = true;
-            clearInterval(this.tickRef);
-            this.tickRef = setInterval(() => this.tick(), this.tickTime);
+            // this.timerOn = true;
+            // clearInterval(this.tickRef);
+            // this.tickRef = setInterval(() => this.tick(), this.tickTime);
             this.update();
         }
 
