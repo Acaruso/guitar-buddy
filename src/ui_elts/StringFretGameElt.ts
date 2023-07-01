@@ -16,9 +16,10 @@ class StringFretGameElt extends BaseElt {
     timerOn: boolean = false;
     prevR1: number = 0;
     prevR2: number = 0;
+    lowFret: number = 1;        // lowest fret inclusive
+    highFret: number = 11;      // highest fret inclusive
 
-    // numFrets: number = 12;
-    numFrets: number = 6;
+    numFrets: number = (this.highFret + 1) - this.lowFret;
 
     strangs: Array<string> = [
         "low E",
@@ -106,17 +107,12 @@ class StringFretGameElt extends BaseElt {
 
     update() {
         let r1 = this.getStrangIdx();
-        let r2 = getRandomInt(this.numFrets + 1);
-        // let r2 = getRandomInt(this.numFrets + 1) + 6;       // only use high frets
+        let r2 = this.getFret();
 
         // don't repeat same r1 and r2 twice in a row:
-        while (
-            (r1 === this.prevR1 && r2 === this.prevR2)
-            || (r2 === 0 || r2 === 12)
-        ) {
+        while (r1 === this.prevR1 && r2 === this.prevR2) {
             r1 = this.getStrangIdx();
-            // r2 = getRandomInt(this.numFrets + 1);
-            r2 = getRandomInt(this.numFrets + 1) + 6;
+            r2 = this.getFret();
         }
 
         this.prevR1 = r1;
@@ -136,6 +132,10 @@ class StringFretGameElt extends BaseElt {
         }
 
         return 0;
+    }
+
+    getFret() {
+        return getRandomInt(this.numFrets) + this.lowFret;
     }
 }
 

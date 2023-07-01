@@ -34,6 +34,7 @@ function inRange(val: number, low: number, high: number) {
     }
 }
 
+// get random integer between 0 inclusive and max exclusive
 function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
 }
