@@ -5,6 +5,7 @@ import { FretboardElt } from "./ui_elts/FretboardElt";
 import { NoteStringGameElt } from "./ui_elts/NoteStringGameElt";
 import { IntervalsGameElt } from "./ui_elts/IntervalsGameElt";
 import { StringFretGameElt } from "./ui_elts/StringFretGameElt";
+import { FlashcardsGameElt } from "./ui_elts/FlashcardsGameElt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler } from "./util";
 
@@ -88,8 +89,15 @@ class Ui {
         //     )
         // );
 
+        // this.rootElt.pushChild(
+        //     new StringFretGameElt(
+        //         this.gfx,
+        //         { x: 20, y: 30, w: 20, h: 20 },
+        //     )
+        // );
+
         this.rootElt.pushChild(
-            new StringFretGameElt(
+            new FlashcardsGameElt(
                 this.gfx,
                 { x: 20, y: 30, w: 20, h: 20 },
             )
