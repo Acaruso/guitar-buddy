@@ -12,12 +12,13 @@ class StringFretGameElt extends BaseElt {
     stringElt: TextElt;
     fretElt: TextElt;
     tickRef: any = null;
-    tickTime: number = 3500;    // milliseconds
+    tickTime: number = 2900;    // milliseconds
     timerOn: boolean = false;
     prevR1: number = 0;
     prevR2: number = 0;
 
-    numFrets: number = 12;
+    // numFrets: number = 12;
+    numFrets: number = 6;
 
     strangs: Array<string> = [
         "low E",
@@ -28,11 +29,24 @@ class StringFretGameElt extends BaseElt {
         "high E",
     ];
 
-    constructor(
-        gfx: Gfx,
-        rect: Rect
-    ) {
+    // higher number == more probability that this string will be chosen
+    strangWeights: Array<number> = [
+        1,
+        1,
+        6,
+        6,
+        3,
+        1
+    ];
+
+    strangWeightRanges: Array<number> = [];
+
+    strangWeightsTotal: number = 0;
+
+    constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
+
+        this.initStrangWeights();
 
         this.stringElt = new TextElt(
             this.gfx,
@@ -64,11 +78,15 @@ class StringFretGameElt extends BaseElt {
         this.update();
     }
 
+    initStrangWeights() {
+        for (const w of this.strangWeights) {
+            this.strangWeightsTotal += w;
+            this.strangWeightRanges.push(this.strangWeightsTotal);
+        }
+    }
+
     onKeyDown(key: string) {
         if (key === "space") {
-            // this.timerOn = true;
-            // clearInterval(this.tickRef);
-            // this.tickRef = setInterval(() => this.tick(), this.tickTime);
             this.update();
         }
 
@@ -87,13 +105,18 @@ class StringFretGameElt extends BaseElt {
     }
 
     update() {
-        let r1 = getRandomInt(this.strangs.length);
+        let r1 = this.getStrangIdx();
         let r2 = getRandomInt(this.numFrets + 1);
+        // let r2 = getRandomInt(this.numFrets + 1) + 6;       // only use high frets
 
         // don't repeat same r1 and r2 twice in a row:
-        while (r1 === this.prevR1 && r2 === this.prevR2) {
-            r1 = getRandomInt(this.strangs.length);
-            r2 = getRandomInt(this.numFrets + 1);
+        while (
+            (r1 === this.prevR1 && r2 === this.prevR2)
+            || (r2 === 0 || r2 === 12)
+        ) {
+            r1 = this.getStrangIdx();
+            // r2 = getRandomInt(this.numFrets + 1);
+            r2 = getRandomInt(this.numFrets + 1) + 6;
         }
 
         this.prevR1 = r1;
@@ -101,6 +124,18 @@ class StringFretGameElt extends BaseElt {
 
         this.stringElt.setText(`string: ${this.strangs[r1]}`);
         this.fretElt.setText(`fret:   ${r2}`);
+    }
+
+    getStrangIdx() {
+        const r = getRandomInt(this.strangWeightsTotal);
+
+        for (let i = 0; i < this.strangWeightRanges.length; i++) {
+            if (r < this.strangWeightRanges[i]) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }
 

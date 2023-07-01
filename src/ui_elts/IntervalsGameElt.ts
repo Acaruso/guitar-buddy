@@ -19,7 +19,7 @@ class IntervalsGameElt extends BaseElt {
     line3: TextElt;
     line4: TextElt;
     tickRef: any = null;
-    tickTime: number = 3000;    // milliseconds
+    tickTime: number = 5000;    // milliseconds
     timerOn: boolean = false;
 
     notes: Array<string> = [
@@ -128,10 +128,10 @@ class IntervalsGameElt extends BaseElt {
 
     onKeyDown(key: string) {
         if (key === "space") {
-            clearInterval(this.tickRef);
-            this.tickRef = setInterval(() => this.tick(), this.tickTime);
+            // clearInterval(this.tickRef);
+            // this.tickRef = setInterval(() => this.tick(), this.tickTime);
             this.update();
-            this.timerOn = true;
+            // this.timerOn = true;
         }
 
         if (key === "t") {

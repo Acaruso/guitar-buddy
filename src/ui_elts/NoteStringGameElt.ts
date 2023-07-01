@@ -27,13 +27,22 @@ class NoteStringGameElt extends BaseElt {
     ];
 
     // higher number == more probability that this string will be chosen
+    // strangWeights: Array<number> = [
+    //     1,
+    //     1,
+    //     6,
+    //     6,
+    //     3,
+    //     1
+    // ];
+
     strangWeights: Array<number> = [
+        0,
         1,
         1,
-        5,
-        5,
-        3,
-        1
+        1,
+        1,
+        0
     ];
 
     strangWeightRanges: Array<number> = [];
@@ -50,20 +59,30 @@ class NoteStringGameElt extends BaseElt {
         "G",
     ];
 
-    constructor(
-        gfx: Gfx,
-        rect: Rect
-    ) {
+    // notes: Array<string> = [
+    //     "Ab",
+    //     "A",
+    //     "A#",
+    //     "Bb",
+    //     "B",
+    //     "C",
+    //     "C#",
+    //     "Db",
+    //     "D",
+    //     "D#",
+    //     "Eb",
+    //     "E",
+    //     "F",
+    //     "F#",
+    //     "Gb",
+    //     "G",
+    //     "G#",
+    // ];
+
+    constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
-        for (const w of this.strangWeights) {
-            this.strangWeightsTotal += w;
-            this.strangWeightRanges.push(this.strangWeightsTotal);
-        }
-
-        console.log("asdf");
-        console.log(this.strangWeightsTotal);
-        console.log(this.strangWeightRanges);
+        this.initStrangWeights();
 
         this.stringElt = new TextElt(
             this.gfx,
@@ -93,6 +112,13 @@ class NoteStringGameElt extends BaseElt {
         this.pushChild(this.noteElt);
 
         this.update();
+    }
+
+    initStrangWeights() {
+        for (const w of this.strangWeights) {
+            this.strangWeightsTotal += w;
+            this.strangWeightRanges.push(this.strangWeightsTotal);
+        }
     }
 
     onKeyDown(key: string) {
