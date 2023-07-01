@@ -65,15 +65,15 @@ class Ui {
             { x: 0, y: 0, w: constants.canvasWidth, h: constants.canvasHeight }
         );
 
-        // this.rootElt.pushChild(
-        //     new FretboardElt(
-        //         this.gfx,
-        //         { x: 20, y: 30, w: 20, h: 20 },
-        //         this.state,
-        //         6,
-        //         24
-        //     )
-        // );
+        this.rootElt.pushChild(
+            new FretboardElt(
+                this.gfx,
+                { x: 20, y: 30, w: 20, h: 20 },
+                this.state,
+                6,
+                24
+            )
+        );
 
         // this.rootElt.pushChild(
         //     new NoteStringGameElt(
@@ -96,12 +96,12 @@ class Ui {
         //     )
         // );
 
-        this.rootElt.pushChild(
-            new FlashcardsGameElt(
-                this.gfx,
-                { x: 20, y: 30, w: 20, h: 20 },
-            )
-        );
+        // this.rootElt.pushChild(
+        //     new FlashcardsGameElt(
+        //         this.gfx,
+        //         { x: 20, y: 30, w: 20, h: 20 },
+        //     )
+        // );
     }
 
     onLeftMBDown(event: any) {

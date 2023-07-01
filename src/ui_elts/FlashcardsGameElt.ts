@@ -36,7 +36,7 @@ class FlashcardsGameElt extends BaseElt {
         super(gfx, rect);
 
         this.flashcards = [
-            new Flashcard("C major", "n/a"),
+            // new Flashcard("C major", "n/a"),
             new Flashcard("G major", "F#"),
             new Flashcard("D major", "F# C#"),
             new Flashcard("A major", "F# C# G#"),
