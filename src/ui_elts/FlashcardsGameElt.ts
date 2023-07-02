@@ -41,7 +41,13 @@ class FlashcardsGameElt extends BaseElt {
             new Flashcard("D major", "F# C#"),
             new Flashcard("A major", "F# C# G#"),
             new Flashcard("E major", "F# C# G# D#"),
+            // new Flashcard("B major", "F# C# G# D# A#"),
             new Flashcard("F major", "Bb"),
+            new Flashcard("Bb major", "Bb Eb"),
+            new Flashcard("Eb major", "Bb Eb Ab"),
+            // new Flashcard("Ab major", "Bb Eb Ab Db"),
+            // new Flashcard("Db major", "Bb Eb Ab Db Gb"),
+            // new Flashcard("Gb major", "Bb Eb Ab Db Gb Cb"),
         ];
 
         this.flashcardTextElt = new TextElt(
