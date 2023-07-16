@@ -6,6 +6,7 @@ import { NoteStringGameElt } from "./ui_elts/NoteStringGameElt";
 import { IntervalsGameElt } from "./ui_elts/IntervalsGameElt";
 import { StringFretGameElt } from "./ui_elts/StringFretGameElt";
 import { FlashcardsGameElt } from "./ui_elts/FlashcardsGameElt";
+import { NotesSemitoneGameElt } from "./ui_elts/NotesSemitoneGameElt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler } from "./util";
 
@@ -65,18 +66,25 @@ class Ui {
             { x: 0, y: 0, w: constants.canvasWidth, h: constants.canvasHeight }
         );
 
+        this.rootElt.pushChild(
+            new FretboardElt(
+                this.gfx,
+                { x: 20, y: 30, w: 20, h: 20 },
+                this.state,
+                6,
+                24
+            )
+        );
+
         // this.rootElt.pushChild(
-        //     new FretboardElt(
+        //     new NoteStringGameElt(
         //         this.gfx,
         //         { x: 20, y: 30, w: 20, h: 20 },
-        //         this.state,
-        //         6,
-        //         24
         //     )
         // );
 
         // this.rootElt.pushChild(
-        //     new NoteStringGameElt(
+        //     new StringFretGameElt(
         //         this.gfx,
         //         { x: 20, y: 30, w: 20, h: 20 },
         //     )
@@ -90,18 +98,18 @@ class Ui {
         // );
 
         // this.rootElt.pushChild(
-        //     new StringFretGameElt(
+        //     new FlashcardsGameElt(
         //         this.gfx,
         //         { x: 20, y: 30, w: 20, h: 20 },
         //     )
         // );
 
-        this.rootElt.pushChild(
-            new FlashcardsGameElt(
-                this.gfx,
-                { x: 20, y: 30, w: 20, h: 20 },
-            )
-        );
+        // this.rootElt.pushChild(
+        //     new NotesSemitoneGameElt(
+        //         this.gfx,
+        //         { x: 20, y: 30, w: 20, h: 20 },
+        //     )
+        // );
     }
 
     onLeftMBDown(event: any) {
