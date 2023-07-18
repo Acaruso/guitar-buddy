@@ -92,6 +92,10 @@ class NotesSemitoneGameElt extends BaseElt {
             this.update();
         }
     }
+
+    onLeftMBDown(x: number, y: number) {
+        this.update();
+    }
 }
 
 export { NotesSemitoneGameElt };
