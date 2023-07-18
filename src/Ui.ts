@@ -8,7 +8,7 @@ import { StringFretGameElt } from "./ui_elts/StringFretGameElt";
 import { FlashcardsGameElt } from "./ui_elts/FlashcardsGameElt";
 import { NotesSemitoneGameElt } from "./ui_elts/NotesSemitoneGameElt";
 import { constants } from "./constants";
-import { isInsideRect, addHandler } from "./util";
+import { isInsideRect, addHandler, addButtonOnClickHandler } from "./util";
 
 class Ui {
     gfx: Gfx;
@@ -21,7 +21,14 @@ class Ui {
         this.gfx = gfx;
         this.state = state;
 
-        // set up event handlers
+        // create root ui elt
+
+        this.rootElt = new BaseElt(
+            this.gfx,
+            { x: 0, y: 0, w: constants.canvasWidth, h: constants.canvasHeight }
+        );
+
+        // create event handlers
 
         addHandler("mousedown", (e: any) => this.onLeftMBDown(e));
         addHandler("mouseup",   (e: any) => this.onLeftMBUp(e));
@@ -40,7 +47,7 @@ class Ui {
                 || key === "arrowup"
                 || key === "arrowleft"
                 || key === "arrowright"
-                || this.state.keyboard["control"]
+                || (this.state.keyboard["control"] && key !== "r")
             ) {
                 e.preventDefault();
             }
@@ -59,12 +66,72 @@ class Ui {
             this.state.keyboard[key] = false;
         });
 
-        // set up UI elements
+        // create button onClick handlers
 
-        this.rootElt = new BaseElt(
-            this.gfx,
-            { x: 0, y: 0, w: constants.canvasWidth, h: constants.canvasHeight }
-        );
+        addButtonOnClickHandler("fretboard-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new FretboardElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                    this.state,
+                    6,
+                    24
+                )
+            );
+        });
+
+        addButtonOnClickHandler("note-string-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new NoteStringGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("string-fret-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new StringFretGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("interval-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new IntervalsGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("notes-in-major-keys-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new FlashcardsGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("notes-semitones-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new NotesSemitoneGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                )
+            );
+        });
+
+        // create FretboardElt as the default UI elt
 
         this.rootElt.pushChild(
             new FretboardElt(
@@ -75,41 +142,6 @@ class Ui {
                 24
             )
         );
-
-        // this.rootElt.pushChild(
-        //     new NoteStringGameElt(
-        //         this.gfx,
-        //         { x: 20, y: 30, w: 20, h: 20 },
-        //     )
-        // );
-
-        // this.rootElt.pushChild(
-        //     new StringFretGameElt(
-        //         this.gfx,
-        //         { x: 20, y: 30, w: 20, h: 20 },
-        //     )
-        // );
-
-        // this.rootElt.pushChild(
-        //     new IntervalsGameElt(
-        //         this.gfx,
-        //         { x: 20, y: 30, w: 20, h: 20 },
-        //     )
-        // );
-
-        // this.rootElt.pushChild(
-        //     new FlashcardsGameElt(
-        //         this.gfx,
-        //         { x: 20, y: 30, w: 20, h: 20 },
-        //     )
-        // );
-
-        // this.rootElt.pushChild(
-        //     new NotesSemitoneGameElt(
-        //         this.gfx,
-        //         { x: 20, y: 30, w: 20, h: 20 },
-        //     )
-        // );
     }
 
     onLeftMBDown(event: any) {

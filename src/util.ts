@@ -13,6 +13,13 @@ function addHandler(type: any, callback: any, options={}) {
     document.addEventListener(type, callback, options);
 }
 
+function addButtonOnClickHandler(id: string, callback: any) {
+    let b = document.getElementById(id);
+    if (b) {
+        b.addEventListener("click", callback);
+    }
+}
+
 // clamp val between low inclusive and high exclusive
 function clamp(val: number, low: number, high: number) {
     if (val < low) {
@@ -39,4 +46,4 @@ function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
 }
 
-export { isInsideRect, addHandler, clamp, inRange, getRandomInt };
+export { isInsideRect, addHandler, addButtonOnClickHandler, clamp, inRange, getRandomInt };
