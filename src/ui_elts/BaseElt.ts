@@ -29,6 +29,10 @@ class BaseElt {
     pushChild(child: any) {
         this.children.push(child);
     }
+
+    clearChildren() {
+        this.children = [];
+    }
 }
 
 export { BaseElt };

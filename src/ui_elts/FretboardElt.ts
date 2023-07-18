@@ -1,13 +1,13 @@
 import { Gfx } from "../Gfx";
+import { Rect } from "../Rect";
 import { State } from "../State";
-import { FretboardModel, Dir, Mode } from "./FretboardModel";
+import { FretboardModel, Dir, AbsoluteRelativeMode } from "../FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
 import { SingleDotElt } from "./SingleDotElt";
 import { DoubleDotElt } from "./DoubleDotElt";
 import { constants } from "../constants";
-import { Rect } from "../Rect";
 
 class FretboardElt extends BaseElt {
     state: State;
@@ -18,7 +18,7 @@ class FretboardElt extends BaseElt {
     numCols: number;
     cellW: number = 36;
     cellH: number = 30;
-    cells: Array<Array<BaseElt>>;
+    cells: Array<Array<CellElt>>;
     fretboardModel: FretboardModel;
 
     constructor(
@@ -62,12 +62,13 @@ class FretboardElt extends BaseElt {
                         y: this.fretboardY + (this.cellH * row),
                         w: this.cellW,
                         h: this.cellH,
-                        color: constants.darkBlue,
+                        color: constants.lightBlue,
                     },
                     this.state,
                     this.fretboardModel,
                     row,
                     col,
+                    this.cells,
                     () => {},
                     false
                 );
@@ -171,14 +172,28 @@ class FretboardElt extends BaseElt {
             this.fretboardModel.untoggleAll();
         }
 
-        // local and global mode ////////////////////////////////////
-
-        if (key === "l") {
-            this.fretboardModel.setMode(Mode.Local);
-        }
+        // global/local mode ////////////////////////////////////
 
         if (key === "g") {
-            this.fretboardModel.setMode(Mode.Global);
+            this.fretboardModel.toggleGlobalLocalMode();
+        }
+
+        if (key === "a") {
+            this.fretboardModel.toggleAbsoluteRelativeMode();
+
+            if (this.fretboardModel.getAbsoluteRelativeMode() === AbsoluteRelativeMode.Relative) {
+                for (const row of this.cells) {
+                    for (const cell of row) {
+                        cell.setRelativeModeText();
+                    }
+                }
+            } else if (this.fretboardModel.getAbsoluteRelativeMode() === AbsoluteRelativeMode.Absolute) {
+                for (const row of this.cells) {
+                    for (const cell of row) {
+                        cell.setAbsoluteModeText();
+                    }
+                }
+            }
         }
 
         // colors ///////////////////////////////////////////////////
@@ -222,7 +237,20 @@ class FretboardElt extends BaseElt {
             }
         }
 
-        if (key === "0") {
+        if (key === "4") {
+            const color = constants.gray;
+            if (this.state.keyboard.control) {
+                this.fretboardModel.setColorAllToggled(color);
+            } else {
+                this.fretboardModel.setColor(
+                    color,
+                    this.fretboardModel.selectedRow,
+                    this.fretboardModel.selectedCol
+                );
+            }
+        }
+
+        if (key === "0" || key === "`") {
             const color = constants.black;
             if (this.state.keyboard.control) {
                 this.fretboardModel.setColorAllToggled(color);
@@ -246,6 +274,11 @@ class FretboardElt extends BaseElt {
 
         if (isArrowKey(key)) {
             const dir = arrowKeyToDir(key);
+
+            // TODO: get rid of moveToggle(), moveToggleByOctave(), and moveToggleByString()?
+            // currently they don't work with relative mode
+            // not sure if they're useful enough to keep
+
             if (this.state.keyboard.shift) {
                 this.fretboardModel.moveToggle(
                     dir,
@@ -268,6 +301,14 @@ class FretboardElt extends BaseElt {
                 }
             } else {
                 this.fretboardModel.moveSelected(dir);
+
+                if (this.fretboardModel.getAbsoluteRelativeMode() === AbsoluteRelativeMode.Relative) {
+                    for (const row of this.cells) {
+                        for (const cell of row) {
+                            cell.setRelativeModeText();
+                        }
+                    }
+                }
             }
         }
     }
@@ -297,4 +338,4 @@ function arrowKeyToDir(key: string) {
     }
 }
 
-export { FretboardElt, FretboardModel };
+export { FretboardElt };
