@@ -61,7 +61,8 @@ class FlashcardsGameElt extends BaseElt {
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
-        this.flashcards = basicTriads;
+        // this.flashcards = basicTriads;
+        this.flashcards = majorKeySharpsFlats;
 
         this.flashcardTextElt = new TextElt(
             this.gfx,
