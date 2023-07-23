@@ -7,11 +7,12 @@ import { getRandomInt } from "../util";
 class Flashcard {
     text1: string;
     text2: string;
-    flipped: boolean = false;
+    flipped: boolean;
 
     constructor(text1: string, text2: string) {
         this.text1 = text1;
         this.text2 = text2;
+        this.flipped = false;
     }
 
     getText() {
@@ -80,6 +81,8 @@ class FlashcardsGameElt extends BaseElt {
     }
 
     update() {
+        console.log("update");
+
         let f = this.getCurFlashcard();
 
         if (!f.flipped) {

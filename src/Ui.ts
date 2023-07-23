@@ -40,19 +40,20 @@ class Ui {
 
         addHandler("keydown", (e: any) => {
             let key = e.key.toLowerCase();
-            console.log(key);
+
+            if (key === " ") {
+                key = "space";
+            }
 
             if (
                 key === "arrowdown"
                 || key === "arrowup"
                 || key === "arrowleft"
                 || key === "arrowright"
+                || key === "space"
                 || (this.state.keyboard["control"] && key !== "r")
             ) {
                 e.preventDefault();
-            }
-            if (key === " ") {
-                key = "space";
             }
             this.state.keyboard[key] = true;
             this.onKeyDown(key);
