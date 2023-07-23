@@ -9,6 +9,7 @@ import { FlashcardsGameElt } from "./ui_elts/FlashcardsGameElt";
 import { NotesSemitoneGameElt } from "./ui_elts/NotesSemitoneGameElt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler, addButtonOnClickHandler } from "./util";
+import { majorKeySharpsFlatsFlashcards, basicTriadFlashcards, fullTriadFlashcards } from "./flashcards";
 
 class Ui {
     gfx: Gfx;
@@ -118,6 +119,29 @@ class Ui {
                 new FlashcardsGameElt(
                     this.gfx,
                     { x: 20, y: 30, w: 20, h: 20 },
+                    majorKeySharpsFlatsFlashcards,
+                )
+            );
+        });
+
+        addButtonOnClickHandler("basic-triads-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new FlashcardsGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                    basicTriadFlashcards,
+                )
+            );
+        });
+
+        addButtonOnClickHandler("full-triads-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new FlashcardsGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 20, h: 20 },
+                    fullTriadFlashcards,
                 )
             );
         });
