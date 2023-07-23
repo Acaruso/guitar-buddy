@@ -81,8 +81,6 @@ class FlashcardsGameElt extends BaseElt {
     }
 
     update() {
-        console.log("update");
-
         let f = this.getCurFlashcard();
 
         if (!f.flipped) {
