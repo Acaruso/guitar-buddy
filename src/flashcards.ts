@@ -26,7 +26,26 @@ const basicTriadFlashcards = [
     new Flashcard("G", "G B D"),
 ];
 
-const fullTriadFlashcards = [
+const fullMajorTriadFlashcards = [
+    new Flashcard("A maj", "A C# E"),
+    new Flashcard("B maj", "B D# F#"),
+    new Flashcard("C maj", "C E G"),
+    new Flashcard("D maj", "D F# A"),
+    new Flashcard("E maj", "E G# B"),
+    new Flashcard("F maj", "F A C"),
+    new Flashcard("G maj", "G B D"),
+
+    new Flashcard("Ab maj", "Ab C Eb"),
+    new Flashcard("Bb maj", "Bb D F"),
+    new Flashcard("Cb maj", "Cb Eb Gb"),
+    new Flashcard("C# maj", "C# E# G#"),
+    new Flashcard("Db maj", "Db F Ab"),
+    new Flashcard("Eb maj", "Eb G Bb"),
+    new Flashcard("F# maj", "F# A# C#"),
+    new Flashcard("Gb maj", "Gb Bb Db"),
+];
+
+const fullMajorMinorTriadFlashcards = [
     new Flashcard("A maj", "A C# E"),
     new Flashcard("B maj", "B D# F#"),
     new Flashcard("C maj", "C E G"),
@@ -44,4 +63,9 @@ const fullTriadFlashcards = [
     new Flashcard("G min", "G Bb D"),
 ];
 
-export { majorKeySharpsFlatsFlashcards, basicTriadFlashcards, fullTriadFlashcards };
+export {
+    majorKeySharpsFlatsFlashcards,
+    basicTriadFlashcards,
+    fullMajorTriadFlashcards,
+    fullMajorMinorTriadFlashcards,
+};

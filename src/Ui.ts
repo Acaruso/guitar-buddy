@@ -7,9 +7,10 @@ import { IntervalsGameElt } from "./ui_elts/IntervalsGameElt";
 import { StringFretGameElt } from "./ui_elts/StringFretGameElt";
 import { FlashcardsGameElt } from "./ui_elts/FlashcardsGameElt";
 import { NotesSemitoneGameElt } from "./ui_elts/NotesSemitoneGameElt";
+import { StringFretSemitoneGameElt } from "./ui_elts/StringFretSemitoneGame";
 import { constants } from "./constants";
 import { isInsideRect, addHandler, addButtonOnClickHandler } from "./util";
-import { majorKeySharpsFlatsFlashcards, basicTriadFlashcards, fullTriadFlashcards } from "./flashcards";
+import { majorKeySharpsFlatsFlashcards, basicTriadFlashcards, fullMajorMinorTriadFlashcards } from "./flashcards";
 
 class Ui {
     gfx: Gfx;
@@ -141,7 +142,7 @@ class Ui {
                 new FlashcardsGameElt(
                     this.gfx,
                     { x: 20, y: 30, w: 20, h: 20 },
-                    fullTriadFlashcards,
+                    fullMajorMinorTriadFlashcards,
                 )
             );
         });
@@ -150,6 +151,16 @@ class Ui {
             this.rootElt.clearChildren();
             this.rootElt.pushChild(
                 new NotesSemitoneGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 2000, h: 1000 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("string-fret-semitone-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new StringFretSemitoneGameElt(
                     this.gfx,
                     { x: 20, y: 30, w: 2000, h: 1000 },
                 )

@@ -12,7 +12,7 @@ class StringFretGameElt extends BaseElt {
     stringElt: TextElt;
     fretElt: TextElt;
     tickRef: any = null;
-    tickTime: number = 2900;    // milliseconds
+    tickTime: number = 2500;    // milliseconds
     timerOn: boolean = false;
     prevR1: number = 0;
     prevR2: number = 0;
