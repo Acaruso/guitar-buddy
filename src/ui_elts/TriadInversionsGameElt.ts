@@ -187,11 +187,11 @@ class TriadInversionsGameElt extends BaseElt {
         }
 
         if (isBetween(strangIdx, 1, 4)) {
-            arr.push("2st inversion");
+            arr.push("2nd inversion");
         }
 
         if (isBetween(strangIdx, 2, 5)) {
-            arr.push("1nd inversion");
+            arr.push("1st inversion");
         }
 
         return arr[getRandomInt(arr.length)];
