@@ -135,23 +135,26 @@ class TriadInversionsGameElt extends BaseElt {
     }
 
     update() {
-        let r1 = this.getStrangIdx();
-        let r2 = this.getFret();
+        let strangIdx = this.getStrangIdx();
+        let fret = this.getFret();
 
         // don't repeat same r1 and r2 twice in a row:
-        while (r1 === this.prevR1 && r2 === this.prevR2) {
-            r1 = this.getStrangIdx();
-            r2 = this.getFret();
+        while (strangIdx === this.prevR1 && fret === this.prevR2) {
+            strangIdx = this.getStrangIdx();
+            fret = this.getFret();
         }
 
-        this.prevR1 = r1;
-        this.prevR2 = r2;
+        this.prevR1 = strangIdx;
+        this.prevR2 = fret;
 
         const type = this.getType();
-        const inversion = this.getInversion(r1);
+        const inversion = this.getInversion(strangIdx);
 
-        this.stringElt.setText(   `string:    ${this.strangs[r1]}`);
-        this.fretElt.setText(     `fret:      ${r2}`);
+        const distToMoveUp = getDistToMoveUp(strangIdx, type, inversion);
+        fret += distToMoveUp;
+
+        this.stringElt.setText(   `string:    ${this.strangs[strangIdx]}`);
+        this.fretElt.setText(     `fret:      ${fret}`);
         this.typeElt.setText(     `type:      ${type}`);
         this.inversionElt.setText(`inversion: ${inversion}`)
     }
@@ -171,7 +174,8 @@ class TriadInversionsGameElt extends BaseElt {
     }
 
     getType() {
-        const arr = ["major", "minor"];
+        // const arr = ["major", "minor"];
+        const arr = ["major"];
         return arr[getRandomInt(arr.length)];
     }
 
@@ -198,22 +202,37 @@ function isBetween(x: number, a: number, b: number) {
     return (x >= a && x <= b);
 }
 
-function getDistanceDown(strangIdx: number, inversion: string) {
-    if (inversion === "root position") {
-        if (strangIdx === 0 || strangIdx === 1) {
-            return 4;
-        } else if (strangIdx === 2 || strangIdx === 3) {
-            return 3;
+function getDistToMoveUp(strangIdx: number, type: string, inversion: string): number {
+    // note that `strangIdx` is the string index of the *root note* of the chord.
+    // want to return distance that we would need to move root note up if root note was at 0
+    // for it to be playable.
+    if (type === "major") {
+        if (inversion === "root position") {
+            if (strangIdx === 0 || strangIdx === 1) {
+                return 3;
+            } else if (strangIdx === 2 || strangIdx === 3) {
+                return 2;
+            }
+        } else if (inversion === "1st inversion") {
+            if (strangIdx === 2 || strangIdx === 3) {
+                return 0;
+            } else if (strangIdx === 4) {
+                return 1;
+            } else if (strangIdx === 5) {
+                return 0;
+            }
+        } else if (inversion === "2nd inversion") {
+            if (strangIdx === 1 || strangIdx === 2) {
+                return 1;
+            } else if (strangIdx === 3) {
+                return 0;
+            } else if (strangIdx === 4) {
+                return 1;
+            }
         }
-    } else if (inversion === "1st inversion") {
-        if (strangIdx === 2 || strangIdx === 3) {
-            return 0;
-        } else {
-            return 3;
-        }
-    } else if (inversion === "2nd inversion") {
-
     }
+
+    return 0;
 }
 
 export { TriadInversionsGameElt };
