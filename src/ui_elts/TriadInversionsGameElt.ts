@@ -102,6 +102,7 @@ class TriadInversionsGameElt extends BaseElt {
 
         this.pushChild(this.stringElt);
         this.pushChild(this.fretElt);
+        this.pushChild(this.typeElt);
         this.pushChild(this.inversionElt);
 
         this.update();
