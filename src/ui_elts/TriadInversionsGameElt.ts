@@ -136,12 +136,12 @@ class TriadInversionsGameElt extends BaseElt {
 
     update() {
         let strangIdx = this.getStrangIdx();
-        let fret = this.getFret();
+        let fret      = this.getFret();
 
-        // don't repeat same r1 and r2 twice in a row:
+        // don't repeat the same random numbers twice in a row:
         while (strangIdx === this.prevR1 && fret === this.prevR2) {
             strangIdx = this.getStrangIdx();
-            fret = this.getFret();
+            fret      = this.getFret();
         }
 
         this.prevR1 = strangIdx;
@@ -174,8 +174,7 @@ class TriadInversionsGameElt extends BaseElt {
     }
 
     getType() {
-        // const arr = ["major", "minor"];
-        const arr = ["major"];
+        const arr = ["major", "minor"];
         return arr[getRandomInt(arr.length)];
     }
 
@@ -190,6 +189,10 @@ class TriadInversionsGameElt extends BaseElt {
             arr.push("2nd inversion");
         }
 
+        if (isBetween(strangIdx, 2, 4)) {
+            arr.push("1st inversion shell");
+        }
+
         if (isBetween(strangIdx, 2, 5)) {
             arr.push("1st inversion");
         }
@@ -198,41 +201,139 @@ class TriadInversionsGameElt extends BaseElt {
     }
 }
 
+// is x between a inclusive and b inclusive
 function isBetween(x: number, a: number, b: number) {
     return (x >= a && x <= b);
 }
 
-function getDistToMoveUp(strangIdx: number, type: string, inversion: string): number {
-    // note that `strangIdx` is the string index of the *root note* of the chord.
-    // want to return distance that we would need to move root note up if root note was at 0
-    // for it to be playable.
-    if (type === "major") {
-        if (inversion === "root position") {
-            if (strangIdx === 0 || strangIdx === 1) {
-                return 3;
-            } else if (strangIdx === 2 || strangIdx === 3) {
-                return 2;
-            }
-        } else if (inversion === "1st inversion") {
-            if (strangIdx === 2 || strangIdx === 3) {
-                return 0;
-            } else if (strangIdx === 4) {
-                return 1;
-            } else if (strangIdx === 5) {
-                return 0;
-            }
-        } else if (inversion === "2nd inversion") {
-            if (strangIdx === 1 || strangIdx === 2) {
-                return 1;
-            } else if (strangIdx === 3) {
-                return 0;
-            } else if (strangIdx === 4) {
-                return 1;
-            }
+type DistMapType = {
+    [key: string]: {
+        [key: string]: {
+            [key: number]: number
         }
     }
+};
 
-    return 0;
+const distMap: DistMapType = {
+    "major": {
+        "root position": {
+            0: 3,
+            1: 3,
+            2: 2,
+            3: 3,
+        },
+        "1st inversion": {
+            2: 0,
+            3: 0,
+            4: 1,
+            5: 0,
+        },
+        "2nd inversion": {
+            1: 1,
+            2: 1,
+            3: 0,
+            4: 1,
+        },
+        "1st inversion shell": {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+        }
+    },
+    "minor": {
+        "root position": {
+            0: 3,
+            1: 3,
+            2: 2,
+            3: 2,
+        },
+        "1st inversion": {
+            2: 0,
+            3: 0,
+            4: 1,
+            5: 0,
+        },
+        "2nd inversion": {
+            1: 2,
+            2: 2,
+            3: 1,
+            4: 2,
+        },
+        "1st inversion shell": {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+        }
+    }
+};
+
+function getDistToMoveUp(strangIdx: number, type: string, inversion: string): number {
+    let res = 0;
+    try {
+        res = distMap[type][inversion][strangIdx];
+    } catch (e) {
+        // do nothing
+    }
+    return res;
 }
+
+// function getDistToMoveUp(strangIdx: number, type: string, inversion: string): number {
+//     // note that `strangIdx` is the string index of the *root note* of the chord.
+//     // want to return distance that we would need to move root note up if root note was
+//     // originally at 0, for it to be playable.
+//     if (type === "major") {
+//         if (inversion === "root position") {
+//             if (strangIdx === 0 || strangIdx === 1) {
+//                 return 3;
+//             } else if (strangIdx === 2 || strangIdx === 3) {
+//                 return 2;
+//             }
+//         } else if (inversion === "1st inversion") {
+//             if (strangIdx === 2 || strangIdx === 3) {
+//                 return 0;
+//             } else if (strangIdx === 4) {
+//                 return 1;
+//             } else if (strangIdx === 5) {
+//                 return 0;
+//             }
+//         } else if (inversion === "2nd inversion") {
+//             if (strangIdx === 1 || strangIdx === 2) {
+//                 return 1;
+//             } else if (strangIdx === 3) {
+//                 return 0;
+//             } else if (strangIdx === 4) {
+//                 return 1;
+//             }
+//         }
+//     } else if (type === "minor") {
+//         if (inversion === "root position") {
+//             if (strangIdx === 0 || strangIdx === 1) {
+//                 return 3;
+//             } else if (strangIdx === 2 || strangIdx === 3) {
+//                 return 2;
+//             }
+//         } else if (inversion === "1st inversion") {
+//             if (strangIdx === 2 || strangIdx === 3) {
+//                 return 0;
+//             } else if (strangIdx === 4) {
+//                 return 1;
+//             } else if (strangIdx === 5) {
+//                 return 0;
+//             }
+//         } else if (inversion === "2nd inversion") {
+//             if (strangIdx === 1 || strangIdx === 2) {
+//                 return 2;
+//             } else if (strangIdx === 3) {
+//                 return 1;
+//             } else if (strangIdx === 4) {
+//                 return 2;
+//             }
+//         }
+//     }
+
+//     return 0;
+// }
 
 export { TriadInversionsGameElt };
