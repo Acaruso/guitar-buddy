@@ -10,6 +10,7 @@ class App {
     canvas: any;
 
     constructor() {
+        console.log("TEST!!")
         this.canvas = document.getElementById("myCanvas");
         this.canvas.width = constants.canvasWidth;
         this.canvas.height = constants.canvasHeight;

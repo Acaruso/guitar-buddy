@@ -8,9 +8,15 @@ import { StringFretGameElt } from "./ui_elts/StringFretGameElt";
 import { FlashcardsGameElt } from "./ui_elts/FlashcardsGameElt";
 import { NotesSemitoneGameElt } from "./ui_elts/NotesSemitoneGameElt";
 import { StringFretSemitoneGameElt } from "./ui_elts/StringFretSemitoneGame";
+import { TriadInversionsGameElt } from "./ui_elts/TriadInversionsGameElt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler, addButtonOnClickHandler } from "./util";
-import { majorKeySharpsFlatsFlashcards, basicTriadFlashcards, fullMajorMinorTriadFlashcards } from "./flashcards";
+import {
+    majorKeySharpsFlatsFlashcards,
+    basicTriadFlashcards,
+    fullMajorTriadFlashcards,
+    fullMajorMinorTriadFlashcards,
+} from "./flashcards";
 
 class Ui {
     gfx: Gfx;
@@ -78,8 +84,8 @@ class Ui {
                     this.gfx,
                     { x: 20, y: 30, w: 20, h: 20 },
                     this.state,
-                    6,
-                    24
+                    6,              // num rows
+                    30              // num cols
                 )
             );
         });
@@ -142,6 +148,7 @@ class Ui {
                 new FlashcardsGameElt(
                     this.gfx,
                     { x: 20, y: 30, w: 20, h: 20 },
+                    // fullMajorTriadFlashcards,
                     fullMajorMinorTriadFlashcards,
                 )
             );
@@ -167,6 +174,16 @@ class Ui {
             );
         });
 
+        addButtonOnClickHandler("triad-inversion-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new TriadInversionsGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 2000, h: 1000 },
+                )
+            );
+        });
+
         // create FretboardElt as the default UI elt
 
         this.rootElt.pushChild(
@@ -175,7 +192,7 @@ class Ui {
                 { x: 20, y: 30, w: 20, h: 20 },
                 this.state,
                 6,
-                24
+                30
             )
         );
     }
