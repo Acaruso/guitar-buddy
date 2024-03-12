@@ -35,7 +35,7 @@ class FretboardElt extends BaseElt {
         // this.numCols = numCols;
 
         // this.numRows = 6;
-        this.numRows = 16;
+        this.numRows = 30;
         this.numCols = 30;
 
         this.rect = {
