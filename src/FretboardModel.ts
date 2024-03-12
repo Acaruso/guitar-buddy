@@ -25,6 +25,11 @@ enum NoteDisplayMode {
     RelativeNumber,
 }
 
+enum StringMode {
+    Normal = 1,
+    Infinite,
+}
+
 // use this functionto get next NoteDisplayMode:
 // function getNextNoteDisplayMode(m: NoteDisplayMode)
 
@@ -46,6 +51,8 @@ class FretboardModel {
     numRows: number;
     numCols: number;
 
+    stringMode: StringMode;
+
     selected: boolean = false;
     selectedRow: number = 0;
     selectedCol: number = 0;
@@ -64,21 +71,43 @@ class FretboardModel {
     // "strang" === guitar string
     // not to be confused with "string" which is a data type
 
-    strangs: Array<number> = [
-        31,     // high E
-        26,
-        22,
-        17,
-        12,
-        7       // low E
-    ];
+    // strangs: Array<number> = [
+    //     31,     // high E
+    //     26,
+    //     22,
+    //     17,
+    //     12,
+    //     7       // low E
+    // ];
+
+    strangs: Array<number> = [];
 
     constructor(
         numRows: number,
-        numCols: number
+        numCols: number,
+        stringMode: StringMode,
     ) {
         this.numRows = numRows;
         this.numCols = numCols;
+        this.stringMode = stringMode;
+
+        if (this.stringMode == StringMode.Normal) {
+            this.strangs = [
+                31,     // high E
+                26,
+                22,
+                17,
+                12,
+                7       // low E
+            ];
+        } else if (this.stringMode == StringMode.Infinite) {
+            let counter = 7;
+            for (let i = 0; i < numRows; i++) {
+                this.strangs.push(counter);
+                counter += 5;
+            }
+            this.strangs.reverse();
+        }
 
         this.cells = [];
 
@@ -472,4 +501,4 @@ function getNextNoteDisplayMode(m: NoteDisplayMode) {
     }
 }
 
-export { Cell, FretboardModel, Dir, GlobalLocalMode, AbsoluteRelativeMode };
+export { Cell, FretboardModel, Dir, GlobalLocalMode, AbsoluteRelativeMode, StringMode };

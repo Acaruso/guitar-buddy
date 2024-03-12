@@ -84,8 +84,8 @@ class Ui {
                     this.gfx,
                     { x: 20, y: 30, w: 20, h: 20 },
                     this.state,
-                    6,              // num rows
-                    30              // num cols
+                    // 6,              // num rows
+                    // 30              // num cols
                 )
             );
         });
@@ -191,8 +191,8 @@ class Ui {
                 this.gfx,
                 { x: 20, y: 30, w: 20, h: 20 },
                 this.state,
-                6,
-                30
+                // 6,
+                // 30
             )
         );
     }

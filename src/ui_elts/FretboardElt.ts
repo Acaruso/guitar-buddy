@@ -1,7 +1,7 @@
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
 import { State } from "../State";
-import { FretboardModel, Dir, AbsoluteRelativeMode } from "../FretboardModel";
+import { FretboardModel, Dir, AbsoluteRelativeMode, StringMode } from "../FretboardModel";
 import { BaseElt } from "./BaseElt";
 import { CellElt } from "./CellElt";
 import { LineElt } from "./LineElt";
@@ -16,6 +16,7 @@ class FretboardElt extends BaseElt {
     fretboardY: number;
     numRows: number;
     numCols: number;
+    stringMode: StringMode;
     cellW: number = 36;
     cellH: number = 30;
     cells: Array<Array<CellElt>>;
@@ -25,16 +26,23 @@ class FretboardElt extends BaseElt {
         gfx: Gfx,
         rect: Rect,
         state: State,
-        numRows: number,
-        numCols: number,
+        // numRows: number,
+        // numCols: number,
     ) {
         super(gfx, rect);
+
+        // this.numRows = numRows;
+        // this.numCols = numCols;
+
+        // this.numRows = 6;
+        this.numRows = 10;
+        this.numCols = 30;
 
         this.rect = {
             x: rect.x,
             y: rect.y,
-            w: this.cellW * numCols,
-            h: this.cellH * numRows + this.topPadding,
+            w: this.cellW * this.numCols,
+            h: this.cellH * this.numRows + this.topPadding,
         };
 
         this.fretboardX = this.rect.x;
@@ -42,19 +50,19 @@ class FretboardElt extends BaseElt {
 
         this.state = state;
 
-        this.numRows = numRows;
-        this.numCols = numCols;
+        // this.stringMode = StringMode.Normal;
+        this.stringMode = StringMode.Infinite;
 
         this.cells = [];
 
-        this.fretboardModel = new FretboardModel(this.numRows, this.numCols);
+        this.fretboardModel = new FretboardModel(this.numRows, this.numCols, this.stringMode);
 
         // create cells
 
-        for (let row = 0; row < numRows; row++) {
+        for (let row = 0; row < this.numRows; row++) {
             this.cells.push([]);
 
-            for (let col = 0; col < numCols; col++) {
+            for (let col = 0; col < this.numCols; col++) {
                 const newCell = new CellElt(
                     this.gfx,
                     {
@@ -81,7 +89,7 @@ class FretboardElt extends BaseElt {
 
         // create strings
 
-        for (let i = 0; i < numRows; i++) {
+        for (let i = 0; i < this.numRows; i++) {
             this.children.push(
                 new LineElt(
                     this.gfx,
@@ -99,7 +107,7 @@ class FretboardElt extends BaseElt {
 
         // create frets
 
-        for (let i = 0; i < numCols + 1; i++) {
+        for (let i = 0; i < this.numCols + 1; i++) {
             this.children.push(
                 new LineElt(
                     this.gfx,
@@ -123,7 +131,7 @@ class FretboardElt extends BaseElt {
         const dotRectW = this.cellW;
         const dotRectH = this.fretboardY - this.rect.y;
 
-        for (let col = 0; col < numCols; col++) {
+        for (let col = 0; col < this.numCols; col++) {
             if (singleDotPositions.includes(col)) {
                 this.children.push(
                     new SingleDotElt(
