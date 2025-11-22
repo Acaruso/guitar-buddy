@@ -119,7 +119,7 @@ class NotesSemitoneGameElt extends BaseElt {
         );
         this.decreaseTimerIntervalButton.onClick = () => {
             this.tickTime -= 200;
-            if (this.tickTime < 0) this.tickTime = 0;
+            if (this.tickTime < 200) this.tickTime = 200;
             if (this.timerOn) {
                 clearInterval(this.tickRef);
                 this.tickRef = setInterval(() => this.tick(), this.tickTime);
