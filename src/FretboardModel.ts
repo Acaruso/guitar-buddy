@@ -73,6 +73,24 @@ class FretboardModel {
         7       // low E
     ];
 
+    // strangs: Array<number> = [
+    //     77,
+    //     72,
+    //     67,
+    //     62,
+    //     57,
+    //     52,
+    //     47,
+    //     42,
+    //     37,
+    //     32,
+    //     27,
+    //     22,
+    //     17,
+    //     12,
+    //     7       // low E
+    // ];
+
     constructor(
         numRows: number,
         numCols: number
