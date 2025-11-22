@@ -70,11 +70,12 @@ class NotesSemitoneGameElt extends BaseElt {
         this.curText = `${notes[this.i1].noteName} ${notes[this.i2].noteName}`;
         this.textElt.setText(this.curText);
 
+        let nextY = this.rect.y + 200;
         this.startStopTimerButton = new TextElt(
             this.gfx,
             {
                 x: this.rect.x,
-                y: this.rect.y + 500,
+                y: nextY,
                 w: 800,
                 h: 100
             },
@@ -85,11 +86,12 @@ class NotesSemitoneGameElt extends BaseElt {
         this.startStopTimerButton.drawRect = true;
         this.pushChild(this.startStopTimerButton);
 
+        nextY += 100;
         this.increaseTimerIntervalButton = new TextElt(
             this.gfx,
             {
                 x: this.rect.x,
-                y: this.rect.y + 600,
+                y: nextY,
                 w: 1100,
                 h: 100
             },
@@ -106,11 +108,12 @@ class NotesSemitoneGameElt extends BaseElt {
         this.increaseTimerIntervalButton.drawRect = true;
         this.pushChild(this.increaseTimerIntervalButton);
 
+        nextY += 100;
         this.decreaseTimerIntervalButton = new TextElt(
             this.gfx,
             {
                 x: this.rect.x,
-                y: this.rect.y + 700,
+                y: nextY,
                 w: 1100,
                 h: 100
             },
