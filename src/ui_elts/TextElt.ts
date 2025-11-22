@@ -4,11 +4,15 @@ import { Rect } from "../Rect";
 import { constants } from "../constants";
 import { textConstants } from "../textConstants";
 
+type OnClick = (x: number, y: number) => void;
+
 class TextElt extends BaseElt {
     text: string;
     color: string;
     size: number;
     z: number;
+    public onClick: OnClick;
+    public drawRect: boolean;
 
     constructor(
         gfx: Gfx,
@@ -23,6 +27,8 @@ class TextElt extends BaseElt {
         this.size = size;
         this.color = color;
         this.z = z;
+        this.onClick = () => {};
+        this.drawRect = false;
     }
 
     setText(text: string) {
@@ -43,7 +49,14 @@ class TextElt extends BaseElt {
             },
             this.color,
             this.z
-        )
+        );
+        if (this.drawRect) {
+            this.gfx.strokeRectHeavy(this.rect);
+        }
+    }
+
+    onLeftMBDown(x: number, y: number) {
+        this.onClick(x, y);
     }
 }
 

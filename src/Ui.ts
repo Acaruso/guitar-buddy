@@ -169,7 +169,7 @@ class Ui {
             this.rootElt.pushChild(
                 new StringFretSemitoneGameElt(
                     this.gfx,
-                    { x: 20, y: 30, w: 2000, h: 1000 },
+                    { x: 20, y: 30, w: 2000, h: 500 },
                 )
             );
         });
@@ -192,6 +192,7 @@ class Ui {
                 { x: 20, y: 30, w: 20, h: 20 },
                 this.state,
                 6,
+                // 15,
                 30
             )
         );

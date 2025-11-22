@@ -33,7 +33,7 @@ function modAddition(a: number, b: number, m: number) {
 
 class NotesSemitoneGameElt extends BaseElt {
     tickRef: any = null;
-    tickTime: number = 2900;    // milliseconds
+    tickTime: number = 2000;    // milliseconds
     timerOn: boolean = false;
     textElt: TextElt;
     textSize: number = 82;
@@ -41,6 +41,9 @@ class NotesSemitoneGameElt extends BaseElt {
     curText: string = "";
     i1: number = 0;
     i2: number = 0;
+    startStopTimerButton: TextElt;
+    increaseTimerIntervalButton: TextElt;
+    decreaseTimerIntervalButton: TextElt;
 
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
@@ -66,6 +69,68 @@ class NotesSemitoneGameElt extends BaseElt {
         }
         this.curText = `${notes[this.i1].noteName} ${notes[this.i2].noteName}`;
         this.textElt.setText(this.curText);
+
+        this.startStopTimerButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: this.rect.y + 500,
+                w: 800,
+                h: 100
+            },
+            "start/stop timer",
+            this.textSize
+        );
+        this.startStopTimerButton.onClick = () => { this.startStopTimer(); };
+        this.startStopTimerButton.drawRect = true;
+        this.pushChild(this.startStopTimerButton);
+
+        this.increaseTimerIntervalButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: this.rect.y + 600,
+                w: 1100,
+                h: 100
+            },
+            "increase timer interval",
+            this.textSize
+        );
+        this.increaseTimerIntervalButton.onClick = () => {
+            this.tickTime += 200;
+            if (this.timerOn) {
+                clearInterval(this.tickRef);
+                this.tickRef = setInterval(() => this.tick(), this.tickTime);
+            }
+        };
+        this.increaseTimerIntervalButton.drawRect = true;
+        this.pushChild(this.increaseTimerIntervalButton);
+
+        this.decreaseTimerIntervalButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: this.rect.y + 700,
+                w: 1100,
+                h: 100
+            },
+            "decrease timer interval",
+            this.textSize
+        );
+        this.decreaseTimerIntervalButton.onClick = () => {
+            this.tickTime -= 200;
+            if (this.tickTime < 200) this.tickTime = 200;
+            if (this.timerOn) {
+                clearInterval(this.tickRef);
+                this.tickRef = setInterval(() => this.tick(), this.tickTime);
+            }
+        };
+        this.decreaseTimerIntervalButton.drawRect = true;
+        this.pushChild(this.decreaseTimerIntervalButton);
+    }
+
+    tick() {
+        this.update();
     }
 
     update() {
@@ -91,11 +156,30 @@ class NotesSemitoneGameElt extends BaseElt {
         if (key === "space") {
             this.update();
         }
+
+        if (key === "t") {
+            // if (!this.timerOn) {
+            //     this.tickRef = setInterval(() => this.tick(), this.tickTime);
+            // } else {
+            //     clearInterval(this.tickRef);
+            // }
+            // this.timerOn = !this.timerOn;
+            this.startStopTimer();
+        }
     }
 
-    onLeftMBDown(x: number, y: number) {
-        this.update();
+    startStopTimer() {
+        if (!this.timerOn) {
+            this.tickRef = setInterval(() => this.tick(), this.tickTime);
+        } else {
+            clearInterval(this.tickRef);
+        }
+        this.timerOn = !this.timerOn;
     }
+
+    // onLeftMBDown(x: number, y: number) {
+    //     this.update();
+    // }
 }
 
 export { NotesSemitoneGameElt };
