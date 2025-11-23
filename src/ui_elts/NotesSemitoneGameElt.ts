@@ -13,15 +13,15 @@ class Note {
     }
 }
 
-const notes = [
-    new Note("A", 0),
-    new Note("B", 2),
-    new Note("C", 3),
-    new Note("D", 5),
-    new Note("E", 7),
-    new Note("F", 8),
-    new Note("G", 10),
-];
+// const notes = [
+//     new Note("A", 0),
+//     new Note("B", 2),
+//     new Note("C", 3),
+//     new Note("D", 5),
+//     new Note("E", 7),
+//     new Note("F", 8),
+//     new Note("G", 10),
+// ];
 
 function modAddition(a: number, b: number, m: number) {
     let res = b - a;
@@ -44,9 +44,40 @@ class NotesSemitoneGameElt extends BaseElt {
     startStopTimerButton: TextElt;
     increaseTimerIntervalButton: TextElt;
     decreaseTimerIntervalButton: TextElt;
+    useAccidentalsButton: TextElt;
+    useAccidentals: boolean = false;
+
+    notes: Array<Note> = [];
+
+    notesWithoutAccidentals: Array<Note> = [
+        new Note("A", 0),
+        new Note("B", 2),
+        new Note("C", 3),
+        new Note("D", 5),
+        new Note("E", 7),
+        new Note("F", 8),
+        new Note("G", 10),
+    ];
+
+    notesWithFlats: Array<Note> = [
+        new Note("A",   0),
+        new Note("Bb",  1),
+        new Note("B",   2),
+        new Note("C",   3),
+        new Note("Db",  4),
+        new Note("D",   5),
+        new Note("Eb",  6),
+        new Note("E",   7),
+        new Note("F",   8),
+        new Note("Gb",  9),
+        new Note("G",  10),
+        new Note("Ab", 11),
+    ];
 
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
+
+        this.notes = this.notesWithoutAccidentals;
 
         this.textElt = new TextElt(
             this.gfx,
@@ -62,21 +93,21 @@ class NotesSemitoneGameElt extends BaseElt {
 
         this.pushChild(this.textElt);
 
-        this.i1 = getRandomInt(notes.length);
-        this.i2 = getRandomInt(notes.length);
+        this.i1 = getRandomInt(this.notes.length);
+        this.i2 = getRandomInt(this.notes.length);
         while (this.i1 === this.i2) {
-            this.i2 = getRandomInt(notes.length);
+            this.i2 = getRandomInt(this.notes.length);
         }
-        this.curText = `${notes[this.i1].noteName} ${notes[this.i2].noteName}`;
+        this.curText = `${this.notes[this.i1].noteName} ${this.notes[this.i2].noteName}`;
         this.textElt.setText(this.curText);
 
-        let nextY = this.rect.y + 200;
+        let nextY = this.rect.y + 100;
         this.startStopTimerButton = new TextElt(
             this.gfx,
             {
                 x: this.rect.x,
                 y: nextY,
-                w: 800,
+                w: 1100,
                 h: 100
             },
             "start/stop timer",
@@ -130,6 +161,29 @@ class NotesSemitoneGameElt extends BaseElt {
         };
         this.decreaseTimerIntervalButton.drawRect = true;
         this.pushChild(this.decreaseTimerIntervalButton);
+
+        nextY += 100;
+        this.useAccidentalsButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: nextY,
+                w: 1100,
+                h: 100
+            },
+            "use accidentals",
+            this.textSize
+        );
+        this.useAccidentalsButton.onClick = () => {
+            this.useAccidentals = !this.useAccidentals;
+            if (this.useAccidentals) {
+                this.notes = this.notesWithFlats;
+            } else {
+                this.notes = this.notesWithoutAccidentals;
+            }
+        };
+        this.useAccidentalsButton.drawRect = true;
+        this.pushChild(this.useAccidentalsButton);
     }
 
     tick() {
@@ -139,17 +193,17 @@ class NotesSemitoneGameElt extends BaseElt {
     update() {
         if (this.flipped === false) {
             this.flipped = true;
-            let res = modAddition(notes[this.i1].noteNum, notes[this.i2].noteNum, 12);
+            let res = modAddition(this.notes[this.i1].noteNum, this.notes[this.i2].noteNum, 12);
             this.curText = String(res);
         } else {
-            this.i1 = getRandomInt(notes.length);
-            this.i2 = getRandomInt(notes.length);
+            this.i1 = getRandomInt(this.notes.length);
+            this.i2 = getRandomInt(this.notes.length);
             while (this.i1 === this.i2) {
-                this.i2 = getRandomInt(notes.length);
+                this.i2 = getRandomInt(this.notes.length);
             }
 
             this.flipped = false;
-            this.curText = `${notes[this.i1].noteName} ${notes[this.i2].noteName}`;
+            this.curText = `${this.notes[this.i1].noteName} ${this.notes[this.i2].noteName}`;
         }
 
         this.textElt.setText(this.curText);
@@ -161,12 +215,6 @@ class NotesSemitoneGameElt extends BaseElt {
         }
 
         if (key === "t") {
-            // if (!this.timerOn) {
-            //     this.tickRef = setInterval(() => this.tick(), this.tickTime);
-            // } else {
-            //     clearInterval(this.tickRef);
-            // }
-            // this.timerOn = !this.timerOn;
             this.startStopTimer();
         }
     }
