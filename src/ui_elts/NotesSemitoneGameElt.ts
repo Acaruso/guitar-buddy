@@ -13,16 +13,6 @@ class Note {
     }
 }
 
-// const notes = [
-//     new Note("A", 0),
-//     new Note("B", 2),
-//     new Note("C", 3),
-//     new Note("D", 5),
-//     new Note("E", 7),
-//     new Note("F", 8),
-//     new Note("G", 10),
-// ];
-
 function modAddition(a: number, b: number, m: number) {
     let res = b - a;
     if (res < 0) {
