@@ -36,6 +36,7 @@ class NotesSemitoneGameElt extends BaseElt {
     decreaseTimerIntervalButton: TextElt;
     useAccidentalsButton: TextElt;
     useAccidentals: boolean = false;
+    nextButton: TextElt;
 
     notes: Array<Note> = [];
 
@@ -174,6 +175,24 @@ class NotesSemitoneGameElt extends BaseElt {
         };
         this.useAccidentalsButton.drawRect = true;
         this.pushChild(this.useAccidentalsButton);
+
+        nextY += 100;
+        this.nextButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: nextY,
+                w: 1100,
+                h: 100
+            },
+            "next",
+            this.textSize
+        );
+        this.nextButton.onClick = () => {
+            this.update();
+        };
+        this.nextButton.drawRect = true;
+        this.pushChild(this.nextButton);
     }
 
     tick() {
