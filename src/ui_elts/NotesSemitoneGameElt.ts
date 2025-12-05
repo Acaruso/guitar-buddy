@@ -1,25 +1,12 @@
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
+import { Note } from "../Note";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
-import { getRandomInt } from "../util";
+import { getRandomBool, getRandomInt, modDistance } from "../util";
 
-class Note {
-    noteName: string;
-    noteNum: number;
-    constructor(noteName: string, noteNum: number) {
-        this.noteName = noteName;
-        this.noteNum = noteNum;
-    }
-}
-
-function modAddition(a: number, b: number, m: number) {
-    let res = b - a;
-    if (res < 0) {
-        res = m + res;
-    }
-    return res;
-}
+const UP = true;
+const DOWN = false;
 
 class NotesSemitoneGameElt extends BaseElt {
     tickRef: any = null;
@@ -31,6 +18,7 @@ class NotesSemitoneGameElt extends BaseElt {
     curText: string = "";
     i1: number = 0;
     i2: number = 0;
+    upOrDown: boolean = false;
     startStopTimerButton: TextElt;
     increaseTimerIntervalButton: TextElt;
     decreaseTimerIntervalButton: TextElt;
@@ -84,12 +72,7 @@ class NotesSemitoneGameElt extends BaseElt {
 
         this.pushChild(this.textElt);
 
-        this.i1 = getRandomInt(this.notes.length);
-        this.i2 = getRandomInt(this.notes.length);
-        while (this.i1 === this.i2) {
-            this.i2 = getRandomInt(this.notes.length);
-        }
-        this.curText = `${this.notes[this.i1].noteName} ${this.notes[this.i2].noteName}`;
+        this.curText = this.getNotesText();
         this.textElt.setText(this.curText);
 
         let nextY = this.rect.y + 100;
@@ -195,40 +178,48 @@ class NotesSemitoneGameElt extends BaseElt {
         this.pushChild(this.nextButton);
     }
 
-    tick() {
+    tick(): void {
         this.update();
     }
 
-    update() {
+    update(): void {
         if (this.flipped === false) {
             this.flipped = true;
-            let res = modAddition(this.notes[this.i1].noteNum, this.notes[this.i2].noteNum, 12);
+            let res = 0;
+            if (this.upOrDown == UP) {
+                res = modDistance(this.notes[this.i1].noteNum, this.notes[this.i2].noteNum, 12);
+            } else {
+                res = modDistance(this.notes[this.i2].noteNum, this.notes[this.i1].noteNum, 12);
+            }
             this.curText = String(res);
         } else {
-            this.i1 = getRandomInt(this.notes.length);
-            this.i2 = getRandomInt(this.notes.length);
-            while (this.i1 === this.i2) {
-                this.i2 = getRandomInt(this.notes.length);
-            }
-
             this.flipped = false;
-            this.curText = `${this.notes[this.i1].noteName} ${this.notes[this.i2].noteName}`;
+            this.curText = this.getNotesText();
         }
 
         this.textElt.setText(this.curText);
     }
 
-    onKeyDown(key: string) {
+    getNotesText(): string {
+        this.i1 = getRandomInt(this.notes.length);
+        this.i2 = getRandomInt(this.notes.length);
+        while (this.i1 === this.i2) {
+            this.i2 = getRandomInt(this.notes.length);
+        }
+        this.upOrDown = getRandomBool();
+        let upOrDownStr = this.upOrDown == UP ? "up" : "down";
+        return `${this.notes[this.i1].noteName} ${this.notes[this.i2].noteName} ${upOrDownStr}`;
+    }
+
+    onKeyDown(key: string): void {
         if (key === "space") {
             this.update();
-        }
-
-        if (key === "t") {
+        } else if (key === "t") {
             this.startStopTimer();
         }
     }
 
-    startStopTimer() {
+    startStopTimer(): void {
         if (!this.timerOn) {
             this.tickRef = setInterval(() => this.tick(), this.tickTime);
         } else {
