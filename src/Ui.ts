@@ -9,6 +9,7 @@ import { FlashcardsGameElt } from "./ui_elts/FlashcardsGameElt";
 import { NotesSemitoneGameElt } from "./ui_elts/NotesSemitoneGameElt";
 import { StringFretSemitoneGameElt } from "./ui_elts/StringFretSemitoneGame";
 import { TriadInversionsGameElt } from "./ui_elts/TriadInversionsGameElt";
+import { SemitonesUpDownGameElt } from "./ui_elts/SemitonesUpDownGameElt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler, addButtonOnClickHandler } from "./util";
 import {
@@ -178,6 +179,16 @@ class Ui {
             this.rootElt.clearChildren();
             this.rootElt.pushChild(
                 new TriadInversionsGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 2000, h: 1000 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("semitones-up-down-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new SemitonesUpDownGameElt(
                     this.gfx,
                     { x: 20, y: 30, w: 2000, h: 1000 },
                 )

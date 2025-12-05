@@ -50,4 +50,27 @@ function getRandomBool(): boolean {
     return getRandomInt(2) == 0;
 }
 
-export { isInsideRect, addHandler, addButtonOnClickHandler, clamp, inRange, getRandomInt, getRandomBool };
+// measure the distance from a to b, mod m
+function modDistance(a: number, b: number, m: number): number {
+    let res = b - a;
+    if (res < 0) {
+        res = m + res;
+    }
+    return res;
+}
+
+function modAddition(a: number, b: number, m: number): number {
+    return ((a + b) % m + m) % m;
+}
+
+export {
+    isInsideRect,
+    addHandler,
+    addButtonOnClickHandler,
+    clamp,
+    inRange,
+    getRandomInt,
+    getRandomBool,
+    modDistance,
+    modAddition,
+};
