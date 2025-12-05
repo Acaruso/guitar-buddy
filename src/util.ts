@@ -1,6 +1,6 @@
 import { Rect } from "./Rect";
 
-function isInsideRect(x: number, y: number, rect: Rect) {
+function isInsideRect(x: number, y: number, rect: Rect): boolean {
     return (
         x >= rect.x
         && x < (rect.x + rect.w)
@@ -21,7 +21,7 @@ function addButtonOnClickHandler(id: string, callback: any) {
 }
 
 // clamp val between low inclusive and high exclusive
-function clamp(val: number, low: number, high: number) {
+function clamp(val: number, low: number, high: number): number {
     if (val < low) {
         return low;
     } else if (val >= high) {
@@ -31,7 +31,7 @@ function clamp(val: number, low: number, high: number) {
     }
 }
 
-function inRange(val: number, low: number, high: number) {
+function inRange(val: number, low: number, high: number): boolean {
     if (val < low) {
         return false;
     } else if (val >= high) {
@@ -42,8 +42,12 @@ function inRange(val: number, low: number, high: number) {
 }
 
 // get random integer between 0 inclusive and max exclusive
-function getRandomInt(max: number) {
+function getRandomInt(max: number): number {
     return Math.floor(Math.random() * max);
 }
 
-export { isInsideRect, addHandler, addButtonOnClickHandler, clamp, inRange, getRandomInt };
+function getRandomBool(): boolean {
+    return getRandomInt(2) == 0;
+}
+
+export { isInsideRect, addHandler, addButtonOnClickHandler, clamp, inRange, getRandomInt, getRandomBool };
