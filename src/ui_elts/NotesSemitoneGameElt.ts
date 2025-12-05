@@ -5,24 +5,6 @@ import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
 import { getRandomBool, getRandomInt, modDistance } from "../util";
 
-// class Note {
-//     noteName: string;
-//     noteNum: number;
-//     constructor(noteName: string, noteNum: number) {
-//         this.noteName = noteName;
-//         this.noteNum = noteNum;
-//     }
-// }
-
-// measure the distance from a to b
-// function modDistance(a: number, b: number, m: number): number {
-//     let res = b - a;
-//     if (res < 0) {
-//         res = m + res;
-//     }
-//     return res;
-// }
-
 const UP = true;
 const DOWN = false;
 
