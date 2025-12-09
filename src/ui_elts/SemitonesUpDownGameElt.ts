@@ -5,20 +5,28 @@ import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
 import { getRandomBool, getRandomInt, modAddition } from "../util";
 
-const UP = true;
-const DOWN = false;
-
 class SemitonesUpDownGameElt extends BaseElt {
     noteInt: number = 0;
     note: string = "";
     semitonesInt: number = 0;
     semitonesStr: string = "";
-    upDown: boolean = false;
     flipped: boolean = false;
 
+    upDown: Array<string> = ["up", "down"];
+    upDownIdx: number = 0;
+
+    modes: Array<string> = ["Semitones", "Major Scale"];
+    modeIdx: number = 0;
+
+    majorScaleIntervalsUp: Array<number>   = [2, 4, 5, 7, 8, 11];
+    majorScaleIntervalsDown: Array<number> = [1, 3, 5, 7, 8, 10];
+    majorScaleNextInterval: number = 0;
+
     textSize: number = 82;
+    modeElt: TextElt;
     textElt: TextElt;
     nextButton: TextElt;
+    changeModeButton: TextElt;
 
     notes: Array<Note> = [
         new Note("A",   0),
@@ -41,6 +49,20 @@ class SemitonesUpDownGameElt extends BaseElt {
         this.noteInt = getRandomInt(this.notes.length);
 
         let nextY = this.rect.y;
+        this.modeElt = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: nextY,
+                w: 1100,
+                h: 100
+            },
+            `Mode: ${this.modes[this.modeIdx]}`,
+            this.textSize
+        );
+        this.pushChild(this.modeElt);
+
+        nextY += 100;
         this.textElt = new TextElt(
             this.gfx,
             {
@@ -71,24 +93,76 @@ class SemitonesUpDownGameElt extends BaseElt {
             this.update();
         };
         this.pushChild(this.nextButton);
+
+        nextY += 100;
+        this.changeModeButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: nextY,
+                w: 1100,
+                h: 100
+            },
+            "change mode",
+            this.textSize
+        );
+        this.changeModeButton.drawRect = true;
+        this.changeModeButton.onClick = () => {
+            this.updateMode();
+        };
+        this.pushChild(this.changeModeButton);
     }
 
     update(): void {
+        if (this.modes[this.modeIdx] == "Semitones") {
+            this.updateSemitones();
+        } else if (this.modes[this.modeIdx] == "Major Scale") {
+            this.updateMajorScale();
+        }
+    }
+
+    updateSemitones(): void {
         if (this.flipped == false) {
-            this.semitonesInt = getRandomInt(11) + 1; // get int in range [0, 11), then add 1 to get range [1, 12)
+            // get int in range [0, 11), then add 1 to get range [1, 12)
+            this.semitonesInt = getRandomInt(11) + 1;
             this.semitonesStr = String(this.semitonesInt);
-            this.upDown = getRandomBool();
-            let upDownStr = this.upDown == UP ? "up" : "down";
-            let s = `${this.semitonesStr} ${upDownStr}`;
+            this.upDownIdx = getRandomInt(2);
+            let s = `${this.semitonesStr} ${this.upDown[this.upDownIdx]}`;
             this.textElt.setText(s);
         } else {
-            let x = this.upDown == UP ? this.semitonesInt : -1 * this.semitonesInt;
+            let x = this.upDown[this.upDownIdx] == "up" ? this.semitonesInt : -1 * this.semitonesInt;
             this.noteInt = modAddition(this.noteInt, x, 12);
             let s = this.notes[this.noteInt].noteName;
             this.textElt.setText(s);
         }
-
         this.flipped = !this.flipped;
+    }
+
+    updateMajorScale(): void {
+        if (this.flipped == false) {
+            this.upDownIdx = getRandomInt(2);
+            let i = getRandomInt(this.majorScaleIntervalsUp.length);
+            if (this.upDown[this.upDownIdx] == "up") {
+                this.majorScaleNextInterval = this.majorScaleIntervalsUp[i];
+            } else {
+                this.majorScaleNextInterval = this.majorScaleIntervalsDown[i];
+            }
+            let s = `${this.majorScaleNextInterval} ${this.upDown[this.upDownIdx]}`;
+            this.textElt.setText(s);
+        } else {
+            let x = this.upDown[this.upDownIdx] == "up"
+                ? this.majorScaleNextInterval
+                : -1 * this.majorScaleNextInterval;
+            this.noteInt = modAddition(this.noteInt, x, 12);
+            let s = this.notes[this.noteInt].noteName;
+            this.textElt.setText(s);
+        }
+        this.flipped = !this.flipped;
+    }
+
+    updateMode(): void {
+        this.modeIdx = (this.modeIdx + 1) % this.modes.length;
+        this.modeElt.setText(`Mode: ${this.modes[this.modeIdx]}`);
     }
 }
 

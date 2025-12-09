@@ -10,6 +10,7 @@ import { NotesSemitoneGameElt } from "./ui_elts/NotesSemitoneGameElt";
 import { StringFretSemitoneGameElt } from "./ui_elts/StringFretSemitoneGame";
 import { TriadInversionsGameElt } from "./ui_elts/TriadInversionsGameElt";
 import { SemitonesUpDownGameElt } from "./ui_elts/SemitonesUpDownGameElt";
+import { ScalesGameElt } from "./ui_elts/ScalesGameElt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler, addButtonOnClickHandler } from "./util";
 import {
@@ -189,6 +190,16 @@ class Ui {
             this.rootElt.clearChildren();
             this.rootElt.pushChild(
                 new SemitonesUpDownGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 2000, h: 1000 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("scales-game-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new ScalesGameElt(
                     this.gfx,
                     { x: 20, y: 30, w: 2000, h: 1000 },
                 )
