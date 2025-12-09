@@ -14,7 +14,7 @@ class ScalesGameElt extends BaseElt {
     upDown: Array<string> = ["up", "down"];
     upDownIdx: number = 0;
 
-    notes: Array<Note> = [
+    notesFlats: Array<Note> = [
         new Note("A",   0),
         new Note("Bb",  1),
         new Note("B",   2),
@@ -29,6 +29,38 @@ class ScalesGameElt extends BaseElt {
         new Note("Ab", 11),
     ];
 
+    notesSharps: Array<Note> = [
+        new Note("A",   0),
+        new Note("A#",  1),
+        new Note("B",   2),
+        new Note("C",   3),
+        new Note("C#",  4),
+        new Note("D",   5),
+        new Note("D#",  6),
+        new Note("E",   7),
+        new Note("F",   8),
+        new Note("F#",  9),
+        new Note("G",  10),
+        new Note("G#", 11),
+    ];
+
+    notesToUse: Array<Note> = [];
+
+    keysToFlatsSharps: Array<string> = [
+        "sharps",    // 0  - A
+        "flats",     // 1  - Bb
+        "sharps",    // 2  - B
+        "flats",     // 3  - C
+        "flats",     // 4  - Db
+        "sharps",    // 5  - D
+        "flats",     // 6  - Eb
+        "sharps",    // 7  - E
+        "flats",     // 8  - F
+        "flats",     // 9  - Gb
+        "sharps",    // 10 - G
+        "flats",     // 11 - Ab
+    ];
+
     textSize: number = 82;
     textElt: TextElt;
     nextButton: TextElt;
@@ -36,9 +68,12 @@ class ScalesGameElt extends BaseElt {
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
-        this.root = getRandomInt(this.notes.length);
+        this.root = getRandomInt(this.notesFlats.length);
         this.numNotes = getRandomInt(3) + 3;
         this.upDownIdx = getRandomInt(2);
+        this.notesToUse = this.keysToFlatsSharps[this.root] == "flats"
+            ? this.notesFlats
+            : this.notesSharps;
 
         let nextY = this.rect.y;
         this.textElt = new TextElt(
@@ -49,7 +84,7 @@ class ScalesGameElt extends BaseElt {
                 w: 1100,
                 h: 100
             },
-            `root: ${this.notes[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes}`,
+            `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes}`,
             this.textSize
         );
         this.pushChild(this.textElt);
@@ -83,7 +118,7 @@ class ScalesGameElt extends BaseElt {
                         this.majorScaleIntervalsUp[i % this.majorScaleIntervalsUp.length],
                         12
                     );
-                    arr.push(this.notes[k].noteName);
+                    arr.push(this.notesToUse[k].noteName);
                 }
             } else {
                 for (let i = 0; i < this.numNotes; i++) {
@@ -92,16 +127,20 @@ class ScalesGameElt extends BaseElt {
                         -1 * this.majorScaleIntervalsDown[i % this.majorScaleIntervalsUp.length],
                         12
                     );
-                    arr.push(this.notes[k].noteName);
+                    arr.push(this.notesToUse[k].noteName);
                 }
             }
             const s = arr.join(" ");
             this.textElt.setText(s);
         } else {
-            this.root = getRandomInt(this.notes.length);
+            this.root = getRandomInt(this.notesFlats.length);
             this.numNotes = getRandomInt(3) + 3;
             this.upDownIdx = getRandomInt(2);
-            const s = `root: ${this.notes[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes}`;
+            this.notesToUse = this.keysToFlatsSharps[this.root] == "flats"
+                ? this.notesFlats
+                : this.notesSharps;
+
+            const s = `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes}`;
             this.textElt.setText(s);
         }
 
