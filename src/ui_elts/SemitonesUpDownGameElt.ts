@@ -18,15 +18,9 @@ class SemitonesUpDownGameElt extends BaseElt {
     modes: Array<string> = ["Semitones", "Major Scale"];
     modeIdx: number = 0;
 
-    majorScaleIntervalsUp: Array<number>   = [2, 4, 5, 7, 8, 11];
+    majorScaleIntervalsUp: Array<number>   = [2, 4, 5, 7, 9, 11];
     majorScaleIntervalsDown: Array<number> = [1, 3, 5, 7, 8, 10];
     majorScaleNextInterval: number = 0;
-
-    textSize: number = 82;
-    modeElt: TextElt;
-    textElt: TextElt;
-    nextButton: TextElt;
-    changeModeButton: TextElt;
 
     notes: Array<Note> = [
         new Note("A",   0),
@@ -42,6 +36,12 @@ class SemitonesUpDownGameElt extends BaseElt {
         new Note("G",  10),
         new Note("Ab", 11),
     ];
+
+    textSize: number = 82;
+    modeElt: TextElt;
+    textElt: TextElt;
+    nextButton: TextElt;
+    changeModeButton: TextElt;
 
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
