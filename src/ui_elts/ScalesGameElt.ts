@@ -7,6 +7,7 @@ import { getRandomBool, getRandomInt, modAddition } from "../util";
 
 class ScalesGameElt extends BaseElt {
     root: number = 0;
+    curNote: number = 0;
     numNotes: number = 0;
     majorScaleIntervalsUp: Array<number>   = [0, 2, 4, 5, 7, 9, 11];
     majorScaleIntervalsDown: Array<number> = [0, 1, 3, 5, 7, 8, 10];
@@ -68,9 +69,10 @@ class ScalesGameElt extends BaseElt {
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
-        this.root = getRandomInt(this.notesFlats.length);
-        this.numNotes = getRandomInt(3) + 3;
         this.upDownIdx = getRandomInt(2);
+        this.root = getRandomInt(12);
+        this.curNote = this.root;
+        this.numNotes = getRandomInt(3) + 3;
         this.notesToUse = this.keysToFlatsSharps[this.root] == "flats"
             ? this.notesFlats
             : this.notesSharps;
@@ -84,7 +86,7 @@ class ScalesGameElt extends BaseElt {
                 w: 1100,
                 h: 100
             },
-            `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes}`,
+            `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`,
             this.textSize
         );
         this.pushChild(this.textElt);
@@ -113,38 +115,77 @@ class ScalesGameElt extends BaseElt {
             let arr: Array<string> = [];
             if (this.upDown[this.upDownIdx] == "up") {
                 for (let i = 0; i < this.numNotes; i++) {
-                    let k = modAddition(
-                        this.root,
+                    const k = modAddition(
+                        // this.root,
+                        this.curNote,
                         this.majorScaleIntervalsUp[i % this.majorScaleIntervalsUp.length],
                         12
                     );
                     arr.push(this.notesToUse[k].noteName);
+                    if (i == this.numNotes - 1) {
+                        this.curNote = this.notesToUse[k].noteNum;
+                    }
                 }
             } else {
                 for (let i = 0; i < this.numNotes; i++) {
-                    let k = modAddition(
-                        this.root,
+                    const k = modAddition(
+                        // this.root,
+                        this.curNote,
                         -1 * this.majorScaleIntervalsDown[i % this.majorScaleIntervalsUp.length],
                         12
                     );
                     arr.push(this.notesToUse[k].noteName);
+                    if (i == this.numNotes - 1) {
+                        this.curNote = this.notesToUse[k].noteNum;
+                    }
                 }
             }
             const s = arr.join(" ");
             this.textElt.setText(s);
         } else {
-            this.root = getRandomInt(this.notesFlats.length);
-            this.numNotes = getRandomInt(3) + 3;
             this.upDownIdx = getRandomInt(2);
+            // this.root = getRandomInt(12);
+            this.root = this.getNextRoot();
+            this.numNotes = getRandomInt(3) + 3;
             this.notesToUse = this.keysToFlatsSharps[this.root] == "flats"
                 ? this.notesFlats
                 : this.notesSharps;
-
-            const s = `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes}`;
+            const s = `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`;
             this.textElt.setText(s);
         }
 
         this.flipped = !this.flipped;
+    }
+
+    getNextRoot(): number {
+        let root: number = 0;
+        while (true) {
+            root = getRandomInt(12);
+            while (root == this.root) {         // don't pick the same root twice in a row
+                root = getRandomInt(12);
+            }
+
+            let intervalsToUse = [];
+            let mult = 1;
+            if (this.upDown[this.upDownIdx] == "up") {
+                intervalsToUse = this.majorScaleIntervalsUp;
+                mult = 1;
+            } else {
+                intervalsToUse = this.majorScaleIntervalsDown;
+                mult = -1;
+            }
+
+            for (let i = 0; i < intervalsToUse.length; i++) {
+                const k = modAddition(
+                    root,
+                    mult * intervalsToUse[i % intervalsToUse.length],
+                    12
+                );
+                if (k == this.curNote) {
+                    return root;
+                }
+            }
+        }
     }
 }
 
