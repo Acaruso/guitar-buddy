@@ -7,6 +7,7 @@ import { getRandomInt, modAddition } from "../util";
 
 class ScalesGameElt extends BaseElt {
     root: number = 0;
+    offset: number = 0;
     mult: number = 0;
     curNote: number = 0;
     numNotes: number = 0;
@@ -69,7 +70,7 @@ class ScalesGameElt extends BaseElt {
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
-        this.getRandVals();
+        this.getRandValsInit();
 
         let nextY = this.rect.y;
         this.textElt = new TextElt(
@@ -111,21 +112,23 @@ class ScalesGameElt extends BaseElt {
             this.getRandVals();
             this.textElt.setText(this.getDisplayStrFront());
         }
-
         this.flipped = !this.flipped;
     }
 
     getDisplayStrFront(): string {
-        return `root: ${this.notes[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`;
+        return `root: ${this.notes[this.root].noteName}`
+            + `, note: ${this.notes[this.curNote].noteName}`
+            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`;
     }
 
     getDisplayStrBack(): string {
         let arr: Array<string> = [];
         for (let i = 0; i < this.numNotes; i++) {
             const k = modAddition(
-                // this.root,
-                this.curNote,
-                this.mult * this.majorScaleIntervals[i % this.majorScaleIntervals.length],
+                this.root,
+                this.mult * this.majorScaleIntervals[
+                    (i + this.offset) % this.majorScaleIntervals.length
+                ],
                 12
             );
             arr.push(this.notes[k].noteName);
@@ -136,7 +139,24 @@ class ScalesGameElt extends BaseElt {
         return arr.join(" ");
     }
 
-    getRandVals() {
+    getRandValsInit(): void {
+        this.upDownIdx = getRandomInt(2);
+        this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
+            ? this.majorScaleIntervalsUp
+            : this.majorScaleIntervalsDown;
+        this.mult = this.upDown[this.upDownIdx] == "up"
+            ? 1
+            : -1
+        this.root = getRandomInt(12);
+        this.curNote = this.root;
+        this.offset = 0;
+        this.numNotes = getRandomInt(3) + 3;
+        this.notes = this.keysToFlatsSharps[this.root] == "flats"
+            ? this.notesFlats
+            : this.notesSharps;
+    }
+
+    getRandVals(): void {
         this.upDownIdx = getRandomInt(2);
         this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
             ? this.majorScaleIntervalsUp
@@ -145,29 +165,30 @@ class ScalesGameElt extends BaseElt {
             ? 1
             : -1
         this.root = this.getNextRoot();
-        // this.numNotes = getRandomInt(3) + 3;
-        this.numNotes = 10;
+        this.numNotes = getRandomInt(3) + 3;
         this.notes = this.keysToFlatsSharps[this.root] == "flats"
             ? this.notesFlats
             : this.notesSharps;
     }
 
     getNextRoot(): number {
-        let root: number = 0;
+        let rootCandidate: number = 0;
         while (true) {
-            root = getRandomInt(12);
-            while (root == this.root) {         // don't pick the same root twice in a row
-                root = getRandomInt(12);
+            // don't pick the same root twice in a row
+            rootCandidate = getRandomInt(12);
+            while (rootCandidate == this.root) {
+                rootCandidate = getRandomInt(12);
             }
 
             for (let i = 0; i < this.majorScaleIntervals.length; i++) {
-                const k = modAddition(
-                    root,
+                const note = modAddition(
+                    rootCandidate,
                     this.mult * this.majorScaleIntervals[i % this.majorScaleIntervals.length],
                     12
                 );
-                if (k == this.curNote) {
-                    return root;
+                if (note == this.curNote) {
+                    this.offset = i;
+                    return rootCandidate;
                 }
             }
         }
