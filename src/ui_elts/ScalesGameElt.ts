@@ -3,14 +3,17 @@ import { Rect } from "../Rect";
 import { Note } from "../Note";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
-import { getRandomBool, getRandomInt, modAddition } from "../util";
+import { getRandomInt, modAddition } from "../util";
 
 class ScalesGameElt extends BaseElt {
     root: number = 0;
+    offset: number = 0;
+    mult: number = 0;
     curNote: number = 0;
     numNotes: number = 0;
     majorScaleIntervalsUp: Array<number>   = [0, 2, 4, 5, 7, 9, 11];
     majorScaleIntervalsDown: Array<number> = [0, 1, 3, 5, 7, 8, 10];
+    majorScaleIntervals: Array<number> = [];
     flipped: boolean = false;
     upDown: Array<string> = ["up", "down"];
     upDownIdx: number = 0;
@@ -29,7 +32,6 @@ class ScalesGameElt extends BaseElt {
         new Note("G",  10),
         new Note("Ab", 11),
     ];
-
     notesSharps: Array<Note> = [
         new Note("A",   0),
         new Note("A#",  1),
@@ -44,8 +46,7 @@ class ScalesGameElt extends BaseElt {
         new Note("G",  10),
         new Note("G#", 11),
     ];
-
-    notesToUse: Array<Note> = [];
+    notes: Array<Note> = [];
 
     keysToFlatsSharps: Array<string> = [
         "sharps",    // 0  - A
@@ -69,13 +70,7 @@ class ScalesGameElt extends BaseElt {
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
-        this.upDownIdx = getRandomInt(2);
-        this.root = getRandomInt(12);
-        this.curNote = this.root;
-        this.numNotes = getRandomInt(3) + 3;
-        this.notesToUse = this.keysToFlatsSharps[this.root] == "flats"
-            ? this.notesFlats
-            : this.notesSharps;
+        this.getRandValsInit();
 
         let nextY = this.rect.y;
         this.textElt = new TextElt(
@@ -86,7 +81,7 @@ class ScalesGameElt extends BaseElt {
                 w: 1100,
                 h: 100
             },
-            `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`,
+            this.getDisplayStrFront(),
             this.textSize
         );
         this.pushChild(this.textElt);
@@ -112,77 +107,88 @@ class ScalesGameElt extends BaseElt {
 
     update(): void {
         if (this.flipped == false) {
-            let arr: Array<string> = [];
-            if (this.upDown[this.upDownIdx] == "up") {
-                for (let i = 0; i < this.numNotes; i++) {
-                    const k = modAddition(
-                        // this.root,
-                        this.curNote,
-                        this.majorScaleIntervalsUp[i % this.majorScaleIntervalsUp.length],
-                        12
-                    );
-                    arr.push(this.notesToUse[k].noteName);
-                    if (i == this.numNotes - 1) {
-                        this.curNote = this.notesToUse[k].noteNum;
-                    }
-                }
-            } else {
-                for (let i = 0; i < this.numNotes; i++) {
-                    const k = modAddition(
-                        // this.root,
-                        this.curNote,
-                        -1 * this.majorScaleIntervalsDown[i % this.majorScaleIntervalsUp.length],
-                        12
-                    );
-                    arr.push(this.notesToUse[k].noteName);
-                    if (i == this.numNotes - 1) {
-                        this.curNote = this.notesToUse[k].noteNum;
-                    }
-                }
-            }
-            const s = arr.join(" ");
-            this.textElt.setText(s);
+            this.textElt.setText(this.getDisplayStrBack());
         } else {
-            this.upDownIdx = getRandomInt(2);
-            // this.root = getRandomInt(12);
-            this.root = this.getNextRoot();
-            this.numNotes = getRandomInt(3) + 3;
-            this.notesToUse = this.keysToFlatsSharps[this.root] == "flats"
-                ? this.notesFlats
-                : this.notesSharps;
-            const s = `root: ${this.notesToUse[this.root].noteName}, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`;
-            this.textElt.setText(s);
+            this.getRandVals();
+            this.textElt.setText(this.getDisplayStrFront());
         }
-
         this.flipped = !this.flipped;
     }
 
+    getDisplayStrFront(): string {
+        return `root: ${this.notes[this.root].noteName}`
+            + `, note: ${this.notes[this.curNote].noteName}`
+            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`;
+    }
+
+    getDisplayStrBack(): string {
+        let arr: Array<string> = [];
+        for (let i = 0; i < this.numNotes; i++) {
+            const k = modAddition(
+                this.root,
+                this.mult * this.majorScaleIntervals[
+                    (i + this.offset) % this.majorScaleIntervals.length
+                ],
+                12
+            );
+            arr.push(this.notes[k].noteName);
+            if (i == this.numNotes - 1) {
+                this.curNote = this.notes[k].noteNum;
+            }
+        }
+        return arr.join(" ");
+    }
+
+    getRandValsInit(): void {
+        this.upDownIdx = getRandomInt(2);
+        this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
+            ? this.majorScaleIntervalsUp
+            : this.majorScaleIntervalsDown;
+        this.mult = this.upDown[this.upDownIdx] == "up"
+            ? 1
+            : -1
+        this.root = getRandomInt(12);
+        this.curNote = this.root;
+        this.offset = 0;
+        this.numNotes = getRandomInt(3) + 3;
+        this.notes = this.keysToFlatsSharps[this.root] == "flats"
+            ? this.notesFlats
+            : this.notesSharps;
+    }
+
+    getRandVals(): void {
+        this.upDownIdx = getRandomInt(2);
+        this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
+            ? this.majorScaleIntervalsUp
+            : this.majorScaleIntervalsDown;
+        this.mult = this.upDown[this.upDownIdx] == "up"
+            ? 1
+            : -1
+        this.root = this.getNextRoot();
+        this.numNotes = getRandomInt(3) + 3;
+        this.notes = this.keysToFlatsSharps[this.root] == "flats"
+            ? this.notesFlats
+            : this.notesSharps;
+    }
+
     getNextRoot(): number {
-        let root: number = 0;
+        let rootCandidate: number = 0;
         while (true) {
-            root = getRandomInt(12);
-            while (root == this.root) {         // don't pick the same root twice in a row
-                root = getRandomInt(12);
+            // don't pick the same root twice in a row
+            rootCandidate = getRandomInt(12);
+            while (rootCandidate == this.root) {
+                rootCandidate = getRandomInt(12);
             }
 
-            let intervalsToUse = [];
-            let mult = 1;
-            if (this.upDown[this.upDownIdx] == "up") {
-                intervalsToUse = this.majorScaleIntervalsUp;
-                mult = 1;
-            } else {
-                intervalsToUse = this.majorScaleIntervalsDown;
-                mult = -1;
-            }
-
-            for (let i = 0; i < intervalsToUse.length; i++) {
-                const k = modAddition(
-                    root,
-                    mult * intervalsToUse[i % intervalsToUse.length],
+            for (let i = 0; i < this.majorScaleIntervals.length; i++) {
+                const note = modAddition(
+                    rootCandidate,
+                    this.mult * this.majorScaleIntervals[i % this.majorScaleIntervals.length],
                     12
                 );
-                if (k == this.curNote) {
-                    return root;
+                if (note == this.curNote) {
+                    this.offset = i;
+                    return rootCandidate;
                 }
             }
         }
