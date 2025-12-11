@@ -118,7 +118,7 @@ class ScalesGameElt extends BaseElt {
     getDisplayStrFront(): string {
         return `root: ${this.notes[this.root].noteName}`
             + `, note: ${this.notes[this.curNote].noteName}`
-            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes - 1}`;
+            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes}`;
     }
 
     getDisplayStrBack(): string {
@@ -150,7 +150,7 @@ class ScalesGameElt extends BaseElt {
         this.root = getRandomInt(12);
         this.curNote = this.root;
         this.offset = 0;
-        this.numNotes = getRandomInt(3) + 3;
+        this.numNotes = getRandomInt(4) + 3;
         this.notes = this.keysToFlatsSharps[this.root] == "flats"
             ? this.notesFlats
             : this.notesSharps;
@@ -165,7 +165,7 @@ class ScalesGameElt extends BaseElt {
             ? 1
             : -1
         this.root = this.getNextRoot();
-        this.numNotes = getRandomInt(3) + 3;
+        this.numNotes = getRandomInt(4) + 3;
         this.notes = this.keysToFlatsSharps[this.root] == "flats"
             ? this.notesFlats
             : this.notesSharps;
