@@ -8,7 +8,7 @@ import { getRandomInt, modAddition } from "../util";
 class ScalesGameElt extends BaseElt {
     root: number = 0;
     offset: number = 0;
-    mult: number = 0;
+    sign: number = 0;
     curNote: number = 0;
     numNotes: number = 0;
     majorScaleIntervalsUp: Array<number>   = [0, 2, 4, 5, 7, 9, 11];
@@ -17,6 +17,10 @@ class ScalesGameElt extends BaseElt {
     flipped: boolean = false;
     upDown: Array<string> = ["up", "down"];
     upDownIdx: number = 0;
+    modes: Array<string> = ["degrees", "thirds"];
+    modeIdx: number = 0;
+    stepSize: number = 1;
+    useThirds: boolean = true;
 
     notesFlats: Array<Note> = [
         new Note("A",   0),
@@ -66,6 +70,7 @@ class ScalesGameElt extends BaseElt {
     textSize: number = 82;
     textElt: TextElt;
     nextButton: TextElt;
+    useThirdsButton: TextElt;
 
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
@@ -82,7 +87,8 @@ class ScalesGameElt extends BaseElt {
                 h: 100
             },
             this.getDisplayStrFront(),
-            this.textSize
+            // this.textSize
+            62
         );
         this.pushChild(this.textElt);
 
@@ -103,6 +109,30 @@ class ScalesGameElt extends BaseElt {
             this.update();
         };
         this.pushChild(this.nextButton);
+
+        nextY += 100;
+        this.useThirdsButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: nextY,
+                w: 1100,
+                h: 100
+            },
+            `use thirds: ${this.useThirds}`,
+            this.textSize
+        );
+        this.useThirdsButton.drawRect = true;
+        this.useThirdsButton.onClick = () => {
+            if (this.useThirds) {
+                this.modes = ["degrees"];
+            } else {
+                this.modes = ["degrees", "thirds"];
+            }
+            this.useThirds = !this.useThirds;
+            this.useThirdsButton.setText(`use thirds: ${this.useThirds}`);
+        };
+        this.pushChild(this.useThirdsButton);
     }
 
     update(): void {
@@ -116,9 +146,9 @@ class ScalesGameElt extends BaseElt {
     }
 
     getDisplayStrFront(): string {
-        return `root: ${this.notes[this.root].noteName}`
-            + `, note: ${this.notes[this.curNote].noteName}`
-            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes}`;
+        return `note: ${this.notes[this.curNote].noteName}`
+            + `, root: ${this.notes[this.root].noteName}`
+            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes} ${this.modes[this.modeIdx]}`;
     }
 
     getDisplayStrBack(): string {
@@ -126,8 +156,8 @@ class ScalesGameElt extends BaseElt {
         for (let i = 0; i < this.numNotes; i++) {
             const k = modAddition(
                 this.root,
-                this.mult * this.majorScaleIntervals[
-                    (i + this.offset) % this.majorScaleIntervals.length
+                this.sign * this.majorScaleIntervals[
+                    ((i * this.stepSize) + this.offset) % this.majorScaleIntervals.length
                 ],
                 12
             );
@@ -144,16 +174,20 @@ class ScalesGameElt extends BaseElt {
         this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
             ? this.majorScaleIntervalsUp
             : this.majorScaleIntervalsDown;
-        this.mult = this.upDown[this.upDownIdx] == "up"
+        this.sign = this.upDown[this.upDownIdx] == "up"
             ? 1
             : -1
         this.root = getRandomInt(12);
         this.curNote = this.root;
         this.offset = 0;
-        this.numNotes = getRandomInt(4) + 3;
+        this.numNotes = getRandomInt(3) + 3;
         this.notes = this.keysToFlatsSharps[this.root] == "flats"
             ? this.notesFlats
             : this.notesSharps;
+        this.modeIdx = getRandomInt(this.modes.length);
+        this.stepSize = this.modes[this.modeIdx] === "degrees"
+            ? 1
+            : 2;
     }
 
     getRandVals(): void {
@@ -161,14 +195,18 @@ class ScalesGameElt extends BaseElt {
         this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
             ? this.majorScaleIntervalsUp
             : this.majorScaleIntervalsDown;
-        this.mult = this.upDown[this.upDownIdx] == "up"
+        this.sign = this.upDown[this.upDownIdx] == "up"
             ? 1
             : -1
         this.root = this.getNextRoot();
-        this.numNotes = getRandomInt(4) + 3;
+        this.numNotes = getRandomInt(3) + 3;
         this.notes = this.keysToFlatsSharps[this.root] == "flats"
             ? this.notesFlats
             : this.notesSharps;
+        this.modeIdx = getRandomInt(this.modes.length);
+        this.stepSize = this.modes[this.modeIdx] === "degrees"
+            ? 1
+            : 2;
     }
 
     getNextRoot(): number {
@@ -183,7 +221,7 @@ class ScalesGameElt extends BaseElt {
             for (let i = 0; i < this.majorScaleIntervals.length; i++) {
                 const note = modAddition(
                     rootCandidate,
-                    this.mult * this.majorScaleIntervals[i % this.majorScaleIntervals.length],
+                    this.sign * this.majorScaleIntervals[i % this.majorScaleIntervals.length],
                     12
                 );
                 if (note == this.curNote) {
