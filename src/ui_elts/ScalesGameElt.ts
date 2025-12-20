@@ -36,6 +36,20 @@ class ScalesGameElt extends BaseElt {
         new Note("G",  10),
         new Note("Ab", 11),
     ];
+    notesCFlat: Array<Note> = [ // Gb major scale uses Cb instead of B
+        new Note("A",   0),
+        new Note("Bb",  1),
+        new Note("Cb",  2),
+        new Note("C",   3),
+        new Note("Db",  4),
+        new Note("D",   5),
+        new Note("Eb",  6),
+        new Note("E",   7),
+        new Note("F",   8),
+        new Note("Gb",  9),
+        new Note("G",  10),
+        new Note("Ab", 11),
+    ];
     notesSharps: Array<Note> = [
         new Note("A",   0),
         new Note("A#",  1),
@@ -52,7 +66,7 @@ class ScalesGameElt extends BaseElt {
     ];
     notes: Array<Note> = [];
 
-    keysToFlatsSharps: Array<string> = [
+    keysToNotes: Array<string> = [
         "sharps",    // 0  - A
         "flats",     // 1  - Bb
         "sharps",    // 2  - B
@@ -75,7 +89,7 @@ class ScalesGameElt extends BaseElt {
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
-        this.getRandValsInit();
+        this.getRandVals(true);
 
         let nextY = this.rect.y;
         this.textElt = new TextElt(
@@ -87,7 +101,6 @@ class ScalesGameElt extends BaseElt {
                 h: 100
             },
             this.getDisplayStrFront(),
-            // this.textSize
             62
         );
         this.pushChild(this.textElt);
@@ -169,7 +182,7 @@ class ScalesGameElt extends BaseElt {
         return arr.join(" ");
     }
 
-    getRandValsInit(): void {
+    getRandVals(init: boolean = false): void {
         this.upDownIdx = getRandomInt(2);
         this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
             ? this.majorScaleIntervalsUp
@@ -177,36 +190,29 @@ class ScalesGameElt extends BaseElt {
         this.sign = this.upDown[this.upDownIdx] == "up"
             ? 1
             : -1
-        this.root = getRandomInt(12);
-        this.curNote = this.root;
-        this.offset = 0;
-        this.numNotes = getRandomInt(3) + 3;
-        this.notes = this.keysToFlatsSharps[this.root] == "flats"
-            ? this.notesFlats
-            : this.notesSharps;
-        this.modeIdx = getRandomInt(this.modes.length);
-        this.stepSize = this.modes[this.modeIdx] === "degrees"
-            ? 1
-            : 2;
-    }
 
-    getRandVals(): void {
-        this.upDownIdx = getRandomInt(2);
-        this.majorScaleIntervals = this.upDown[this.upDownIdx] == "up"
-            ? this.majorScaleIntervalsUp
-            : this.majorScaleIntervalsDown;
-        this.sign = this.upDown[this.upDownIdx] == "up"
-            ? 1
-            : -1
-        this.root = this.getNextRoot();
+        if (init) {
+            this.root = getRandomInt(12);
+            this.curNote = this.root;
+            this.offset = 0;
+        } else {
+            this.root = this.getNextRoot();
+        }
+
         this.numNotes = getRandomInt(3) + 3;
-        this.notes = this.keysToFlatsSharps[this.root] == "flats"
+        this.notes = this.keysToNotes[this.root] == "flats"
             ? this.notesFlats
             : this.notesSharps;
+        if (this.root === 9) {              // if root == Gb
+            this.notes = this.notesCFlat;   // use Cb because Gb major has Cb rather than B
+        }
         this.modeIdx = getRandomInt(this.modes.length);
         this.stepSize = this.modes[this.modeIdx] === "degrees"
             ? 1
             : 2;
+        if (this.modes[this.modeIdx] === "thirds") {
+            this.numNotes = getRandomInt(2) + 3;
+        }
     }
 
     getNextRoot(): number {
@@ -229,6 +235,12 @@ class ScalesGameElt extends BaseElt {
                     return rootCandidate;
                 }
             }
+        }
+    }
+
+    onKeyDown(key: string): void {
+        if (key === "space") {
+            this.update();
         }
     }
 }
