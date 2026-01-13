@@ -1,6 +1,7 @@
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
 import { Note } from "../Note";
+import { Scale } from "../Scale";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
 import { getRandomInt, modAddition } from "../util";
@@ -17,88 +18,10 @@ class ScalesGameElt extends BaseElt {
     modeIdx: number = 0;
     stepSize: number = 1;
 
-    majorScaleIntervalsUp: Array<number>   = [0, 2, 4, 5, 7, 9, 11];
-    majorScaleIntervalsDown: Array<number> = [0, 1, 3, 5, 7, 8, 10];
-    minorScaleIntervalsUp: Array<number>   = [0, 2, 3, 5, 7, 8, 10];
-    minorScaleIntervalsDown: Array<number> = [0, 2, 4, 5, 7, 9, 10];
-    scaleIntervals: Array<number> = [];
+    scale: Scale = new Scale(0, "major");
 
-    scales: Array<string> = ["major", "minor"];
-    scaleIdx: number = 0;
-
-    notesFlats: Array<Note> = [
-        new Note("A",   0),
-        new Note("Bb",  1),
-        new Note("B",   2),
-        new Note("C",   3),
-        new Note("Db",  4),
-        new Note("D",   5),
-        new Note("Eb",  6),
-        new Note("E",   7),
-        new Note("F",   8),
-        new Note("Gb",  9),
-        new Note("G",  10),
-        new Note("Ab", 11),
-    ];
-    notesCFlat: Array<Note> = [ // Gb major and Eb minor keys use Cb instead of B
-        new Note("A",   0),
-        new Note("Bb",  1),
-        new Note("Cb",  2),
-        new Note("C",   3),
-        new Note("Db",  4),
-        new Note("D",   5),
-        new Note("Eb",  6),
-        new Note("E",   7),
-        new Note("F",   8),
-        new Note("Gb",  9),
-        new Note("G",  10),
-        new Note("Ab", 11),
-    ];
-    notesSharps: Array<Note> = [
-        new Note("A",   0),
-        new Note("A#",  1),
-        new Note("B",   2),
-        new Note("C",   3),
-        new Note("C#",  4),
-        new Note("D",   5),
-        new Note("D#",  6),
-        new Note("E",   7),
-        new Note("F",   8),
-        new Note("F#",  9),
-        new Note("G",  10),
-        new Note("G#", 11),
-    ];
-    notes: Array<Note> = [];
-
-    keysToSharpsFlatsMajor: Array<string> = [
-        "sharps",    // 0  - A
-        "flats",     // 1  - Bb
-        "sharps",    // 2  - B
-        "flats",     // 3  - C
-        "flats",     // 4  - Db
-        "sharps",    // 5  - D
-        "flats",     // 6  - Eb
-        "sharps",    // 7  - E
-        "flats",     // 8  - F
-        "flats",     // 9  - Gb
-        "sharps",    // 10 - G
-        "flats",     // 11 - Ab
-    ];
-    keysToSharpsFlatsMinor: Array<string> = [
-        "sharps",    // 0  - A
-        "flats",     // 1  - Bb (A#)
-        "sharps",    // 2  - B
-        "flats",     // 3  - C
-        "sharps",    // 4  - C#
-        "flats",     // 5  - D
-        "flats",     // 6  - Eb (D#)
-        "sharps",    // 7  - E
-        "flats",     // 8  - F
-        "sharps",    // 9  - F#
-        "flats",     // 10 - G
-        "flats",     // 11 - Ab (G#)
-    ];
-    keysToSharpsFlats: Array<string> = [];
+    scaleQualities: Array<string> = ["major", "minor"];
+    scaleQualitiesIdx: number = 0;
 
     displayElt1: TextElt;
     displayElt2: TextElt;
@@ -202,7 +125,7 @@ class ScalesGameElt extends BaseElt {
         this.useMinorScalesButton.drawRect = true;
         this.useMinorScalesButton.onClick = () => {
             if (this.useMinorScales) {
-                this.scales = ["major"];
+                this.scaleQualities = ["major"];
             } else {
                 this.modes = ["major", "minor"];
             }
@@ -224,27 +147,31 @@ class ScalesGameElt extends BaseElt {
     }
 
     getDisplay1TextFront(): string {
-        return `${this.notes[this.root].noteName} ${this.scales[this.scaleIdx]}`;
+        return `${this.scale.notes[this.root].noteName} ${this.scaleQualities[this.scaleQualitiesIdx]}`;
     }
 
     getDisplay2TextFront(): string {
-        return `note: ${this.notes[this.curNote].noteName}`
+        return `note: ${this.scale.notes[this.curNote].noteName}`
             + `, ${this.upDown[this.upDownIdx]} ${this.numNotes} ${this.modes[this.modeIdx]}`;
     }
 
     getDisplay2TextBack(): string {
         let arr: Array<string> = [];
+        let intervals = this.upDown[this.upDownIdx] == "up"
+            ? this.scale.intervalsUp
+            : this.scale.intervalsDown;
+
         for (let i = 0; i < this.numNotes; i++) {
             const k = modAddition(
                 this.root,
-                this.sign * this.scaleIntervals[
-                    ((i * this.stepSize) + this.offset) % this.scaleIntervals.length
+                this.sign * intervals[
+                    ((i * this.stepSize) + this.offset) % intervals.length
                 ],
                 12
             );
-            arr.push(this.notes[k].noteName);
+            arr.push(this.scale.notes[k].noteName);
             if (i == this.numNotes - 1) {
-                this.curNote = this.notes[k].noteNum;
+                this.curNote = this.scale.notes[k].noteNum;
             }
         }
         return arr.join(" ");
@@ -260,59 +187,35 @@ class ScalesGameElt extends BaseElt {
         }
 
         this.upDownIdx = getRandomInt(this.upDown.length);
-        this.scaleIdx  = getRandomInt(this.scales.length);
+        this.scaleQualitiesIdx  = getRandomInt(this.scaleQualities.length);
 
-        if (this.scales[this.scaleIdx] == "major") {
-            this.keysToSharpsFlats = this.keysToSharpsFlatsMajor;
-            if (this.root === 9) {              // if root == Gb
-                this.notes = this.notesCFlat;   // use Cb because Gb major has Cb rather than B
-            } else {
-                if (this.keysToSharpsFlats[this.root] == "flats") {
-                    this.notes = this.notesFlats;
-                } else {
-                    this.notes = this.notesSharps;
-                }
-            }
-            if (this.upDown[this.upDownIdx] == "up") {
-                this.scaleIntervals = this.majorScaleIntervalsUp;
-            } else {
-                this.scaleIntervals = this.majorScaleIntervalsDown;
-            }
-        } else if (this.scales[this.scaleIdx] == "minor") {
-            this.keysToSharpsFlats = this.keysToSharpsFlatsMinor;
-            if (this.root === 6) {              // if root == Eb
-                this.notes = this.notesCFlat;   // use Cb because Eb minor has Cb rather than B
-            } else {
-                if (this.keysToSharpsFlats[this.root] == "flats") {
-                    this.notes = this.notesFlats;
-                } else {
-                    this.notes = this.notesSharps;
-                }
-            }
-            if (this.upDown[this.upDownIdx] == "up") {
-                this.scaleIntervals = this.minorScaleIntervalsUp;
-            } else {
-                this.scaleIntervals = this.minorScaleIntervalsDown;
-            }
+        if (this.scaleQualities[this.scaleQualitiesIdx] == "major") {
+            this.scale = new Scale(this.root, "major");
+        } else if (this.scaleQualities[this.scaleQualitiesIdx] == "minor") {
+            this.scale = new Scale(this.root, "minor");
         }
 
         this.sign = this.upDown[this.upDownIdx] == "up"
             ? 1
             : -1
 
-        this.numNotes = getRandomInt(3) + 3;
-
         this.modeIdx = getRandomInt(this.modes.length);
         this.stepSize = this.modes[this.modeIdx] === "degrees"
             ? 1
             : 2;
-        if (this.modes[this.modeIdx] === "thirds") {
+        if (this.modes[this.modeIdx] === "degrees") {
+            this.numNotes = getRandomInt(3) + 3;
+        } else if (this.modes[this.modeIdx] === "thirds") {
             this.numNotes = getRandomInt(2) + 3;
         }
     }
 
     getNextRoot(): number {
         let rootCandidate: number = 0;
+        let intervals = this.upDown[this.upDownIdx] == "up"
+            ? this.scale.intervalsUp
+            : this.scale.intervalsDown;
+
         while (true) {
             // don't pick the same root twice in a row
             rootCandidate = getRandomInt(12);
@@ -320,10 +223,10 @@ class ScalesGameElt extends BaseElt {
                 rootCandidate = getRandomInt(12);
             }
 
-            for (let i = 0; i < this.scaleIntervals.length; i++) {
+            for (let i = 0; i < intervals.length; i++) {
                 const note = modAddition(
                     rootCandidate,
-                    this.sign * this.scaleIntervals[i % this.scaleIntervals.length],
+                    this.sign * intervals[i % intervals.length],
                     12
                 );
                 if (note == this.curNote) {
