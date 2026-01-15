@@ -133,6 +133,35 @@ class Scale {
             );
         }
     }
+
+    getCurNote(): Note {
+        return this.notes[this.curNote];
+    }
+
+    incCurNote(n: number): void {
+        this.curNote = modAddition(this.curNote, n, 12);
+    }
+
+    decCurNote(n: number): void {
+        this.curNote = modAddition(this.curNote, -1 * n, 12);
+    }
 }
 
-export { Scale, ScaleQuality };
+// return true if `s1` and `s2` both contain `note`, otherwise return `false`
+function doScalesIntersect(s1: Scale, s2: Scale, note: number): boolean {
+    let foundInS1: boolean = false;
+    let foundInS2: boolean = false;
+
+    for (let i = 0; i < s1.notes.length && i < s2.notes.length; i++) {
+        if (s1.notes[i].noteNum === note) {
+            foundInS1 = true;
+        }
+        if (s2.notes[i].noteNum === note) {
+            foundInS2 = true;
+        }
+    }
+
+    return (foundInS1 && foundInS2);
+}
+
+export { Scale, ScaleQuality, doScalesIntersect };

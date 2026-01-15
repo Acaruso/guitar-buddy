@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Scale } from "../src/Scale"
+import { Scale, doScalesIntersect } from "../src/Scale"
 import { Note } from "../src/Note"
 
 function checkNotes(actualNotes: Array<Note>, expectedNotes: Array<Note>): void {
@@ -87,5 +87,29 @@ describe("scale", () => {
         ];
 
         checkNotes(scale.notes, expectedNotes);
+    });
+
+    it("doScalesIntersect true 1", () => {
+        const Amin: Scale = new Scale(0, "minor");
+        const DbMaj: Scale = new Scale(4, "major");
+        const intersection = 8; // F
+        const res = doScalesIntersect(Amin, DbMaj, intersection);
+        expect(res).toBe(true);
+    });
+
+    it("doScalesIntersect false 1", () => {
+        const Amin: Scale = new Scale(0, "minor");
+        const DbMaj: Scale = new Scale(4, "major");
+        const intersection = 6; // Eb
+        const res = doScalesIntersect(Amin, DbMaj, intersection);
+        expect(res).toBe(false);
+    });
+
+    it("doScalesIntersect false 2", () => {
+        const Bmin: Scale = new Scale(2, "minor");
+        const GMaj: Scale = new Scale(10, "major");
+        const intersection = 8; // F -- not in either scale
+        const res = doScalesIntersect(Bmin, GMaj, intersection);
+        expect(res).toBe(false);
     });
 });
