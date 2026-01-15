@@ -3,11 +3,6 @@ import { modAddition } from "./util";
 
 type ScaleQuality = "major" | "minor" | "mixolydian";
 
-const majorScaleIntervalsUp: Array<number>   = [0, 2, 4, 5, 7, 9, 11];
-const majorScaleIntervalsDown: Array<number> = [0, 1, 3, 5, 7, 8, 10];
-const minorScaleIntervalsUp: Array<number>   = [0, 2, 3, 5, 7, 8, 10];
-const minorScaleIntervalsDown: Array<number> = [0, 2, 4, 5, 7, 9, 10];
-
 const majorScale: Array<number> = [0, 2, 4, 5, 7, 9, 11];
 const minorScale: Array<number> = [0, 2, 3, 5, 7, 8, 10];
 
