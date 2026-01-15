@@ -1,7 +1,7 @@
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
 import { Note } from "../Note";
-import { Scale } from "../Scale";
+import { Scale, ScaleQuality } from "../Scale";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
 import { getRandomInt, modAddition } from "../util";
@@ -178,6 +178,9 @@ class ScalesGameElt extends BaseElt {
     }
 
     getRandVals(init: boolean = false): void {
+        this.upDownIdx = getRandomInt(this.upDown.length);
+        this.scaleQualitiesIdx = getRandomInt(this.scaleQualities.length);
+
         if (init) {
             this.root = getRandomInt(12);
             this.curNote = this.root;
@@ -186,14 +189,11 @@ class ScalesGameElt extends BaseElt {
             this.root = this.getNextRoot();
         }
 
-        this.upDownIdx = getRandomInt(this.upDown.length);
-        this.scaleQualitiesIdx  = getRandomInt(this.scaleQualities.length);
-
-        if (this.scaleQualities[this.scaleQualitiesIdx] == "major") {
-            this.scale = new Scale(this.root, "major");
-        } else if (this.scaleQualities[this.scaleQualitiesIdx] == "minor") {
-            this.scale = new Scale(this.root, "minor");
-        }
+        // if (this.scaleQualities[this.scaleQualitiesIdx] == "major") {
+        //     this.scale = new Scale(this.root, "major");
+        // } else if (this.scaleQualities[this.scaleQualitiesIdx] == "minor") {
+        //     this.scale = new Scale(this.root, "minor");
+        // }
 
         this.sign = this.upDown[this.upDownIdx] == "up"
             ? 1
@@ -212,9 +212,8 @@ class ScalesGameElt extends BaseElt {
 
     getNextRoot(): number {
         let rootCandidate: number = 0;
-        let intervals = this.upDown[this.upDownIdx] == "up"
-            ? this.scale.intervalsUp
-            : this.scale.intervalsDown;
+        let scaleCandidate: Scale;
+        let intervals = [];
 
         while (true) {
             // don't pick the same root twice in a row
@@ -222,6 +221,15 @@ class ScalesGameElt extends BaseElt {
             while (rootCandidate == this.root) {
                 rootCandidate = getRandomInt(12);
             }
+
+            scaleCandidate = new Scale(
+                rootCandidate,
+                this.scaleQualities[this.scaleQualitiesIdx] as ScaleQuality
+            );
+
+            intervals = this.upDown[this.upDownIdx] == "up"
+                ? scaleCandidate.intervalsUp
+                : scaleCandidate.intervalsDown;
 
             for (let i = 0; i < intervals.length; i++) {
                 const note = modAddition(
@@ -231,6 +239,7 @@ class ScalesGameElt extends BaseElt {
                 );
                 if (note == this.curNote) {
                     this.offset = i;
+                    this.scale = scaleCandidate;
                     return rootCandidate;
                 }
             }

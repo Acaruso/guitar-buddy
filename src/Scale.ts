@@ -1,4 +1,5 @@
 import { Note } from "./Note";
+import { modAddition } from "./util";
 
 type ScaleQuality = "major" | "minor" | "mixolydian";
 
@@ -6,6 +7,9 @@ const majorScaleIntervalsUp: Array<number>   = [0, 2, 4, 5, 7, 9, 11];
 const majorScaleIntervalsDown: Array<number> = [0, 1, 3, 5, 7, 8, 10];
 const minorScaleIntervalsUp: Array<number>   = [0, 2, 3, 5, 7, 8, 10];
 const minorScaleIntervalsDown: Array<number> = [0, 2, 4, 5, 7, 9, 10];
+
+const majorScale: Array<number> = [0, 2, 4, 5, 7, 9, 11];
+const minorScale: Array<number> = [0, 2, 3, 5, 7, 8, 10];
 
 const notesFlats: Array<Note> = [
     new Note("A",   0),
@@ -52,9 +56,8 @@ const notesSharps: Array<Note> = [
 
 class Scale {
     root: number;
+    curNote: number;
     scaleQuality: ScaleQuality;
-    intervalsUp: number[];
-    intervalsDown: number[];
     notes: Note[];
 
     constructor(
@@ -62,78 +65,79 @@ class Scale {
         scaleQuality: ScaleQuality,
     ) {
         this.root = root;
+        this.curNote = 0;
         this.scaleQuality = scaleQuality;
-
-        this.intervalsUp = [];
-        this.intervalsDown = [];
         this.notes = [];
-
-        if (this.scaleQuality === "major") {
-            this.intervalsUp = majorScaleIntervalsUp;
-            this.intervalsDown = majorScaleIntervalsDown;
-        } else if (this.scaleQuality === "minor") {
-            this.intervalsUp = minorScaleIntervalsUp;
-            this.intervalsDown = minorScaleIntervalsDown;
-        }
+        let notesSharpsFlats: Array<Note> = [];
 
         if (this.scaleQuality === "major" && this.root == 0) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "major" && this.root == 1) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "major" && this.root == 2) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "major" && this.root == 3) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "major" && this.root == 4) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "major" && this.root == 5) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "major" && this.root == 6) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "major" && this.root == 7) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "major" && this.root == 8) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "major" && this.root == 9) {
             // root == 9 -> root is Gb major. Gb major uses Cb.
-            this.notes = notesCFlat;
+            notesSharpsFlats = notesCFlat;
         } else if (this.scaleQuality === "major" && this.root == 10) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "major" && this.root == 11) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         }
 
         if (this.scaleQuality === "minor" && this.root == 0) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "minor" && this.root == 1) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "minor" && this.root == 2) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "minor" && this.root == 3) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "minor" && this.root == 4) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "minor" && this.root == 5) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "minor" && this.root == 6) {
             // root == 6 -> root is Eb minor. Eb minor uses Cb.
-            this.notes = notesCFlat;
+            notesSharpsFlats = notesCFlat;
         } else if (this.scaleQuality === "minor" && this.root == 7) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "minor" && this.root == 8) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "minor" && this.root == 9) {
-            this.notes = notesSharps;
+            notesSharpsFlats = notesSharps;
         } else if (this.scaleQuality === "minor" && this.root == 10) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
         } else if (this.scaleQuality === "minor" && this.root == 11) {
-            this.notes = notesFlats;
+            notesSharpsFlats = notesFlats;
+        }
+
+        let baseScale: Array<number> = [];
+        if (this.scaleQuality === "major") {
+            baseScale = majorScale;
+        } else if (this.scaleQuality === "minor") {
+            baseScale = minorScale;
+        }
+
+        for (let i = 0; i < baseScale.length; i++) {
+            let noteNum = modAddition(baseScale[i], this.root, 12);
+            this.notes.push(
+                notesSharpsFlats[noteNum]
+            );
         }
     }
 }
 
-// const scales: Array<Scale> = [
-//     new Scale(0, "major"),
-// ];
-
-export { Scale };
+export { Scale, ScaleQuality };

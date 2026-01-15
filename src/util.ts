@@ -60,7 +60,9 @@ function modDistance(a: number, b: number, m: number): number {
 }
 
 function modAddition(a: number, b: number, m: number): number {
-    return ((a + b) % m + m) % m;
+    const res = ((a + b) % m + m) % m;
+    // console.log(`modAddition(${a}, ${b}, ${m}) -> ${res}`);
+    return res;
 }
 
 export {
