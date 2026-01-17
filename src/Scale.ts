@@ -49,75 +49,106 @@ const notesSharps: Array<Note> = [
     new Note("G#", 11),
 ];
 
+const noteToNumMap: Record<string, number> = {
+    "A":  0,
+    "A#": 1,
+    "Bb": 1,
+    "B":  2,
+    "Cb": 2,
+    "C":  3,
+    "C#": 4,
+    "Db": 4,
+    "D":  5,
+    "D#": 6,
+    "Eb": 6,
+    "E":  7,
+    "F":  8,
+    "Gb": 9,
+    "F#": 9,
+    "G":  10,
+    "G#": 11,
+    "Ab": 11,
+};
+
+function noteToNum(note: string): number {
+    const n = noteToNumMap[note];
+    if (n === undefined) {
+        throw new Error(`Unknown note: ${note}`);
+    }
+    return n;
+}
+
 class Scale {
-    root: number;
+    root: Note;
     curNote: number;
     scaleQuality: ScaleQuality;
     notes: Note[];
+    allNotes: Note[];
 
     constructor(
         root: number,
         scaleQuality: ScaleQuality,
     ) {
-        this.root = root;
-        this.curNote = 0;
         this.scaleQuality = scaleQuality;
         this.notes = [];
-        let notesSharpsFlats: Array<Note> = [];
+        this.allNotes = [];
 
-        if (this.scaleQuality === "major" && this.root == 0) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "major" && this.root == 1) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "major" && this.root == 2) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "major" && this.root == 3) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "major" && this.root == 4) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "major" && this.root == 5) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "major" && this.root == 6) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "major" && this.root == 7) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "major" && this.root == 8) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "major" && this.root == 9) {
+        if (this.scaleQuality === "major" && root == 0) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "major" && root == 1) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "major" && root == 2) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "major" && root == 3) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "major" && root == 4) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "major" && root == 5) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "major" && root == 6) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "major" && root == 7) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "major" && root == 8) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "major" && root == 9) {
             // root == 9 -> root is Gb major. Gb major uses Cb.
-            notesSharpsFlats = notesCFlat;
-        } else if (this.scaleQuality === "major" && this.root == 10) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "major" && this.root == 11) {
-            notesSharpsFlats = notesFlats;
+            this.allNotes = notesCFlat;
+        } else if (this.scaleQuality === "major" && root == 10) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "major" && root == 11) {
+            this.allNotes = notesFlats;
         }
 
-        if (this.scaleQuality === "minor" && this.root == 0) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "minor" && this.root == 1) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "minor" && this.root == 2) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "minor" && this.root == 3) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "minor" && this.root == 4) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "minor" && this.root == 5) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "minor" && this.root == 6) {
+        if (this.scaleQuality === "minor" && root == 0) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "minor" && root == 1) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "minor" && root == 2) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "minor" && root == 3) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "minor" && root == 4) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "minor" && root == 5) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "minor" && root == 6) {
             // root == 6 -> root is Eb minor. Eb minor uses Cb.
-            notesSharpsFlats = notesCFlat;
-        } else if (this.scaleQuality === "minor" && this.root == 7) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "minor" && this.root == 8) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "minor" && this.root == 9) {
-            notesSharpsFlats = notesSharps;
-        } else if (this.scaleQuality === "minor" && this.root == 10) {
-            notesSharpsFlats = notesFlats;
-        } else if (this.scaleQuality === "minor" && this.root == 11) {
-            notesSharpsFlats = notesFlats;
+            this.allNotes = notesCFlat;
+        } else if (this.scaleQuality === "minor" && root == 7) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "minor" && root == 8) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "minor" && root == 9) {
+            this.allNotes = notesSharps;
+        } else if (this.scaleQuality === "minor" && root == 10) {
+            this.allNotes = notesFlats;
+        } else if (this.scaleQuality === "minor" && root == 11) {
+            this.allNotes = notesFlats;
         }
+
+        this.root = this.allNotes[root];
+        this.curNote = 0;
 
         let baseScale: Array<number> = [];
         if (this.scaleQuality === "major") {
@@ -127,11 +158,25 @@ class Scale {
         }
 
         for (let i = 0; i < baseScale.length; i++) {
-            let noteNum = modAddition(baseScale[i], this.root, 12);
+            let noteNum = modAddition(baseScale[i], root, 12);
             this.notes.push(
-                notesSharpsFlats[noteNum]
+                this.allNotes[noteNum]
             );
         }
+    }
+
+    // set the current note of the scale.
+    // note that this sets the current note as an "absolute" value.
+    // i.e. `setCurNote(3)` doesn't set the current note to the third note of the scale,
+    // it sets the current note to C.
+    setCurNote(n: number): void {
+        for (let i = 0; i < this.notes.length; i++) {
+            if (this.notes[i].noteNum === n) {
+                this.curNote = i;
+                return;
+            }
+        }
+        throw new Error(`setCurNote: couldn't find: ${n}`);
     }
 
     getCurNote(): Note {
@@ -139,11 +184,19 @@ class Scale {
     }
 
     incCurNote(n: number): void {
-        this.curNote = modAddition(this.curNote, n, 12);
+        this.curNote = modAddition(this.curNote, n, this.notes.length);
     }
 
-    decCurNote(n: number): void {
-        this.curNote = modAddition(this.curNote, -1 * n, 12);
+    toString(): string {
+        return `root: ${this.root.toString()}, curNote: ${this.curNote.toString()}, scaleQuality: ${this.scaleQuality}, notes: ${this.notesToString()}`;
+    }
+
+    notesToString(): string {
+        let arr = [];
+        for (const note of this.notes) {
+            arr.push(note.toString());
+        }
+        return arr.join(", ");
     }
 }
 
@@ -164,4 +217,4 @@ function doScalesIntersect(s1: Scale, s2: Scale, note: number): boolean {
     return (foundInS1 && foundInS2);
 }
 
-export { Scale, ScaleQuality, doScalesIntersect };
+export { Scale, ScaleQuality, doScalesIntersect, noteToNum };

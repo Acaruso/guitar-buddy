@@ -1,10 +1,9 @@
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
-import { Note } from "../Note";
-import { Scale, ScaleQuality } from "../Scale";
+import { Scale, ScaleQuality, doScalesIntersect } from "../Scale";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
-import { getRandomInt, modAddition } from "../util";
+import { getRandomInt } from "../util";
 
 class ScalesGameElt extends BaseElt {
     root: number = 0;
@@ -127,7 +126,7 @@ class ScalesGameElt extends BaseElt {
             if (this.useMinorScales) {
                 this.scaleQualities = ["major"];
             } else {
-                this.modes = ["major", "minor"];
+                this.scaleQualities = ["major", "minor"];
             }
             this.useMinorScales = !this.useMinorScales;
             this.useMinorScalesButton.setText(`use minor scales: ${this.useMinorScales}`);
@@ -146,54 +145,20 @@ class ScalesGameElt extends BaseElt {
         this.flipped = !this.flipped;
     }
 
-    getDisplay1TextFront(): string {
-        return `${this.scale.notes[this.root].noteName} ${this.scaleQualities[this.scaleQualitiesIdx]}`;
-    }
-
-    getDisplay2TextFront(): string {
-        return `note: ${this.scale.notes[this.curNote].noteName}`
-            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes} ${this.modes[this.modeIdx]}`;
-    }
-
-    getDisplay2TextBack(): string {
-        let arr: Array<string> = [];
-        let intervals = this.upDown[this.upDownIdx] == "up"
-            ? this.scale.intervalsUp
-            : this.scale.intervalsDown;
-
-        for (let i = 0; i < this.numNotes; i++) {
-            const k = modAddition(
-                this.root,
-                this.sign * intervals[
-                    ((i * this.stepSize) + this.offset) % intervals.length
-                ],
-                12
-            );
-            arr.push(this.scale.notes[k].noteName);
-            if (i == this.numNotes - 1) {
-                this.curNote = this.scale.notes[k].noteNum;
-            }
-        }
-        return arr.join(" ");
-    }
-
     getRandVals(init: boolean = false): void {
         this.upDownIdx = getRandomInt(this.upDown.length);
         this.scaleQualitiesIdx = getRandomInt(this.scaleQualities.length);
 
         if (init) {
-            this.root = getRandomInt(12);
-            this.curNote = this.root;
-            this.offset = 0;
+            const newRoot = getRandomInt(12);
+            this.scale = new Scale(
+                newRoot,
+                this.scaleQualities[this.scaleQualitiesIdx] as ScaleQuality
+            );
+            this.scale.setCurNote(newRoot);
         } else {
-            this.root = this.getNextRoot();
+            this.getNextScale();
         }
-
-        // if (this.scaleQualities[this.scaleQualitiesIdx] == "major") {
-        //     this.scale = new Scale(this.root, "major");
-        // } else if (this.scaleQualities[this.scaleQualitiesIdx] == "minor") {
-        //     this.scale = new Scale(this.root, "minor");
-        // }
 
         this.sign = this.upDown[this.upDownIdx] == "up"
             ? 1
@@ -210,15 +175,14 @@ class ScalesGameElt extends BaseElt {
         }
     }
 
-    getNextRoot(): number {
+    getNextScale(): void {
         let rootCandidate: number = 0;
         let scaleCandidate: Scale;
-        let intervals = [];
 
         while (true) {
             // don't pick the same root twice in a row
             rootCandidate = getRandomInt(12);
-            while (rootCandidate == this.root) {
+            while (rootCandidate == this.scale.root.noteNum) {
                 rootCandidate = getRandomInt(12);
             }
 
@@ -227,23 +191,34 @@ class ScalesGameElt extends BaseElt {
                 this.scaleQualities[this.scaleQualitiesIdx] as ScaleQuality
             );
 
-            intervals = this.upDown[this.upDownIdx] == "up"
-                ? scaleCandidate.intervalsUp
-                : scaleCandidate.intervalsDown;
-
-            for (let i = 0; i < intervals.length; i++) {
-                const note = modAddition(
-                    rootCandidate,
-                    this.sign * intervals[i % intervals.length],
-                    12
-                );
-                if (note == this.curNote) {
-                    this.offset = i;
-                    this.scale = scaleCandidate;
-                    return rootCandidate;
-                }
+            const rc: boolean = doScalesIntersect(this.scale, scaleCandidate, this.scale.getCurNote().noteNum);
+            if (rc === true) {
+                scaleCandidate.setCurNote(this.scale.getCurNote().noteNum);
+                this.scale = scaleCandidate;
+                return;
             }
         }
+    }
+
+    getDisplay1TextFront(): string {
+        return `${this.scale.root.noteName} ${this.scale.scaleQuality}`;
+    }
+
+    getDisplay2TextFront(): string {
+        return `note: ${this.scale.getCurNote().noteName}`
+            + `, ${this.upDown[this.upDownIdx]} ${this.numNotes} ${this.modes[this.modeIdx]}`;
+    }
+
+    getDisplay2TextBack(): string {
+        let arr: Array<string> = [];
+
+        for (let i = 0; i < this.numNotes - 1; i++) {
+            arr.push(this.scale.getCurNote().noteName);
+            this.scale.incCurNote(this.stepSize * this.sign);
+        }
+        arr.push(this.scale.getCurNote().noteName);
+
+        return arr.join(" ");
     }
 
     onKeyDown(key: string): void {
