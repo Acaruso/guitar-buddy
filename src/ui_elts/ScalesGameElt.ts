@@ -169,7 +169,7 @@ class ScalesGameElt extends BaseElt {
             ? 1
             : 2;
         if (this.modes[this.modeIdx] === "degrees") {
-            this.numNotes = getRandomInt(3) + 3;
+            this.numNotes = getRandomInt(3) + 4;
         } else if (this.modes[this.modeIdx] === "thirds") {
             this.numNotes = getRandomInt(2) + 3;
         }

@@ -20,7 +20,7 @@ const notesFlats: Array<Note> = [
     new Note("G",  10),
     new Note("Ab", 11),
 ];
-const notesCFlat: Array<Note> = [ // Gb major and Eb minor keys use Cb instead of B
+const notesCb: Array<Note> = [
     new Note("A",   0),
     new Note("Bb",  1),
     new Note("Cb",  2),
@@ -29,6 +29,20 @@ const notesCFlat: Array<Note> = [ // Gb major and Eb minor keys use Cb instead o
     new Note("D",   5),
     new Note("Eb",  6),
     new Note("E",   7),
+    new Note("F",   8),
+    new Note("Gb",  9),
+    new Note("G",  10),
+    new Note("Ab", 11),
+];
+const notesCbFb: Array<Note> = [
+    new Note("A",   0),
+    new Note("Bb",  1),
+    new Note("Cb",  2),
+    new Note("C",   3),
+    new Note("Db",  4),
+    new Note("D",   5),
+    new Note("Eb",  6),
+    new Note("Fb",  7),
     new Note("F",   8),
     new Note("Gb",  9),
     new Note("G",  10),
@@ -112,8 +126,8 @@ class Scale {
         } else if (this.scaleQuality === "major" && root == 8) {
             this.allNotes = notesFlats;
         } else if (this.scaleQuality === "major" && root == 9) {
-            // root == 9 -> root is Gb major. Gb major uses Cb.
-            this.allNotes = notesCFlat;
+            // Gb major uses Cb.
+            this.allNotes = notesCb;
         } else if (this.scaleQuality === "major" && root == 10) {
             this.allNotes = notesSharps;
         } else if (this.scaleQuality === "major" && root == 11) {
@@ -133,8 +147,8 @@ class Scale {
         } else if (this.scaleQuality === "minor" && root == 5) {
             this.allNotes = notesFlats;
         } else if (this.scaleQuality === "minor" && root == 6) {
-            // root == 6 -> root is Eb minor. Eb minor uses Cb.
-            this.allNotes = notesCFlat;
+            // Eb minor uses Cb.
+            this.allNotes = notesCb;
         } else if (this.scaleQuality === "minor" && root == 7) {
             this.allNotes = notesSharps;
         } else if (this.scaleQuality === "minor" && root == 8) {
@@ -144,7 +158,8 @@ class Scale {
         } else if (this.scaleQuality === "minor" && root == 10) {
             this.allNotes = notesFlats;
         } else if (this.scaleQuality === "minor" && root == 11) {
-            this.allNotes = notesFlats;
+            // Ab minor uses Cb and Fb.
+            this.allNotes = notesCbFb;
         }
 
         this.root = this.allNotes[root];
