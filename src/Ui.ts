@@ -11,6 +11,7 @@ import { StringFretSemitoneGameElt } from "./ui_elts/StringFretSemitoneGame";
 import { TriadInversionsGameElt } from "./ui_elts/TriadInversionsGameElt";
 import { SemitonesUpDownGameElt } from "./ui_elts/SemitonesUpDownGameElt";
 import { ScalesGameElt } from "./ui_elts/ScalesGameElt";
+import { IntervalsGame2Elt } from "./ui_elts/IntervalsGame2Elt";
 import { constants } from "./constants";
 import { isInsideRect, addHandler, addButtonOnClickHandler } from "./util";
 import {
@@ -190,6 +191,16 @@ class Ui {
             this.rootElt.clearChildren();
             this.rootElt.pushChild(
                 new SemitonesUpDownGameElt(
+                    this.gfx,
+                    { x: 20, y: 30, w: 2000, h: 1000 },
+                )
+            );
+        });
+
+        addButtonOnClickHandler("interval-game-2-button", () => {
+            this.rootElt.clearChildren();
+            this.rootElt.pushChild(
+                new IntervalsGame2Elt(
                     this.gfx,
                     { x: 20, y: 30, w: 2000, h: 1000 },
                 )
