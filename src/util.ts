@@ -59,6 +59,10 @@ function modDistance(a: number, b: number, m: number): number {
     return res;
 }
 
+function arraysEqual<T>(a: T[], b: T[]): boolean {
+    return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
 function modAddition(a: number, b: number, m: number): number {
     const res = ((a + b) % m + m) % m;
     // console.log(`modAddition(${a}, ${b}, ${m}) -> ${res}`);
@@ -74,5 +78,6 @@ export {
     getRandomInt,
     getRandomBool,
     modDistance,
+    arraysEqual,
     modAddition,
 };

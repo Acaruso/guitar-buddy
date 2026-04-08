@@ -3,7 +3,7 @@ import { Rect } from "../Rect";
 import { Scale, ScaleQuality, doScalesIntersect } from "../Scale";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
-import { getRandomInt } from "../util";
+import { arraysEqual, getRandomInt } from "../util";
 
 class ScalesGameElt extends BaseElt {
     root: number = 0;
@@ -26,10 +26,12 @@ class ScalesGameElt extends BaseElt {
     displayElt2: TextElt;
     nextButton: TextElt;
     useThirdsButton: TextElt;
+    useMajorScalesButton: TextElt;
     useMinorScalesButton: TextElt;
 
     flipped: boolean = false;
     useThirds: boolean = true;
+    useMajorScales: boolean = true;
     useMinorScales: boolean = true;
     displayTextSize: number = 62;
     buttonTextSize: number = 82;
@@ -110,6 +112,36 @@ class ScalesGameElt extends BaseElt {
         this.pushChild(this.useThirdsButton);
 
         nextY += 100;
+        this.useMajorScalesButton = new TextElt(
+            this.gfx,
+            {
+                x: this.rect.x,
+                y: nextY,
+                w: 1100,
+                h: 100
+            },
+            `use major scales: ${this.useMajorScales}`,
+            this.buttonTextSize
+        );
+        this.useMajorScalesButton.drawRect = true;
+        this.useMajorScalesButton.onClick = () => {
+            if (this.useMajorScales) { // if we're going from true to false
+                if (arraysEqual(this.scaleQualities, ["major"])) {
+                    // if scaleQualities only contains "major", do nothing
+                    return;
+                }
+                // remove "major"
+                this.scaleQualities = this.scaleQualities.filter(x => x !== "major");
+            } else { // if we're going from false to true
+                // add "major"
+                this.scaleQualities.push("major");
+            }
+            this.useMajorScales = !this.useMajorScales;
+            this.useMajorScalesButton.setText(`use major scales: ${this.useMajorScales}`);
+        };
+        this.pushChild(this.useMajorScalesButton);
+
+        nextY += 100;
         this.useMinorScalesButton = new TextElt(
             this.gfx,
             {
@@ -123,10 +155,16 @@ class ScalesGameElt extends BaseElt {
         );
         this.useMinorScalesButton.drawRect = true;
         this.useMinorScalesButton.onClick = () => {
-            if (this.useMinorScales) {
-                this.scaleQualities = ["major"];
-            } else {
-                this.scaleQualities = ["major", "minor"];
+            if (this.useMinorScales) { // if we're going from true to false
+                if (arraysEqual(this.scaleQualities, ["minor"])) {
+                    // if scaleQualities only contains "minor", do nothing
+                    return;
+                }
+                // remove "minor"
+                this.scaleQualities = this.scaleQualities.filter(x => x !== "minor");
+            } else { // if we're going from false to true
+                // add "minor"
+                this.scaleQualities.push("minor");
             }
             this.useMinorScales = !this.useMinorScales;
             this.useMinorScalesButton.setText(`use minor scales: ${this.useMinorScales}`);
