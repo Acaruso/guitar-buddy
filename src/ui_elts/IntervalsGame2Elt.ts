@@ -1,7 +1,25 @@
 import { Gfx } from "../Gfx";
 import { Rect } from "../Rect";
+import { Scale, ScaleQuality } from "../Scale";
 import { BaseElt } from "./BaseElt";
 import { TextElt } from "./TextElt";
+import { getRandomInt, modAddition } from "../util";
+
+interface IntervalDef {
+    label: string;
+    semitones: number;
+    scaleQuality: ScaleQuality;
+}
+
+const intervalDefs: Record<string, IntervalDef> = {
+    min3rd: { label: "Min 3rd", semitones: 3, scaleQuality: "minor" },
+    maj3rd: { label: "Maj 3rd", semitones: 4, scaleQuality: "major" },
+    fourth: { label: "4th",     semitones: 5, scaleQuality: "major" },
+    b5th:   { label: "b5th",    semitones: 6, scaleQuality: "major" },
+    fifth:  { label: "5th",     semitones: 7, scaleQuality: "major" },
+    min6th: { label: "Min 6th", semitones: 8, scaleQuality: "minor" },
+    maj6th: { label: "Maj 6th", semitones: 9, scaleQuality: "major" },
+};
 
 class IntervalsGame2Elt extends BaseElt {
     displayTextSize: number = 62;
@@ -26,6 +44,11 @@ class IntervalsGame2Elt extends BaseElt {
     min6thButton: TextElt;
     maj6thButton: TextElt;
 
+    flipped: boolean = false;
+    curRootNum: number = 0;
+    curInterval: IntervalDef = intervalDefs.maj3rd;
+    curAnswer: string = "";
+
     constructor(gfx: Gfx, rect: Rect) {
         super(gfx, rect);
 
@@ -38,7 +61,7 @@ class IntervalsGame2Elt extends BaseElt {
                 w: 1100,
                 h: 100
             },
-            "interval game 2",
+            "enable intervals and press next",
             this.displayTextSize
         );
         this.pushChild(this.displayElt1);
@@ -146,6 +169,40 @@ class IntervalsGame2Elt extends BaseElt {
     }
 
     update(): void {
+        const enabled = this.getEnabledIntervals();
+        if (enabled.length === 0) {
+            this.displayElt1.setText("enable intervals and press next");
+            return;
+        }
+
+        if (this.flipped) {
+            // show next question
+            this.curRootNum = getRandomInt(12);
+            this.curInterval = enabled[getRandomInt(enabled.length)];
+
+            const scale = new Scale(this.curRootNum, this.curInterval.scaleQuality);
+            const rootName = scale.root.noteName;
+            const answerNoteNum = modAddition(this.curRootNum, this.curInterval.semitones, 12);
+            this.curAnswer = scale.allNotes[answerNoteNum].noteName;
+
+            this.displayElt1.setText(`${this.curInterval.label} of ${rootName}`);
+        } else {
+            // show answer
+            this.displayElt1.setText(this.curAnswer);
+        }
+        this.flipped = !this.flipped;
+    }
+
+    getEnabledIntervals(): IntervalDef[] {
+        const enabled: IntervalDef[] = [];
+        if (this.useMin3rd) enabled.push(intervalDefs.min3rd);
+        if (this.useMaj3rd) enabled.push(intervalDefs.maj3rd);
+        if (this.use4th)    enabled.push(intervalDefs.fourth);
+        if (this.useB5th)   enabled.push(intervalDefs.b5th);
+        if (this.use5th)    enabled.push(intervalDefs.fifth);
+        if (this.useMin6th) enabled.push(intervalDefs.min6th);
+        if (this.useMaj6th) enabled.push(intervalDefs.maj6th);
+        return enabled;
     }
 
     onKeyDown(key: string): void {
