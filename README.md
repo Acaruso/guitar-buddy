@@ -21,6 +21,13 @@
   - how does this work exactly?
   - left mb down events are only bubbled down to elements that the click was inside of
 
+# minor scale bug
+
+- example:
+  - the note that we landed on in previous round was D#
+  - next choice: E minor, up 3 3rds
+  - problem: E minor does not contain D#
+  - "solution": D F# A
 
 
 
